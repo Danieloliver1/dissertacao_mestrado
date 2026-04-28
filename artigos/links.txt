@@ -1,0 +1,67 @@
+
+
+MODELOS===================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PRÉ-MODELOS===============================================================
+
+1. MoCo v1 (2019) - O Paper Original
+
+📄 Título: "Momentum Contrast for Unsupervised Visual Representation Learning"
+👥 Autores: Kaiming He, Haoqi Fan, Yuxin Wu, Saining Xie, Ross Girshick (Facebook AI Research)
+📅 Publicação: CVPR 2020
+🔗 arXiv: https://arxiv.org/abs/1911.05722
+🌟 Citações: ~6,000+
+
+📌 CONCEITOS-CHAVE:
+- Contrastive learning como dicionário lookup
+- Momentum encoder (encoder "lento")
+- Queue de negative samples
+- InfoNCE loss
+
+2. MoCo v2 (2020) - Melhorias
+
+📄 Título: "Improved Baselines with Momentum Contrastive Learning"
+👥 Autores: Xinlei Chen, Haoqi Fan, Ross Girshick, Kaiming He
+📅 Publicação: arXiv 2020
+🔗 arXiv: https://arxiv.org/abs/2003.04297
+🌟 Citações: ~2,500+
+
+📌 NOVIDADES:
+- MLP projection head (como SimCLR)
+- Mais data augmentation
+- Cosine learning rate schedule
+- Resultados melhores com menos épocas
+
+3. MoCo v3 (2021) - Transformers + ViT
+
+📄 Título: "An Empirical Study of Training Self-Supervised Vision Transformers"
+👥 Autores: Xinlei Chen, Saining Xie, Kaiming He
+📅 Publicação: ICCV 2021
+🔗 arXiv: https://arxiv.org/abs/2104.02057
+🌟 Citações: ~1,800+
+
+📌 ATUALIZAÇÕES:
+- Adaptação para Vision Transformers (ViT)
+- Stability tricks para treinar ViT
+- Batch normalization → Layer normalization
+
+
+
+
+PÓS MODELO================================================================
+

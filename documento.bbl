@@ -1,0 +1,105 @@
+\providecommand{\abntreprintinfo}[1]{%
+ \citeonline{#1}}
+\setlength{\labelsep}{0pt}\begin{thebibliography}{}
+\providecommand{\abntrefinfo}[3]{}
+\providecommand{\abntbstabout}[1]{}
+\abntbstabout{v-1.9.7 }
+
+\bibitem[]{goossens1994latex}
+\abntrefinfo{nada}{NADA}{a}
+{[S.l.: s.n.].}
+
+\bibitem[]{rakov2003lightning}
+\abntrefinfo{nada}{NADA}{b}
+{[S.l.: s.n.].}
+
+\bibitem[]{elat2015densidade}
+\abntrefinfo{nada}{NADA}{c}
+{}
+
+\bibitem[]{LangtangenLogg2017}
+\abntrefinfo{nada}{NADA}{d}
+{[S.l.: s.n.].}
+
+\bibitem[]{secretaria1999}
+\abntrefinfo{nada}{NADA}{e}
+{}
+
+\bibitem[]{NBR10520:2002}
+\abntrefinfo{nada}{NADA}{f}
+{[S.l.].}
+
+\bibitem[]{Almeida2018}
+\abntrefinfo{nada}{NADA}{g}
+{Disserta\c{c}\~{a}o (Mestrado).}
+
+\bibitem[]{Gondim2017}
+\abntrefinfo{nada}{NADA}{h}
+{Tese (Doutorado).}
+
+\bibitem[]{manuais1989}
+\abntrefinfo{nada}{NADA}{i}
+{[S.l.].}
+
+\bibitem[]{feitosa2016}
+\abntrefinfo{nada}{NADA}{j}
+{}
+
+\bibitem[]{UFC2012}
+\abntrefinfo{nada}{NADA}{k}
+{}
+
+\bibitem[]{NASA2016}
+\abntrefinfo{nada}{NADA}{l}
+{}
+
+\bibitem[]{lifelines_docs_cox}
+\abntrefinfo{nada}{NADA}{m}
+{}
+
+\bibitem[He \textit{et al.} 2019]{he2020momentum}
+\abntrefinfo{He \textit{et al.}}{HE \textit{et al.}}{2019}
+{HE, K.; FAN, H.; WU, Y.; XIE, S.; GIRSHICK, R. Momentum contrast for
+  unsupervised visual representation learning.
+\textbf{arXiv preprint arXiv:1911.05722}, 2019.
+Dispon{\'\i}vel em: \url{https://arxiv.org/abs/1911.05722}. Acesso em: 05 mar.
+  2026.}
+
+\bibitem[{Jornal da USP} 2024]{jornalusp2024doencas}
+\abntrefinfo{{Jornal da USP}}{{Jornal da USP}}{2024}
+{{Jornal da USP}. \textbf{Doenças cardiovasculares são a principal causa de
+  mortes no {B}rasil, segundo o {M}inistério da {S}aúde}. 2024.
+Dispon{\'\i}vel em:
+  \url{https://jornal.usp.br/radio-usp/doencas-cardiovasculares-sao-a-principal-causa-de-mortes-no-brasil-segundo-o-ministerio-da-saude/}.
+  Acesso em: 03 mar. 2026.}
+
+\bibitem[Kvamme \textit{et al.} 2019]{kvamme2019time}
+\abntrefinfo{Kvamme \textit{et al.}}{KVAMME \textit{et al.}}{2019}
+{KVAMME, H.; BORGAN, {\O}.; SCHEEL, I. Time-to-event prediction with neural
+  networks and cox regression.
+\textbf{Journal of Machine Learning Research}, v.~20, n.~129, p. 1--30, 2019.}
+
+\bibitem[Prabhakararao e Manimegalai 2020]{physionet2020music}
+\abntrefinfo{Prabhakararao e Manimegalai}{PRABHAKARARAO; MANIMEGALAI}{2020a}
+{PRABHAKARARAO, E.; MANIMEGALAI, P. \textbf{A {M}ultimodal {U}ser-{I}nterface
+  {S}ystem for {C}omputational {A}nalysis of {S}udden {C}ardiac {D}eath
+  ({MUSIC})}. 2020.
+PhysioNet. Version 1.0.0.
+Dispon{\'\i}vel em: \url{https://physionet.org}. Acesso em: 02 mar. 2026.}
+
+\bibitem[Prabhakararao e Manimegalai 2020]{physionet2020music_dataset}
+\abntrefinfo{Prabhakararao e Manimegalai}{PRABHAKARARAO; MANIMEGALAI}{2020b}
+{PRABHAKARARAO, E.; MANIMEGALAI, P. \textbf{A {M}ultimodal {U}ser-{I}nterface
+  {S}ystem for {C}omputational {A}nalysis of {S}udden {C}ardiac {D}eath
+  ({MUSIC})}. 2020.
+PhysioNet. Disponível em arquivo csv.
+Dispon{\'\i}vel em: \url{https://physionet.org}. Acesso em: 02 mar. 2026.}
+
+\bibitem[{World Health Organization} 2025]{who2021cardiovascular}
+\abntrefinfo{{World Health Organization}}{{World Health Organization}}{2025}
+{{World Health Organization}. \textbf{Cardiovascular diseases ({CVDs})}. 2025.
+Dispon{\'\i}vel em:
+  \url{https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds)}.
+  Acesso em: 03 mar. 2026.}
+
+\end{thebibliography}
