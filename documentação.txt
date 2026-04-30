@@ -14,3 +14,5 @@ latexmk -pdf documento.tex
 Versão de commit
 
 primeira versão - 28/04/26
+
+atualizando resultado - 30/04/26
