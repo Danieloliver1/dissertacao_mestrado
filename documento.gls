@@ -2,37 +2,37 @@
 \begin{theglossary}\glossaryheader
 \glsgroupheading{A}\relax \glsresetentrylist %
 \glossentry{ABNT}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{26}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{27}}}\glsgroupskip
 \glsgroupheading{C}\relax \glsresetentrylist %
 \glossentry{CNNs}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{19}}}%
+		\setentrycounter[]{page}\glsnumberformat{20}}}%
 \glossentry{CSV}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{18}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{19}}}\glsgroupskip
 \glsgroupheading{D}\relax \glsresetentrylist %
 \glossentry{DA}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{26}}}%
+		\setentrycounter[]{page}\glsnumberformat{27}}}%
 \glossentry{DCVs}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{16}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{17}}}\glsgroupskip
 \glsgroupheading{E}\relax \glsresetentrylist %
 \glossentry{ECG}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{17}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{18}}}\glsgroupskip
 \glsgroupheading{H}\relax \glsresetentrylist %
 \glossentry{Hz}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{20}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{21}}}\glsgroupskip
 \glsgroupheading{I}\relax \glsresetentrylist %
 \glossentry{I3A}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{17}}}%
+		\setentrycounter[]{page}\glsnumberformat{18}}}%
 \glossentry{ICC}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{16}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{17}}}\glsgroupskip
 \glsgroupheading{M}\relax \glsresetentrylist %
 \glossentry{MCEG}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{26}}}%
+		\setentrycounter[]{page}\glsnumberformat{27}}}%
 \glossentry{MSC}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{16}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{17}}}\glsgroupskip
 \glsgroupheading{P}\relax \glsresetentrylist %
 \glossentry{PDF}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{58}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{64}}}\glsgroupskip
 \glsgroupheading{T}\relax \glsresetentrylist %
 \glossentry{TEST}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{26}}}%
+		\setentrycounter[]{page}\glsnumberformat{27}}}%
 \end{theglossary}\glossarypostamble

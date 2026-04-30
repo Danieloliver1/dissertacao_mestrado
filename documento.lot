@@ -1,17 +1,18 @@
 \babel@toc {brazil}{}\relax 
-\contentsline {table}{\numberline {1}{\ignorespaces Um Exemplo de tabela alinhada que pode ser longa ou curta}}{25}{table.caption.19}%
-\contentsline {table}{\numberline {2}{\ignorespaces Modelo de Cox com variáveis do Holter na coorte completa ($n=992$; 205 eventos).}}{33}{table.caption.20}%
-\contentsline {table}{\numberline {3}{\ignorespaces Modelo de Cox com variáveis do Holter na amostra filtrada com tr\^es deriva\c {c}\~oes completas ($n=898$; 189 eventos).}}{34}{table.caption.21}%
-\contentsline {table}{\numberline {4}{\ignorespaces Modelo de Cox com variáveis arrítmicas na coorte completa ($n=992$; 205 eventos).}}{35}{table.caption.22}%
-\contentsline {table}{\numberline {5}{\ignorespaces Modelo de Cox com variáveis arrítmicas na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{36}{table.caption.23}%
-\contentsline {table}{\numberline {6}{\ignorespaces Modelo de Cox com dados clínicos e antropométricos na coorte completa ($n=992$; 205 eventos).}}{36}{table.caption.24}%
-\contentsline {table}{\numberline {7}{\ignorespaces Modelo de Cox com dados clínicos e antropométricos na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{37}{table.caption.25}%
-\contentsline {table}{\numberline {8}{\ignorespaces Modelo de Cox com variáveis eletrocardiográficas na coorte completa ($n=992$; 205 eventos).}}{38}{table.caption.26}%
-\contentsline {table}{\numberline {9}{\ignorespaces Modelo de Cox com variáveis eletrocardiográficas na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{39}{table.caption.27}%
-\contentsline {table}{\numberline {10}{\ignorespaces Análise de Cox univariável — coeficiente, razão de risco, C-index e significância por variável ($n=992$; 205 eventos).}}{41}{table.caption.28}%
-\contentsline {table}{\numberline {11}{\ignorespaces Fator de inflação da variância (VIF) — avaliação de multicolinearidade entre as variáveis candidatas.}}{42}{table.caption.29}%
-\contentsline {table}{\numberline {12}{\ignorespaces Análise de Cox multivariável — variáveis com $p < 0{,}05$ na análise univariável ($n=992$; 205 eventos).}}{43}{table.caption.30}%
-\contentsline {table}{\numberline {13}{\ignorespaces Análise de Cox univariável — amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{45}{table.caption.32}%
-\contentsline {table}{\numberline {14}{\ignorespaces Fator de inflação da variância (VIF) — amostra filtrada com três derivações completas ($n=898$).}}{46}{table.caption.33}%
-\contentsline {table}{\numberline {15}{\ignorespaces Análise de Cox multivariável — amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{47}{table.caption.34}%
-\contentsline {table}{\numberline {16}{\ignorespaces Notas dos participantes nas avaliações A, B e C}}{49}{table.caption.36}%
+\contentsline {table}{\numberline {1}{\ignorespaces Um Exemplo de tabela alinhada que pode ser longa ou curta}}{26}{table.caption.19}%
+\contentsline {table}{\numberline {2}{\ignorespaces Modelo de Cox com variáveis do Holter na coorte completa ($n=992$; 205 eventos).}}{34}{table.caption.20}%
+\contentsline {table}{\numberline {3}{\ignorespaces Modelo de Cox com variáveis do Holter na amostra filtrada com tr\^es deriva\c {c}\~oes completas ($n=898$; 189 eventos).}}{35}{table.caption.21}%
+\contentsline {table}{\numberline {4}{\ignorespaces Modelo de Cox com variáveis arrítmicas na coorte completa ($n=992$; 205 eventos).}}{36}{table.caption.22}%
+\contentsline {table}{\numberline {5}{\ignorespaces Modelo de Cox com variáveis arrítmicas na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{37}{table.caption.23}%
+\contentsline {table}{\numberline {6}{\ignorespaces Modelo de Cox com dados clínicos e antropométricos na coorte completa ($n=992$; 205 eventos).}}{37}{table.caption.24}%
+\contentsline {table}{\numberline {7}{\ignorespaces Modelo de Cox com dados clínicos e antropométricos na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{38}{table.caption.25}%
+\contentsline {table}{\numberline {8}{\ignorespaces Modelo de Cox com variáveis eletrocardiográficas na coorte completa ($n=992$; 205 eventos).}}{39}{table.caption.26}%
+\contentsline {table}{\numberline {9}{\ignorespaces Modelo de Cox com variáveis eletrocardiográficas na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{40}{table.caption.27}%
+\contentsline {table}{\numberline {10}{\ignorespaces Análise de Cox univariável — coeficiente, razão de risco, C-index e significância por variável ($n=992$; 205 eventos).}}{42}{table.caption.28}%
+\contentsline {table}{\numberline {11}{\ignorespaces Fator de inflação da variância (VIF) — avaliação de multicolinearidade entre as variáveis candidatas.}}{43}{table.caption.29}%
+\contentsline {table}{\numberline {12}{\ignorespaces Análise de Cox multivariável — variáveis com $p < 0{,}05$ na análise univariável ($n=992$; 205 eventos).}}{44}{table.caption.30}%
+\contentsline {table}{\numberline {13}{\ignorespaces Análise de Cox univariável — amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{46}{table.caption.31}%
+\contentsline {table}{\numberline {14}{\ignorespaces Fator de inflação da variância (VIF) — amostra filtrada com três derivações completas ($n=898$).}}{47}{table.caption.32}%
+\contentsline {table}{\numberline {15}{\ignorespaces Análise de Cox multivariável — amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{48}{table.caption.33}%
+\contentsline {table}{\numberline {16}{\ignorespaces Desempenho dos modelos de sobrevivência profunda segundo o conjunto de covariáveis e a disponibilidade de ECG dos pacientes.}}{50}{table.caption.34}%
+\contentsline {table}{\numberline {17}{\ignorespaces Notas dos participantes nas avaliações A, B e C}}{54}{table.caption.42}%

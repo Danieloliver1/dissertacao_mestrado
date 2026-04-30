@@ -662,22 +662,6 @@ aquelas com alta multicolinearidade (SDNN, SDANN, peso e IMC), perderam
 significância após o ajuste conjunto, o que é esperado em modelos com
 variáveis correlacionadas.
 
-\section{Resultados do Experimento A}
-\label{sec:resultados-do-experimento-a}
-
-Procure deixar as figuras dos resultados o maior possível preenchendo a largura do texto do documento que possui $16~cm$.
-
-\begin{figure}[h!]
-	\captionsetup{width=16cm}
-	\Caption{\label{fig:tensaoimpedanciahumana} Gráfico de tensão considerando a impedância humana}
-	%\centering
-	\UFCfig{}{
-		\fbox{\includegraphics[width=16cm]{figuras/tensaoimpedanciahumana}}
-	}{
-		\Fonte{elaborado pelo autor (2016).}
-	}
-\end{figure}
-
 
 % ============================================================
 %  Análise de Cox — Amostra filtrada (n=898, 189 eventos)
@@ -956,6 +940,190 @@ multivariável permaneceu idêntico (0{,}718), confirmando a robustez dos
 resultados após a filtragem.
 
 
+\FloatBarrier
+% ============================================================
+%  Tabela — Dados usando pycox como modelos Deep Learning para sobrevivência
+% ============================================================
+
+
+\section{Modelos de Aprendizado Profundo para Sobrevivência}
+
+Aqui são apresentados os resultados dos modelos de sobrevivência profunda treinados com os mesmos conjuntos de covariáveis utilizados na análise de Cox, tanto para a coorte completa ($n=992$) quanto para a amostra filtrada ($n=898$). Os modelos avaliados foram: LogisticHazard, PMF e DeepHitSingle, utilizando a implementação disponível na biblioteca \texttt{pycox}.
+
+\subsection{Sobre LogisticHazard}
+
+\subsection{Sobre PMF}
+
+\subsection{Sobre DeepHitSingle}
+
+
+
+A Tabela~\ref{tab:modelos_dl_sobrevivencia} resume o desempenho dos modelos de sobrevivência profunda segundo o tipo de colunas utilizado, a filtragem dos pacientes com ECG, e as principais métricas de discriminação e calibração. Em todos os experimentos, foram utilizados \textit{batch size} de 256 e \textit{dropout} de 0,5.
+
+\begin{table}[htbp]
+	\centering
+	\caption{Desempenho dos modelos de sobrevivência profunda segundo o
+		conjunto de covariáveis e a disponibilidade de ECG dos pacientes.}
+	\label{tab:modelos_dl_sobrevivencia}
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{llccccccc}
+			\toprule
+			Modelo
+			               & Covari\'aveis\textsuperscript{a}
+			               & Coorte\textsuperscript{b}
+			               & C-index
+			               & Brier
+			               & NBLL
+			               & Loss (treino)
+			               & Loss (val.)
+			               & \'Epoca                                                                                                              \\
+			\midrule
+			\multicolumn{9}{l}{\textit{Holter (H)}}                                                                                               \\
+			LogisticHazard & H                                & C992 & 0,5300          & 0,1782          & 0,5790          & 1,1192 & 1,0597 & 28 \\
+			PMF            & H                                & C992 & 0,6062          & 0,1740          & 0,5631          & 0,9059 & 1,1039 & 46 \\
+			DeepHitSingle  & H                                & C992 & 0,6239          & 0,1784          & 0,5633          & 0,3410 & 0,3653 & 59 \\
+			LogisticHazard & H                                & C898 & 0,6257          & 0,1756          & 0,5618          & 1,5659 & 1,0911 & 34 \\
+			PMF            & H                                & C898 & 0,6848          & 0,1670          & 0,5260          & 0,9912 & 1,0724 & 41 \\
+			DeepHitSingle  & H                                & C898 & \textbf{0,7234} & 0,1661          & 0,5265          & 0,3352 & 0,3428 & 99 \\
+			\midrule
+			\multicolumn{9}{l}{\textit{Eletrocardiogramas Holter (EH)}}                                                                           \\
+			LogisticHazard & EH                               & C992 & 0,6089          & 0,1732          & 0,5706          & 1,0588 & 1,0645 & 50 \\
+			PMF            & EH                               & C992 & 0,6086          & 0,1676          & 0,5579          & 0,9864 & 1,0542 & 49 \\
+			DeepHitSingle  & EH                               & C992 & 0,5721          & 0,1775          & 0,5686          & 0,3353 & 0,3463 & 69 \\
+			LogisticHazard & EH                               & C898 & 0,5699          & 0,1797          & 0,5759          & 0,9176 & 1,1579 & 29 \\
+			PMF            & EH                               & C898 & 0,6145          & 0,1709          & 0,5400          & 1,0422 & 1,1741 & 39 \\
+			DeepHitSingle  & EH                               & C898 & 0,5896          & 0,1930          & 0,5958          & 0,3483 & 0,3810 & 69 \\
+			\midrule
+			\multicolumn{9}{l}{\textit{Eventos e Condições Cardiovasculares (EC)}}                                                                \\
+			LogisticHazard & EC                               & C992 & 0,5656          & 0,1771          & 0,5667          & 1,1943 & 1,1249 & 27 \\
+			PMF            & EC                               & C992 & 0,5897          & 0,1767          & 0,5760          & 1,0138 & 1,0853 & 41 \\
+			DeepHitSingle  & EC                               & C992 & 0,5812          & 0,2896          & 0,8420          & 0,6048 & 0,4321 & 30 \\
+			LogisticHazard & EC                               & C898 & 0,6412          & 0,1682          & 0,5448          & 1,0169 & 1,2437 & 28 \\
+			PMF            & EC                               & C898 & \textbf{0,7151} & \textbf{0,1664} & \textbf{0,5137} & 1,0058 & 1,2551 & 33 \\
+			DeepHitSingle  & EC                               & C898 & 0,7000          & 0,2567          & 0,7409          & 0,4386 & 0,6774 & 34 \\
+			\midrule
+			\multicolumn{9}{l}{\textit{Conjunto de Covari\'aveis Progn\'osticas Selecionadas (CPS)\textsuperscript{c}}}                           \\
+			LogisticHazard & CPS                              & C992 & 0,6464          & 0,1672          & 0,5553          & 1,0285 & 1,0508 & 69 \\
+			PMF            & CPS                              & C992 & 0,5840          & 0,1720          & 0,5726          & 0,9828 & 1,0793 & 36 \\
+			DeepHitSingle  & CPS                              & C992 & 0,6175          & 0,1726          & 0,5573          & 0,3625 & 0,3573 & 67 \\
+			LogisticHazard & CPS                              & C898 & 0,6753          & 0,1666          & 0,5304          & 1,1640 & 1,1131 & 50 \\
+			PMF            & CPS                              & C898 & \textbf{0,6965} & \textbf{0,1599} & \textbf{0,5133} & 1,0212 & 1,0743 & 48 \\
+			DeepHitSingle  & CPS                              & C898 & 0,6776          & 0,2268          & 0,6701          & 0,4485 & 0,4122 & 49 \\
+			\bottomrule
+		\end{tabular}%
+	}
+	\begin{flushleft}
+		\footnotesize
+		Em todos os experimentos: \textit{batch size} = 256; \textit{dropout} = 0,5.
+		Valores em negrito indicam o melhor desempenho dentro de cada grupo de covariáveis.
+		Loss (val.): \textit{loss} de validação.\\
+		\textsuperscript{a} Grupos de covariáveis:
+		H = Holter;
+		EH = Eletrocardiogramas Holter;
+		EC = Eventos e Condições Cardiovasculares;
+		CPS = Conjunto de Covariáveis Prognósticas Selecionadas.\\
+		\textsuperscript{b} Coorte:
+		C992 = coorte completa ($n=992$; 205 eventos);
+		C898 = amostra com três derivações de ECG completas ($n=898$; 189 eventos).\\
+		\textsuperscript{c} O conjunto CPS é composto por variáveis com associação
+		estatisticamente significativa nas análises de Cox: dados demográficos
+		(idade, gênero e classe NYHA); eventos cardiovasculares
+			[taquicardia ventricular não sustentada (CH$>$10) e taquiarritmia
+				supraventricular paroxística]; e achado eletrocardiográfico
+		[ondas Q de necrose (\textit{Q-waves}, sim\,=\,1)].
+	\end{flushleft}
+\end{table}
+
+\FloatBarrier
+
+
+De forma geral, os melhores desempenhos foram observados com filtragem de pacientes com ECG (``Com''). Entre os modelos baseados apenas em colunas do Holter, o melhor C-index foi obtido pelo \textit{DeepHitSingle} com filtragem (0,7234). No conjunto \textit{eventos\_condicoes\_cardiovasculares}, o melhor desempenho foi alcançado pelo \textit{PMF} com filtragem (C-index 0,7151; Brier score 0,1664; NBLL 0,5137). Para o conjunto de \textit{Covariáveis selecionadas}, o melhor C-index também ocorreu com o \textit{PMF} com filtragem (0,6965), enquanto o menor Brier score foi 0,1599 no mesmo cenário.
+
+% \end{document}
+
+\FloatBarrier
+
+\section{MoCo (Momentum Contrast)}
+\label{sec:moco-momentum-contrast}
+
+
+\begin{figure}[h!]
+	\captionsetup{width=16cm}
+	\Caption{\label{fig:distribuicao_loss} Gráfico de tensão considerando a impedância humana}
+	%\centering
+	\UFCfig{}{
+		\fbox{\includegraphics[width=16cm]{figuras/moco/distribuicao_loss}}
+	}{
+		\Fonte{elaborado pelo autor (2016).}
+	}
+\end{figure}
+
+\begin{figure}[h!]
+	\captionsetup{width=16cm}
+	\Caption{\label{fig:loss_detalhada} Gráfico de tensão considerando a impedância humana}
+	%\centering
+	\UFCfig{}{
+		\fbox{\includegraphics[width=16cm]{figuras/moco/loss_detalhada}}
+	}{
+		\Fonte{elaborado pelo autor (2016).}
+	}
+\end{figure}
+
+
+\begin{figure}[h!]
+	\captionsetup{width=16cm}
+	\Caption{\label{fig:loss_geral} Gráfico de tensão considerando a impedância humana}
+	%\centering
+	\UFCfig{}{
+		\fbox{\includegraphics[width=16cm]{figuras/moco/loss_geral}}
+	}{
+		\Fonte{elaborado pelo autor (2016).}
+	}
+\end{figure}
+
+
+\begin{figure}[h!]
+	\captionsetup{width=16cm}
+	\Caption{\label{fig:lr_loss} Gráfico de tensão considerando a impedância humana}
+	%\centering
+	\UFCfig{}{
+		\fbox{\includegraphics[width=16cm]{figuras/moco/lr_loss}}
+	}{
+		\Fonte{elaborado pelo autor (2016).}
+	}
+\end{figure}
+
+
+\begin{figure}[h!]
+	\captionsetup{width=16cm}
+	\Caption{\label{fig:melhores_epocas} Gráfico de tensão considerando a impedância humana}
+	%\centering
+	\UFCfig{}{
+		\fbox{\includegraphics[width=16cm]{figuras/moco/melhores_epocas}}
+	}{
+		\Fonte{elaborado pelo autor (2016).}
+	}
+\end{figure}
+
+
+
+\section{Resultados do Experimento A}
+\label{sec:resultados-do-experimento-a}
+
+Procure deixar as figuras dos resultados o maior possível preenchendo a largura do texto do documento que possui $16~cm$.
+
+\begin{figure}[h!]
+	\captionsetup{width=16cm}
+	\Caption{\label{fig:tensaoimpedanciahumana} Gráfico de tensão considerando a impedância humana}
+	%\centering
+	\UFCfig{}{
+		\fbox{\includegraphics[width=16cm]{figuras/tensaoimpedanciahumana}}
+	}{
+		\Fonte{elaborado pelo autor (2016).}
+	}
+\end{figure}
+
+
 
 Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
@@ -999,6 +1167,8 @@ Texto texto texto texto texto texto texto texto texto texto texto texto texto te
 		\Fonte{elaborado pelo autor (2016).}
 	}
 \end{table}
+
+
 
 Texto texto Referenciando a \autoref{tab:notas}  texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
