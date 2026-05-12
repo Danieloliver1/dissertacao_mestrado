@@ -7,7 +7,7 @@
 \glossentry{CNNs}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{20}}}%
 \glossentry{CSV}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{19}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{18}}}\glsgroupskip
 \glsgroupheading{D}\relax \glsresetentrylist %
 \glossentry{DA}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{27}}}%
@@ -15,13 +15,13 @@
 		\setentrycounter[]{page}\glsnumberformat{17}}}\glsgroupskip
 \glsgroupheading{E}\relax \glsresetentrylist %
 \glossentry{ECG}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{18}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{17}}}\glsgroupskip
 \glsgroupheading{H}\relax \glsresetentrylist %
 \glossentry{Hz}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{21}}}\glsgroupskip
 \glsgroupheading{I}\relax \glsresetentrylist %
 \glossentry{I3A}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{18}}}%
+		\setentrycounter[]{page}\glsnumberformat{17}}}%
 \glossentry{ICC}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{17}}}\glsgroupskip
 \glsgroupheading{M}\relax \glsresetentrylist %
@@ -31,7 +31,7 @@
 		\setentrycounter[]{page}\glsnumberformat{17}}}\glsgroupskip
 \glsgroupheading{P}\relax \glsresetentrylist %
 \glossentry{PDF}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{64}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{72}}}\glsgroupskip
 \glsgroupheading{T}\relax \glsresetentrylist %
 \glossentry{TEST}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{27}}}%

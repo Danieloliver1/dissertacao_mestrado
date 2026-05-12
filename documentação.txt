@@ -5,9 +5,15 @@ bibtex documento
 pdflatex documento.tex
 pdflatex documento.tex
 
+pdflatex documento
+bibtex documento
+pdflatex documento
+pdflatex documento
+
+makeindex documento
 
 Ou com latexmk direto:
-
+?
 latexmk -pdf documento.tex
 
 
@@ -16,3 +22,5 @@ Versão de commit
 primeira versão - 28/04/26
 
 atualizando resultado - 30/04/26
+
+escrevendo metodologia - 11/05/26

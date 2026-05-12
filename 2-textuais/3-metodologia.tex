@@ -1,14 +1,301 @@
 \chapter{Metodologia}
 \label{chap:metodologia}
 
+\section{Modelos de Análise de Sobrevivência}
+
+A abordagem proposta neste trabalho integra sinais de ECG Holter de 24 horas com
+variáveis clínicas estruturadas em um modelo híbrido para a estimativa do tempo até
+o evento. O pipeline é composto por três componentes principais: um encoder
+convolucional profundo para extração de características dos sinais eletrocardiográficos,
+uma rede de projeção para as variáveis clínicas e um cabeçote de predição baseado
+em modelos de tempo discreto.
+
+\subsection{Arquitetura do Encoder: ResNet-18 1D}
+
+A extração de características dos sinais de ECG é realizada por uma versão
+unidimensional da ResNet-18 \cite{he2016deep}, utilizada exclusivamente como
+\textit{encoder}. O termo \textit{encoder} reflete o fato de que apenas o
+corpo da rede é empregado --- ou seja, somente as camadas convolucionais
+responsáveis pela extração de representações ---  sem a camada de
+classificação final. Essa abordagem é recorrente na literatura quando se
+deseja obter um vetor de características compacto para uso em tarefas
+subsequentes, como a análise de sobrevivência proposta neste trabalho.
+
+\subsubsection{Da ResNet-18 2D para a ResNet-18 1D}
+
+A ResNet-18 original foi proposta para o processamento de imagens
+bidimensionais \cite{he2016deep}, operando sobre tensores de entrada com
+dimensões $[C, H, W]$, onde $C$ é o número de canais, $H$ a altura e $W$
+a largura da imagem. A arquitetura é composta por 18 camadas com parâmetros
+treináveis: uma convolução inicial com kernel $7{\times}7$, quatro grupos
+de blocos residuais com 2 blocos cada, e uma camada totalmente conectada
+(\textit{fully connected}) para classificação \cite{he2016deep}.
+
+A adaptação para sinais unidimensionais consiste em substituir todas as
+operações bidimensionais pelas suas equivalentes 1D, tornando a rede
+adequada ao processamento de séries temporais. A entrada passa a ter
+dimensões $[C, L]$, onde $C$ é o número de derivações do ECG --- 3 neste
+trabalho --- e $L$ é o comprimento temporal do sinal. Todas as convoluções
+2D são substituídas por convoluções 1D, e o \textit{batch normalization}
+e o \textit{max pooling} são igualmente adaptados para operar sobre a
+dimensão temporal. Essa estratégia é amplamente consolidada na literatura
+de sinais biomédicos, com aplicações em ECG de derivação única
+\cite{hannun2019cardiologist} e em ECG de 12 derivações
+\cite{ribeiro2020automatic}.
+
+\subsubsection{Estrutura das 17 Camadas do Encoder}
+
+A ResNet-18 é composta originalmente por 17 camadas convolucionais e uma
+camada totalmente conectada de classificação, totalizando 18 camadas com
+parâmetros treináveis \cite{he2016deep}. Neste trabalho, a camada
+totalmente conectada foi removida, e o encoder resultante --- com
+\textbf{17 camadas convolucionais} --- é utilizado exclusivamente como
+extrator de características, produzindo um vetor de 512 dimensões por
+amostra ao final do processamento.
+
+A arquitetura do encoder é organizada da seguinte forma:
+
+\begin{enumerate}
+	\item \textbf{Camada inicial} (\texttt{conv1}): convolução 1D com 64
+	      filtros e kernel de tamanho 7, com \textit{stride} 2, seguida de
+	      normalização em lote (\textit{batch normalization}) e ativação ReLU.
+	      Uma camada de \textit{max pooling} com kernel 3 e \textit{stride} 2
+	      reduz adicionalmente a resolução temporal, resultando em uma
+	      representação inicial com 64 canais. Essa camada corresponde a
+	      \textbf{1 camada convolucional}.
+
+	\item \textbf{Grupo 1} (\texttt{layer1}, \texttt{conv2\_x}): dois
+	      blocos residuais com 64 filtros e \textit{stride} 1, mantendo a
+	      resolução temporal. Cada bloco contém 2 convoluções, totalizando
+	      \textbf{4 camadas convolucionais}.
+
+	\item \textbf{Grupo 2} (\texttt{layer2}, \texttt{conv3\_x}): dois
+	      blocos residuais com 128 filtros e \textit{stride} 2, reduzindo a
+	      resolução temporal à metade e dobrando a profundidade de representação.
+	      Totalizando \textbf{4 camadas convolucionais}.
+
+	\item \textbf{Grupo 3} (\texttt{layer3}, \texttt{conv4\_x}): dois
+	      blocos residuais com 256 filtros e \textit{stride} 2, com nova redução
+	      temporal e aprofundamento da representação. Totalizando \textbf{4
+		      camadas convolucionais}.
+
+	\item \textbf{Grupo 4} (\texttt{layer4}, \texttt{conv5\_x}): dois
+	      blocos residuais com 512 filtros e \textit{stride} 2, produzindo a
+	      representação de maior abstração semântica. Totalizando \textbf{4
+		      camadas convolucionais}.
+\end{enumerate}
+
+Somando todas as contribuições: $1 + 4 + 4 + 4 + 4 = 17$ camadas
+convolucionais, confirmando a estrutura do encoder utilizado.
+
+Cada bloco residual (\texttt{BasicBlock1d}) é composto por duas convoluções
+1D de kernel 3, cada uma seguida de normalização em lote e ativação ReLU,
+com uma conexão de atalho (\textit{skip connection}) que soma a entrada do
+bloco à sua saída. Quando há incompatibilidade de dimensões entre entrada e
+saída --- o que ocorre nos grupos 2, 3 e 4 devido ao \textit{stride} 2 ---
+uma projeção por convolução $1{\times}1$ é aplicada na conexão de atalho
+para alinhar as dimensões. Ao final do encoder, um \textit{Global Average
+	Pooling} reduz a dimensão temporal, produzindo um vetor fixo de 512
+dimensões por amostra, independentemente do comprimento da série de entrada.
+
+\subsubsection{Justificativa da Escolha da ResNet-18}
+
+A escolha da ResNet-18 como backbone é motivada por dois fatores principais.
+Primeiro, o conjunto de dados disponível é composto por aproximadamente 870
+pacientes, um volume moderado para o treinamento de redes convolucionais
+profundas. Arquiteturas mais profundas, como ResNet-34 ou ResNet-50, tendem
+a demandar volumes maiores de dados para generalizar adequadamente,
+tornando a ResNet-18 uma escolha mais equilibrada à escala do problema.
+Segundo, a adaptação unidimensional da ResNet-18 é amplamente empregada
+na literatura de sinais biomédicos \cite{hannun2019cardiologist,
+	ribeiro2020automatic}, demonstrando capacidade suficiente para a extração
+de padrões morfológicos relevantes em sinais de ECG com múltiplas
+derivações.
+
+Ao final do encoder, um \textit{Global Average Pooling} reduz a representação
+temporal para um vetor fixo de 512 dimensões por amostra, independentemente do
+comprimento da série de entrada.
 
 
-% \begin{equation}
-% 	\label{eq:cox_hazard_eng}
-% 	\underbrace{h(t|x)}_{\text{hazard}} = \overbrace{b_0(t)}^{\text{baseline hazard}} \underbrace{\exp \overbrace{\left( \sum_{i=1}^n b_i(x_i - \overline{x}_i) \right)}^{\text{log-partial hazard}}}_{\text{partial hazard}}
-% \end{equation}
+\subsection{Módulo de Projeção e Fusão Híbrida}
 
-Observe a pontuação, pois a equação faz parte da frase e do parágrafo. Como a equação faz parte da frase, não se utiliza o \textit{label} numérico \ref{eq:cox_hazard_eng}.
+Para equilibrar a contribuição dos sinais de ECG e das variáveis clínicas na
+decisão final, ambas as modalidades são projetadas em espaços de mesma dimensão
+antes da fusão. O vetor de 512 features extraídas pelo encoder é comprimido por
+um \textit{bottleneck} com as camadas Linear(512, 64) $\to$ BatchNorm $\to$ ReLU
+$\to$ Dropout $\to$ Linear(64, 16), resultando em um vetor de 16 dimensões.
+
+As variáveis clínicas, compostas por 6 preditores numéricos, são processadas por
+uma rede densa com as camadas Linear(6, 32) $\to$ BatchNorm $\to$ ReLU $\to$
+Dropout $\to$ Linear(32, 16), produzindo igualmente um vetor de 16 dimensões.
+
+Os dois vetores são então concatenados, formando uma representação híbrida de 32
+dimensões que integra informação morfológica do ECG com o contexto clínico do
+paciente.
+
+\subsection{Cabeçote de Análise de Sobrevivência}
+
+O vetor fundido de 32 dimensões é processado por um cabeçote de predição composto
+pelas camadas Linear(32, 32) $\to$ BatchNorm $\to$ ReLU $\to$ Dropout $\to$
+Linear(32, $K$), onde $K$ corresponde ao número de intervalos de tempo discretos
+definidos pela transformação \textit{LabTrans}. A saída é um vetor de logits, cuja
+interpretação varia conforme o modelo de sobrevivência selecionado, conforme
+descrito nas subseções seguintes.
+
+
+\subsection{Risco Logístico (Logistic-Hazard)}
+
+O método \textit{Logistic-Hazard} parametriza diretamente os riscos discretos
+$h(t_k \mid \mathbf{x})$ para cada intervalo de tempo $k$, otimizando a
+verossimilhança de sobrevivência \cite{kvamme2019continuous, efron1988logistic}.
+A função de risco discreta é obtida aplicando-se a função sigmoide sobre os
+logits produzidos pelo cabeçote de predição, e a função de sobrevivência é
+estimada pelo produto acumulado dos complementos dos riscos em cada intervalo.
+Este método também é referenciado na literatura como Regressão Logística Parcial
+\cite{biganzoli1998feedforward} e Nnet-sobrevivência (\textit{Nnet-survival})
+\cite{gensheimer2019scalable}.
+
+\subsection{Função de Massa de Probabilidade (PMF)}
+
+O método PMF parametriza a função de massa de probabilidade do tempo até o evento,
+otimizando diretamente a verossimilhança de sobrevivência \cite{kvamme2019continuous}.
+A distribuição de probabilidade sobre os intervalos de tempo é obtida aplicando-se
+a função \textit{softmax} sobre os logits da rede, e a função de sobrevivência é
+estimada pela soma acumulada reversa dessa distribuição. Este método constitui a
+base de abordagens como o DeepHit e o MTLR (\textit{Multi-Task Logistic Regression}).
+
+\subsection{DeepHit}
+
+O DeepHit é uma extensão do método PMF que incorpora, além da verossimilhança
+de sobrevivência, um termo de perda por classificação baseado em \textit{ranking},
+capaz de lidar com riscos concorrentes \cite{lee2018deephit}. A função de perda
+total é definida como $\mathcal{L} = \mathcal{L}_1 + \alpha \cdot \mathcal{L}_2$,
+onde $\mathcal{L}_1$ corresponde à log-verossimilhança negativa e $\mathcal{L}_2$
+é um termo de \textit{ranking} que penaliza inversões na ordenação do risco entre
+pares de pacientes com diferentes tempos de evento.
+
+\subsection{Discretização do Tempo: Transformação LabTrans}
+
+A análise de sobrevivência em tempo discreto requer que o tempo contínuo até o
+evento seja mapeado em um conjunto finito de $K$ intervalos. Para isso, foi
+implementada a transformação \texttt{DiscreteTimeTransform}, inspirada na
+\textit{LabTrans} da biblioteca PyCox \cite{kvamme2019continuous}.
+
+Dado um conjunto de tempos de sobrevivência $\{t_i\}$ e indicadores de evento
+$\{d_i\}$, os pontos de corte $\mathbf{c} = (c_0, c_1, \ldots, c_K)$ são
+determinados pelos quantis da distribuição dos tempos de evento observados
+(i.e., $d_i = 1$), com $c_0 = 0$ e $c_K$ fixado acima do maior tempo
+observado no conjunto. O índice de intervalo de cada observação é então
+obtido por digitalização (\textit{digitize}), sendo clipado ao intervalo
+$[0, K-1]$ para evitar extrapolações. O número de intervalos $K$ é um
+hiperparâmetro do modelo, definido como \texttt{num\_durations}.
+
+\subsection{Função de Perda por Tipo de Paciente}
+
+Em dados de sobrevivência, as observações são heterogêneas: parte dos pacientes
+apresentou o evento de interesse (\textit{uncensored}), enquanto os demais foram
+censurados, ou seja, perderam o acompanhamento antes do desfecho. Cada modelo de
+perda trata essas duas populações de forma distinta.
+
+Para o \textit{Logistic-Hazard}, pacientes com evento contribuem com a
+log-verossimilhança negativa do risco no instante $t_i$ ponderada pela
+sobrevivência acumulada até $t_i - 1$. Pacientes censurados contribuem apenas
+com a probabilidade de sobreviver até o instante de censura
+\cite{kvamme2019continuous}. Formalmente:
+%
+\begin{equation}
+	\mathcal{L}_{\text{LH}} = -\frac{1}{N} \sum_{i=1}^{N}
+	\left[ d_i \left( \log h_{t_i} + \log S(t_i - 1) \right)
+		+ (1 - d_i) \log S(t_i) \right]
+\end{equation}
+%
+onde $h_{t_k} = \sigma(\phi_k)$ é o risco discreto no intervalo $k$, obtido
+pela função sigmoide sobre o logit $\phi_k$, e $S(t_k) = \prod_{j \leq k}(1 - h_{t_j})$
+é a função de sobrevivência estimada.
+
+Para os métodos PMF e DeepHit, a distribuição de probabilidade sobre os intervalos
+é obtida via \textit{softmax} sobre os logits, com um logit auxiliar nulo
+concatenado ao final para representar sobrevivência além do horizonte de observação
+\cite{kvamme2019continuous}. Pacientes com evento contribuem com $-\log f(t_i)$,
+onde $f(t_k)$ é a probabilidade de evento no intervalo $k$, e pacientes censurados
+contribuem com $-\log S(t_i^+)$, a probabilidade de sobreviver além do instante
+de censura.
+
+O DeepHit acrescenta um segundo termo de perda baseado em \textit{ranking}
+\cite{lee2018deephit}:
+%
+\begin{equation}
+	\mathcal{L}_{\text{DH}} = \mathcal{L}_1 + \alpha \cdot \mathcal{L}_2
+\end{equation}
+%
+onde $\mathcal{L}_2$ penaliza pares de pacientes $(i, j)$ em que $t_i < t_j$
+e $d_i = 1$, mas o modelo atribui risco cumulativo menor ao paciente $i$
+do que ao paciente $j$ no tempo $t_i$. A penalidade é suavizada por uma
+função exponencial com parâmetro $\sigma$:
+%
+\begin{equation}
+	\mathcal{L}_2 = \sum_{i: d_i=1} \sum_{j} \mathbf{1}[t_i < t_j]
+	\cdot \exp\!\left( -\frac{F(t_i \mid \mathbf{x}_i) - F(t_i \mid \mathbf{x}_j)}{\sigma} \right)
+\end{equation}
+
+\subsection{Treinamento: Acumulação de Gradiente e Precisão Mista}
+
+O treinamento do modelo foi realizado com duas técnicas complementares para
+viabilizar o uso de \textit{batches} efetivos maiores sem aumentar o consumo
+de memória da GPU: acumulação de gradiente (\textit{gradient accumulation}) e
+precisão mista automática (\textit{Automatic Mixed Precision} --- AMP)
+\cite{micikevicius2018mixed}.
+
+Na acumulação de gradiente, os gradientes são acumulados ao longo de
+\texttt{accumulation\_steps} iterações antes de cada atualização dos pesos.
+A função de perda de cada mini-\textit{batch} é dividida por
+\texttt{accumulation\_steps} antes da retropropagação, de modo que a
+magnitude dos gradientes acumulados seja equivalente à de um \textit{batch}
+de tamanho \texttt{batch\_size} $\times$ \texttt{accumulation\_steps}. A
+atualização dos pesos e o zeragem dos gradientes são realizadas apenas ao
+final de cada ciclo de acumulação. Ao término do laço de treinamento, um
+passo final é executado caso restem gradientes não aplicados.
+
+A precisão mista é implementada com o \texttt{GradScaler} do PyTorch, que
+escala dinamicamente a função de perda para evitar \textit{underflow} numérico
+durante as operações em meia-precisão (\texttt{float16}), revertendo para
+precisão simples (\texttt{float32}) nas etapas críticas de atualização. As
+operações de \textit{forward} e cálculo da perda são executadas dentro de um
+contexto \texttt{autocast}, enquanto a retropropagação e a atualização dos
+pesos utilizam o escalonamento do \texttt{GradScaler}.
+
+\subsection{Avaliação: C-Index e Agregação de Janelas}
+
+A métrica principal de avaliação é o índice de concordância (\textit{C-index}),
+que mede a capacidade discriminativa do modelo em ordenar corretamente pares de
+pacientes pelo risco predito \cite{harrell1982evaluating}. O \textit{C-index}
+varia entre 0,5 (aleatoriedade) e 1,0 (discriminação perfeita), sendo calculado
+sobre os escores de risco derivados da função de sobrevivência estimada no último
+intervalo de tempo.
+
+Como os sinais de ECG Holter de 24 horas são segmentados em janelas para o
+treinamento, cada paciente pode gerar múltiplas predições de risco. Para obter
+um escore único por paciente na avaliação, foi implementada uma estratégia de
+agregação com três variantes:
+
+\begin{itemize}
+	\item \textbf{Máximo} (\textit{max}): considera o maior escore de risco
+	      entre todas as janelas do paciente, privilegiando a detecção de episódios
+	      de alto risco isolados;
+
+	\item \textbf{Média} (\textit{mean}): utiliza a média dos escores de risco,
+	      representando o risco global ao longo do registro;
+
+	\item \textbf{Percentil 90} (\textit{p90}): considera o percentil 90 da
+	      distribuição de escores, oferecendo um compromisso entre a sensibilidade
+	      a picos e a robustez a ruídos.
+\end{itemize}
+
+O escore agregado de cada paciente é então utilizado para o cálculo do
+\textit{C-index} com a biblioteca \textit{lifelines}, tendo como referência
+o tempo de sobrevivência e o indicador de evento de cada indivíduo.
+
+
 
 Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 

@@ -1,17 +1,32 @@
 
 
 MODELOS===================================================================
+Artigos de pycox
+https://github.com/havakv/pycox#references
+
+Risco Logístico (sobrevivência da rede N)
+
+referencia 01
+https://arxiv.org/pdf/1910.06724
+
+referencia 02
+https://www.jstor.org/stable/2529811?seq=1#metadata_info_tab_contents
+
+referencia 03
+https://onlinelibrary.wiley.com/doi/abs/10.1002/(SICI)1097-0258(19980530)17:10%3C1169::AID-SIM796%3E3.0.CO;2-D
+
+referencia 04
+https://peerj.com/articles/6257/
 
 
+PMF
 
+referencia 01
+https://arxiv.org/pdf/1910.06724
 
-
-
-
-
-
-
-
+DeepHit
+referencia 01
+http://medianetlab.ee.ucla.edu/papers/AAAI_2018_DeepHit
 
 
 

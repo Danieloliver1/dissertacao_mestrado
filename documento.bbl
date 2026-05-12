@@ -5,4 +5,163 @@
 \providecommand{\abntbstabout}[1]{}
 \abntbstabout{v-1.9.7 }
 
+\bibitem[]{rakov2003lightning}
+\abntrefinfo{nada}{NADA}{a}
+{[S.l.: s.n.].}
+
+\bibitem[]{elat2015densidade}
+\abntrefinfo{nada}{NADA}{b}
+{}
+
+\bibitem[]{LangtangenLogg2017}
+\abntrefinfo{nada}{NADA}{c}
+{[S.l.: s.n.].}
+
+\bibitem[]{secretaria1999}
+\abntrefinfo{nada}{NADA}{d}
+{}
+
+\bibitem[]{NBR10520:2002}
+\abntrefinfo{nada}{NADA}{e}
+{[S.l.].}
+
+\bibitem[]{Almeida2018}
+\abntrefinfo{nada}{NADA}{f}
+{Disserta\c{c}\~{a}o (Mestrado).}
+
+\bibitem[]{Gondim2017}
+\abntrefinfo{nada}{NADA}{g}
+{Tese (Doutorado).}
+
+\bibitem[]{manuais1989}
+\abntrefinfo{nada}{NADA}{h}
+{[S.l.].}
+
+\bibitem[]{feitosa2016}
+\abntrefinfo{nada}{NADA}{i}
+{}
+
+\bibitem[]{UFC2012}
+\abntrefinfo{nada}{NADA}{j}
+{}
+
+\bibitem[]{NASA2016}
+\abntrefinfo{nada}{NADA}{k}
+{}
+
+\bibitem[]{lifelines_docs_cox}
+\abntrefinfo{nada}{NADA}{l}
+{}
+
+\bibitem[Biganzoli \textit{et al.} 1998]{biganzoli1998feedforward}
+\abntrefinfo{Biganzoli \textit{et al.}}{BIGANZOLI \textit{et al.}}{1998}
+{BIGANZOLI, E.; BORACCHI, P.; MARIANI, L.; MARUBINI, E. Feed forward neural
+  networks for the analysis of censored survival data: A partial logistic
+  regression approach.
+\textbf{Statistics in Medicine}, Wiley, v.~17, n.~10, p. 1169--1186, 1998.
+Dispon{\'\i}vel em:
+  \url{https://onlinelibrary.wiley.com/doi/abs/10.1002/(SICI)1097-0258(19980530)17:10\%3C1169::AID-SIM796\%3E3.0.CO;2-D}.
+  Acesso em: 09 mai. 2026.}
+
+\bibitem[Efron 1988]{efron1988logistic}
+\abntrefinfo{Efron}{EFRON}{1988}
+{EFRON, B. Logistic regression, survival analysis, and the {Kaplan-Meier}
+  curve.
+\textbf{Journal of the American Statistical Association}, Taylor \& Francis,
+  v.~83, n.~402, p. 414--425, 1988.
+Dispon{\'\i}vel em: \url{https://www.jstor.org/stable/2529811}. Acesso em: 09
+  mai. 2026.}
+
+\bibitem[Gensheimer e Narasimhan 2019]{gensheimer2019scalable}
+\abntrefinfo{Gensheimer e Narasimhan}{GENSHEIMER; NARASIMHAN}{2019}
+{GENSHEIMER, M.~F.; NARASIMHAN, B. A scalable discrete-time survival model for
+  neural networks.
+\textbf{PeerJ}, PeerJ Inc., v.~7, p. e6257, 2019.
+Dispon{\'\i}vel em: \url{https://peerj.com/articles/6257/}. Acesso em: 09 mai.
+  2026.}
+
+\bibitem[Hannun \textit{et al.} 2019]{hannun2019cardiologist}
+\abntrefinfo{Hannun \textit{et al.}}{HANNUN \textit{et al.}}{2019}
+{HANNUN, A.~Y.; RAJPURKAR, P.; HAGHPANAHI, M.; TISON, G.~H.; BOURN, C.;
+  TURAKHIA, M.~P.; NG, A.~Y. Cardiologist-level arrhythmia detection and
+  classification in ambulatory electrocardiograms using a deep neural network.
+\textbf{Nature Medicine}, Nature Publishing Group, v.~25, n.~1, p. 65--69,
+  2019.}
+
+\bibitem[He \textit{et al.} 2019]{he2020momentum}
+\abntrefinfo{He \textit{et al.}}{HE \textit{et al.}}{2019}
+{HE, K.; FAN, H.; WU, Y.; XIE, S.; GIRSHICK, R. Momentum contrast for
+  unsupervised visual representation learning.
+\textbf{arXiv preprint arXiv:1911.05722}, 2019.
+Dispon{\'\i}vel em: \url{https://arxiv.org/abs/1911.05722}. Acesso em: 05 mar.
+  2026.}
+
+\bibitem[He \textit{et al.} 2016]{he2016deep}
+\abntrefinfo{He \textit{et al.}}{HE \textit{et al.}}{2016}
+{HE, K.; ZHANG, X.; REN, S.; SUN, J. Deep residual learning for image
+  recognition. In:  \textbf{Proceedings of the IEEE Conference on Computer
+  Vision and Pattern Recognition (CVPR)}. [S.l.: s.n.], 2016. p. 770--778.}
+
+\bibitem[{Jornal da USP} 2024]{jornalusp2024doencas}
+\abntrefinfo{{Jornal da USP}}{{Jornal da USP}}{2024}
+{{Jornal da USP}. \textbf{Doenças cardiovasculares são a principal causa de
+  mortes no {B}rasil, segundo o {M}inistério da {S}aúde}. 2024.
+Dispon{\'\i}vel em:
+  \url{https://jornal.usp.br/radio-usp/doencas-cardiovasculares-sao-a-principal-causa-de-mortes-no-brasil-segundo-o-ministerio-da-saude/}.
+  Acesso em: 03 mar. 2026.}
+
+\bibitem[Kvamme e Borgan 2019]{kvamme2019continuous}
+\abntrefinfo{Kvamme e Borgan}{KVAMME; BORGAN}{2019}
+{KVAMME, H.; BORGAN, {\O}. Continuous and discrete-time survival prediction
+  with neural networks.
+\textbf{arXiv preprint}, arXiv:1910.06724, 2019.
+Dispon{\'\i}vel em: \url{https://arxiv.org/abs/1910.06724}. Acesso em: 09 mai.
+  2026.}
+
+\bibitem[Kvamme \textit{et al.} 2019]{kvamme2019time}
+\abntrefinfo{Kvamme \textit{et al.}}{KVAMME \textit{et al.}}{2019}
+{KVAMME, H.; BORGAN, {\O}.; SCHEEL, I. Time-to-event prediction with neural
+  networks and cox regression.
+\textbf{Journal of Machine Learning Research}, v.~20, n.~129, p. 1--30, 2019.}
+
+\bibitem[Lee \textit{et al.} 2018]{lee2018deephit}
+\abntrefinfo{Lee \textit{et al.}}{LEE \textit{et al.}}{2018}
+{LEE, C.; ZAME, W.~R.; YOON, J.; SCHAAR, M. van~der. {DeepHit}: A deep learning
+  approach to survival analysis with competing risks. In:  \textbf{Proceedings
+  of the Thirty-Second AAAI Conference on Artificial Intelligence}. AAAI Press,
+  2018.  (AAAI 2018), p. 2314--2321. Dispon{\'\i}vel em:
+  \url{http://medianetlab.ee.ucla.edu/papers/AAAI\_2018\_DeepHit}. Acesso em:
+  09 mai. 2026.}
+
+\bibitem[Prabhakararao e Manimegalai 2020]{physionet2020music}
+\abntrefinfo{Prabhakararao e Manimegalai}{PRABHAKARARAO; MANIMEGALAI}{2020a}
+{PRABHAKARARAO, E.; MANIMEGALAI, P. \textbf{A {M}ultimodal {U}ser-{I}nterface
+  {S}ystem for {C}omputational {A}nalysis of {S}udden {C}ardiac {D}eath
+  ({MUSIC})}. 2020.
+PhysioNet. Version 1.0.0.
+Dispon{\'\i}vel em: \url{https://physionet.org}. Acesso em: 02 mar. 2026.}
+
+\bibitem[Prabhakararao e Manimegalai 2020]{physionet2020music_dataset}
+\abntrefinfo{Prabhakararao e Manimegalai}{PRABHAKARARAO; MANIMEGALAI}{2020b}
+{PRABHAKARARAO, E.; MANIMEGALAI, P. \textbf{A {M}ultimodal {U}ser-{I}nterface
+  {S}ystem for {C}omputational {A}nalysis of {S}udden {C}ardiac {D}eath
+  ({MUSIC})}. 2020.
+PhysioNet. Disponível em arquivo csv.
+Dispon{\'\i}vel em: \url{https://physionet.org}. Acesso em: 02 mar. 2026.}
+
+\bibitem[Ribeiro \textit{et al.} 2020]{ribeiro2020automatic}
+\abntrefinfo{Ribeiro \textit{et al.}}{RIBEIRO \textit{et al.}}{2020}
+{RIBEIRO, A.~H.; RIBEIRO, M.~H.; PAIX{\~A}O, G. M.~M.; OLIVEIRA, D.~M.; GOMES,
+  P.~R.; CANAZART, J.~A.; FERREIRA, M. P.~S.; ANDERSSON, C.~R.; MACFARLANE,
+  P.~W.; WAGNER, M.~J.; SCH{\"O}N, T.~B.; RIBEIRO, A. L.~P. Automatic diagnosis
+  of the 12-lead {ECG} using a deep neural network.
+\textbf{Nature Communications}, Nature Publishing Group, v.~11, p.~1760, 2020.}
+
+\bibitem[{World Health Organization} 2025]{who2021cardiovascular}
+\abntrefinfo{{World Health Organization}}{{World Health Organization}}{2025}
+{{World Health Organization}. \textbf{Cardiovascular diseases ({CVDs})}. 2025.
+Dispon{\'\i}vel em:
+  \url{https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds)}.
+  Acesso em: 03 mar. 2026.}
+
 \end{thebibliography}

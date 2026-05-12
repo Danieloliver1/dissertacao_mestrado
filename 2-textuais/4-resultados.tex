@@ -12,14 +12,20 @@ Calculo matemático que o modelo CoxPHFitter \cite{lifelines_docs_cox} definem a
 	\underbrace{h(t|x)}_{\text{hazard}} = \overbrace{b_0(t)}^{\text{baseline hazard}} \underbrace{\exp \overbrace{\left( \sum_{i=1}^n b_i(x_i - \overline{x}_i) \right)}^{\text{log-partial hazard}}}_{\text{partial hazard}}
 \end{equation}
 
+Onde $b_0(t)$ é a função de risco basal, $b_i$ são os coeficientes de regressão, $x_i$ são as covariáveis e $\overline{x}_i$ são as médias das covariáveis. O modelo de regressão de cox é um modelo sem parâmetros, ou seja, não assume nenhuma forma específica para a função de risco basal, e o modelo de regressão de cox é um modelo semi-paramétrico, pois assume que a função de risco basal é uma função arbitrária, e o modelo de regressão de cox é um modelo multiplicativo, pois assume que a função de risco é multiplicada pela função de risco basal. Quando é semiparametrico o metodo utilizado é Breslow, pois resolve o problema de cox. O modelo de regressão de cox é um modelo de risco proporcional, pois assume que a razão de riscos entre dois indivíduos é constante ao longo do tempo, ou seja, a razão de riscos entre dois indivíduos é dada por:
+
+\begin{equation}
+	\label{eq:cox_proportional_hazard_eng}
+	\frac{h(t|x_1)}{h(t|x_2)} = \exp \left( \sum_{i=1}^n b_i(x_{1i} - x_{2i}) \right)
+\end{equation}
 
 
-Classifiquei alguns dados em grupo relevante para covariáveis, dados como holter, eletrocardiogramas holter, eventos condicoes cardiovasculares, dados demograficos clinicos, e outros dados de apoio como idade, gênero, esses vão estar presentes em todos dados porque são relevantes para a análise.
+Classifiquei alguns dados em grupo relevante para covariáveis, dados como holter, eletrocardiogramas holter, eventos condicoes cardiovasculares, dados demograficos clinicos, e outros dados de apoio como idade, gênero, esses vão estar presentes em todos dados porque são relevantes para a análise. Analise se baseie em modelo de risco de cox me retornando taxa de risco, intervalo de confiança, matriz de variâncias, erros padrão, log da verossimilhança, com base nos resultados selecionei algumas coveriaveis relevantes para para o treinar junto com os sinais ECG, e tambem comparar o quanto o modelo melhorou com os dados sinais ECG.
 
 
 Foram avaliadas variáveis derivadas do Holter em modelos de regressão de Cox. As variáveis \textit{Holter available} e \textit{Holter onset (hh:mm:ss)} foram desconsideradas, pois não agregavam informa\c{c}\~ao anal\'itica relevante nesta amostra. A variável \textit{Longest RR pause (ms)} também foi excluída devido à elevada proporção de valores ausentes.
 
-onde $b_0(t)$ é a função de risco basal, $b_i$ são os coeficientes de regressão, $x_i$ são as covariáveis e $\overline{x}_i$ são as médias das covariáveis. O modelo de regressão de cox é um modelo sem parâmetros, ou seja, não assume nenhuma forma específica para a função de risco basal, e o modelo de regressão de cox é um modelo semi-paramétrico, pois assume que a função de risco basal é uma função arbitrária, e o modelo de regressão de cox é um modelo multiplicativo, pois assume que a função de risco é multiplicada pela função de risco basal. Quando é semiparametrico o metodo utilizado é Breslow, pois resolve o problema de cox
+
 
 \subsection{Resultados do modelo de Cox para dados Holter}
 
