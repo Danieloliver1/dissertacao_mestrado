@@ -63,6 +63,12 @@ Dispon{\'\i}vel em:
   \url{https://onlinelibrary.wiley.com/doi/abs/10.1002/(SICI)1097-0258(19980530)17:10\%3C1169::AID-SIM796\%3E3.0.CO;2-D}.
   Acesso em: 09 mai. 2026.}
 
+\bibitem[Chen \textit{et al.} 2020]{chen2020mocov2}
+\abntrefinfo{Chen \textit{et al.}}{CHEN \textit{et al.}}{2020}
+{CHEN, X.; FAN, H.; GIRSHICK, R.; HE, K. Improved baselines with momentum
+  contrastive learning.
+\textbf{arXiv preprint arXiv:2003.04297}, 2020.}
+
 \bibitem[Efron 1988]{efron1988logistic}
 \abntrefinfo{Efron}{EFRON}{1988}
 {EFRON, B. Logistic regression, survival analysis, and the {Kaplan-Meier}
@@ -95,6 +101,13 @@ Dispon{\'\i}vel em: \url{https://peerj.com/articles/6257/}. Acesso em: 09 mai.
 \textbf{arXiv preprint arXiv:1911.05722}, 2019.
 Dispon{\'\i}vel em: \url{https://arxiv.org/abs/1911.05722}. Acesso em: 05 mar.
   2026.}
+
+\bibitem[He \textit{et al.} 2020]{he2019moco}
+\abntrefinfo{He \textit{et al.}}{HE \textit{et al.}}{2020}
+{HE, K.; FAN, H.; WU, Y.; XIE, S.; GIRSHICK, R. Momentum contrast for
+  unsupervised visual representation learning. In:  \textbf{Proceedings of the
+  IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}.
+  [S.l.: s.n.], 2020. p. 9729--9738.}
 
 \bibitem[He \textit{et al.} 2016]{he2016deep}
 \abntrefinfo{He \textit{et al.}}{HE \textit{et al.}}{2016}

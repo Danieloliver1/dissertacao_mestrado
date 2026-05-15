@@ -1,11 +1,15 @@
 \babel@toc {brazil}{}\relax 
-\contentsline {figure}{\numberline {1}{\ignorespaces Gráfico de barras da distribuição de causa dos pacientes.}}{19}{figure.caption.16}%
-\contentsline {figure}{\numberline {2}{\ignorespaces Fotografia da reitoria da Universidade Federal do Ceará}}{25}{figure.caption.17}%
-\contentsline {figure}{\numberline {3}{\ignorespaces Gráfico da Atmosfera Superior}}{26}{figure.caption.18}%
-\contentsline {figure}{\numberline {4}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{58}{figure.caption.35}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{58}{figure.caption.36}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{59}{figure.caption.37}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{59}{figure.caption.38}%
-\contentsline {figure}{\numberline {8}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{59}{figure.caption.39}%
-\contentsline {figure}{\numberline {9}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{60}{figure.caption.40}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Produção anual das dissertações de mestrado e teses de doutorado entre os anos de 1990 e 2008}}{61}{figure.caption.41}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Gráfico de barras da distribuição de causa dos pacientes.}}{20}{figure.caption.16}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Fotografia da reitoria da Universidade Federal do Ceará}}{26}{figure.caption.17}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Gráfico da Atmosfera Superior}}{27}{figure.caption.18}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Esquema de pré-treinamento MoCo para aprendizado auto-supervisionado de representações do ECG/Holter. O codificador query recebe gradientes diretamente; o codificador key é atualizado por média móvel e alimenta uma fila de exemplos negativos.}}{33}{figure.caption.20}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Fluxo do encoder ResNet-1D utilizado para extração de características convolucionais temporais dos sinais de ECG/Holter. Cada BasicBlock1D contém duas convoluções 1D com normalização em lote e conexão residual.}}{34}{figure.caption.21}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Arquitetura híbrida final: extração de características do sinal por ResNet-1D/MoCo, compressão do ECG em gargalo de 16 dimensões, processamento clínico em paralelo, fusão balanceada e predição de logits para modelos de sobrevivência em tempo discreto.}}{38}{figure.caption.22}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Transformação dos logits brutos nos três modelos de sobrevivência em tempo discreto: LogisticHazard, PMF e DeepHitSingle.}}{39}{figure.caption.23}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{66}{figure.caption.39}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{66}{figure.caption.40}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{67}{figure.caption.41}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{67}{figure.caption.42}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{67}{figure.caption.43}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{68}{figure.caption.44}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Produção anual das dissertações de mestrado e teses de doutorado entre os anos de 1990 e 2008}}{69}{figure.caption.45}%

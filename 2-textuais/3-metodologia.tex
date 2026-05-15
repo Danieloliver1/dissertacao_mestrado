@@ -10,6 +10,278 @@ convolucional profundo para extração de características dos sinais eletrocard
 uma rede de projeção para as variáveis clínicas e um cabeçote de predição baseado
 em modelos de tempo discreto.
 
+\subsection{Pré-treinamento Auto-supervisionado: MoCo}
+
+Dado o tamanho reduzido do conjunto de dados disponível --- aproximadamente
+870 pacientes --- aliado ao severo desbalanceamento entre as classes, uma vez
+que a maioria dos pacientes é censurada e apenas uma parcela reduzida apresentou
+o evento de interesse (morte súbita cardíaca), o treinamento supervisionado
+direto da ResNet-18 1D a partir de pesos aleatórios tende a produzir
+representações de baixa qualidade. Nesse cenário, o modelo supervisionado é
+exposto a poucos exemplos positivos, dificultando o aprendizado de padrões
+morfológicos discriminativos no ECG. Para contornar essa dupla limitação ---
+escassez de dados e desbalanceamento ---,  foi adotada uma estratégia de
+pré-treinamento auto-supervisionado baseada no \textit{Momentum Contrast}
+(MoCo v2) \cite{he2019moco, chen2020mocov2}, antes do treinamento
+supervisionado para análise de sobrevivência.
+
+O MoCo foi originalmente proposto para o aprendizado de representações visuais
+a partir de imagens \cite{he2019moco}, onde duas versões augmentadas de uma
+mesma imagem --- obtidas por recortes aleatórios, distorção de cor e
+\textit{flipping} horizontal --- formam um par positivo, e imagens distintas
+formam pares negativos. O encoder aprende a aproximar as representações do par
+positivo no espaço de \textit{embedding} e a afastar as dos pares negativos,
+sem necessidade de rótulos supervisionados. Essa abordagem permite explorar a
+totalidade dos dados disponíveis para o aprendizado de representações, inclusive
+os pacientes censurados, que são descartados ou subaproveitados em estratégias
+supervisionadas.
+
+A adaptação para sinais de ECG Holter substitui as augmentações visuais por
+perturbações no domínio temporal, aplicadas diretamente na GPU pelo módulo
+\texttt{GPU\_ECG\_Augmenter} com probabilidade de 80\%. A cada iteração, duas
+versões augmentadas do mesmo segmento de ECG de 24.000 amostras --- equivalentes
+a aproximadamente 2 minuto de sinal a 200\,Hz, com 3 derivações --- são geradas
+e tratadas como par positivo. O encoder, instanciado pela ResNet-18 1D, aprende
+representações invariantes às perturbações aplicadas, capturando características
+morfológicas estruturais do sinal independentemente de qualquer rótulo de evento
+ou censura. Dessa forma, todos os 870 pacientes contribuem igualmente para o
+pré-treinamento, mitigando o efeito do desbalanceamento antes mesmo do
+treinamento supervisionado.
+
+Os pesos do encoder obtidos ao final do pré-treinamento são utilizados para
+inicializar o encoder do modelo híbrido de análise de sobrevivência, substituindo
+a inicialização aleatória e fornecendo uma base de representação mais rica para
+o treinamento supervisionado subsequente.
+
+\subsubsection{Aprendizado Contrastivo como Busca em Dicionário}
+
+O MoCo formula o aprendizado de representações como um problema de busca em
+dicionário \cite{he2019moco}. Dado um sinal de consulta (\textit{query}) $q$
+e um conjunto de chaves (\textit{keys}) $\{k_0, k_1, k_2, \ldots\}$, o
+objetivo é treinar um encoder de forma que $q$ seja similar à sua chave
+positiva correspondente $k^+$ e dissimilar a todas as demais chaves negativas.
+A função de perda contrastiva utilizada é a InfoNCE \cite{he2019moco}:
+
+\begin{equation}
+	\mathcal{L}_q = -\log \frac{\exp(q \cdot k^+ / \tau)}
+	{\sum_{i=0}^{K} \exp(q \cdot k_i / \tau)}
+	\label{eq:infonce}
+\end{equation}
+
+\noindent onde $\tau$ é um hiperparâmetro de temperatura e $K$ é o número
+total de chaves no dicionário. Intuitivamente, essa perda corresponde ao
+logaritmo negativo de um classificador \textit{softmax} de $(K+1)$ classes,
+cujo objetivo é identificar $k^+$ dentre todas as chaves disponíveis.
+
+No contexto deste trabalho, uma \textit{query} e uma chave formam um par
+positivo quando são versões augmentadas do mesmo segmento de ECG, e um par
+negativo caso contrário. O encoder aprende, portanto, a produzir
+representações invariantes às augmentações aplicadas, capturando apenas as
+características morfológicas estruturais do sinal.
+
+\subsubsection{Dicionário Dinâmico com Fila e Encoder com Momento}
+
+A principal contribuição do MoCo é manter o dicionário como uma \textbf{fila}
+de amostras codificadas \cite{he2019moco}, desacoplando o tamanho do
+dicionário do tamanho do mini-\textit{batch}. A cada iteração, o mini-batch
+atual é inserido na fila e o mini-batch mais antigo é removido. Isso permite
+que o dicionário seja muito maior do que o que a memória da GPU comportaria
+em uma abordagem ponta a ponta (\textit{end-to-end}).
+
+Para garantir a consistência das representações armazenadas na fila, o encoder
+das chaves $f_k$ não é atualizado por retropropagação, mas sim por uma
+\textbf{atualização com momento} (\textit{momentum update}) a partir do
+encoder de consulta $f_q$ \cite{he2019moco}:
+
+\begin{equation}
+	\theta_k \leftarrow m\,\theta_k + (1 - m)\,\theta_q
+	\label{eq:momentum}
+\end{equation}
+
+\noindent onde $m \in [0, 1)$ é o coeficiente de momento. Somente $\theta_q$
+é atualizado por retropropagação; $\theta_k$ evolui lentamente, garantindo
+que as chaves armazenadas na fila sejam consistentes entre si, mesmo que
+tenham sido geradas em iterações diferentes. Neste trabalho, o valor
+$m = 0{,}999$ foi adotado, conforme recomendado em \cite{he2019moco}.
+
+\subsubsection{Melhorias do MoCo v2}
+
+Com base nas melhorias propostas em \cite{chen2020mocov2}, duas modificações
+foram incorporadas ao MoCo original. A primeira consiste na adição de uma
+cabeça de projeção MLP (\textit{projection head}) entre o encoder e o espaço
+de representação contrastiva, composta por uma camada linear, ativação ReLU e
+uma segunda camada linear, mapeando a saída do encoder para um espaço de
+$d = 256$ dimensões. A segunda consiste no uso de augmentações de dados mais
+agressivas durante o pré-treinamento. Essas modificações melhoram
+substancialmente a qualidade das representações aprendidas sem exigir
+\textit{batches} de grande porte \cite{chen2020mocov2}.
+
+\subsubsection{Adaptação para Sinais de ECG}
+
+A adaptação do MoCo para sinais de ECG Holter envolve duas mudanças
+principais em relação à formulação original voltada para imagens. Primeiro,
+o encoder $f_q$ e o encoder $f_k$ são instâncias da ResNet-18 1D descrita
+na Seção anterior, operando sobre janelas de sinal de 24.000 amostras
+(correspondentes a aproximadamente 2 minuto de ECG a 200 Hz) com 3 derivações
+de entrada. Segundo, as augmentações de dados são adaptadas para o domínio
+temporal, sendo aplicadas diretamente na GPU por meio do módulo
+\texttt{GPU\_ECG\_Augmenter} com probabilidade de 80\%, gerando duas
+``visões'' distintas do mesmo segmento de sinal.
+
+Para cada mini-\textit{batch}, as augmentações são aplicadas duas vezes
+sobre o mesmo sinal de entrada, gerando os pares $(x^q, x^k)$. As
+representações são obtidas por $q = f_q(x^q)$ e $k = f_k(x^k)$, e a perda
+InfoNCE é minimizada conforme a Equação~\ref{eq:infonce}.
+
+\subsubsection{Configuração do Treinamento}
+
+O pré-treinamento foi conduzido com as seguintes configurações: tamanho do
+dicionário $K = 8{.}192$, dimensão do espaço de projeção $d = 256$,
+coeficiente de momento $m = 0{,}999$, temperatura $\tau = 0{,}07$, tamanho
+do mini-\textit{batch} de 256 amostras e taxa de aprendizado inicial de
+$0{,}001$ com otimizador SGD (momento $= 0{,}9$, \textit{weight decay}
+$= 5 \times 10^{-4}$). O agendador \textit{ReduceLROnPlateau} foi utilizado
+para reduzir a taxa de aprendizado por um fator de 0,5 quando a perda não
+apresentasse melhora por 30 épocas consecutivas. O treinamento foi
+interrompido antecipadamente (\textit{early stopping}) após 50 épocas sem
+melhora na perda média, com um máximo de 500 épocas. Os pesos do encoder
+$f_q$ obtidos ao final do pré-treinamento são utilizados para inicializar
+o encoder do modelo híbrido de análise de sobrevivência, substituindo a
+inicialização aleatória.
+
+\subsubsection{Escolha do Mecanismo de Aprendizado Contrastivo}
+
+O aprendizado contrastivo pode ser instanciado por diferentes mecanismos
+que diferem na forma como as chaves negativas são mantidas e como o encoder
+de chaves é atualizado \cite{he2019moco}. Três abordagens principais são
+comparadas na literatura: (i) o mecanismo \textit{end-to-end}, no qual
+as chaves negativas provêm do mesmo mini-\textit{batch} e são atualizadas
+por retropropagação; (ii) o \textit{memory bank}, no qual as representações
+de todas as amostras do conjunto de dados são armazenadas em memória e
+amostradas aleatoriamente a cada iteração; e (iii) o MoCo, que mantém um
+dicionário dinâmico como fila e atualiza o encoder de chaves por momento
+\cite{he2019moco}.
+
+A comparação experimental conduzida em \cite{he2019moco} demonstra que o
+MoCo supera os demais mecanismos sob o protocolo de classificação linear
+no ImageNet, independentemente do tamanho do dicionário. O mecanismo
+\textit{end-to-end} é limitado pelo tamanho do mini-\textit{batch} --- e
+portanto pelo tamanho do dicionário de negativos disponível ---, enquanto
+o \textit{memory bank} sofre de inconsistência das representações, pois as
+chaves armazenadas foram codificadas por diferentes versões do encoder ao
+longo do treinamento. O MoCo resolve ambos os problemas simultaneamente:
+o dicionário como fila permite um número grande de negativos sem depender
+do tamanho do batch, e a atualização com momento garante a consistência
+das chaves armazenadas \cite{he2019moco}.
+
+Adicionalmente, \cite{chen2020mocov2} demonstra que duas modificações
+simples ao MoCo original --- a substituição da cabeça de projeção linear
+por uma MLP e o uso de augmentações mais agressivas --- produzem ganhos
+substanciais de desempenho sem exigir \textit{batches} de grande porte,
+superando inclusive o SimCLR com \textit{batches} de até 8.192 amostras.
+A combinação MoCo + MLP head + augmentação forte, denominada MoCo v2,
+foi adotada neste trabalho por representar a configuração de melhor
+desempenho relatada nos artigos originais, mantendo o requisito de
+viabilidade computacional em uma única GPU.
+
+Os hiperparâmetros foram definidos seguindo as recomendações de
+\cite{he2019moco} e \cite{chen2020mocov2}: temperatura $\tau = 0{,}07$,
+coeficiente de momento $m = 0{,}999$ e dimensão do espaço de projeção
+$d = 256$. O tamanho do dicionário foi fixado em $K = 8{.}192$, valor
+que garante um conjunto rico de amostras negativas sem exceder a memória
+disponível na GPU utilizada.
+
+%---------------colocar os fluxos do moco
+
+\subsection{Pré-treinamento Contrastivo com MoCo}
+
+A Figura~\ref{fig:moco_fluxo} resume o treinamento contrastivo do encoder por Momentum Contrast (MoCo). O mesmo sinal gera duas visões aumentadas: uma alimenta o codificador query, atualizado por gradiente, e a outra alimenta o codificador key, atualizado por média móvel dos pesos. A perda InfoNCE aproxima pares positivos e afasta a query de chaves negativas armazenadas em uma fila dinâmica.
+
+\begin{figure}[htbp]
+	\centering
+	\resizebox{0.88\textwidth}{!}{%
+		\begin{tikzpicture}[
+			node distance=0.9cm and 1.1cm,
+			block/.style={draw, rounded corners, align=center, minimum height=1.0cm, minimum width=2.8cm, fill=blue!7},
+			aug/.style={draw, rounded corners, align=center, minimum height=0.9cm, minimum width=2.8cm, fill=green!10},
+			enc/.style={draw, rounded corners, align=center, minimum height=1.1cm, minimum width=3.1cm, fill=orange!12},
+			queue/.style={draw, cylinder, shape border rotate=90, aspect=0.25, align=center, minimum height=1.1cm, minimum width=2.8cm, fill=purple!10},
+			loss/.style={draw, diamond, aspect=2.2, align=center, minimum height=1.5cm, fill=red!10},
+			arrow/.style={-{Latex[length=2.5mm]}, thick}
+			]
+			\node[block] (signal) {Sinal original\\ECG/Holter};
+			\node[aug, below left=of signal] (augq) {Aumentação 1\\ruído/corte/jitter};
+			\node[aug, below right=of signal] (augk) {Aumentação 2\\visão positiva};
+			\node[enc, below=of augq] (query) {Codificador Query\\ResNet-1D $\theta_q$\\atualizado por gradiente};
+			\node[enc, below=of augk] (keyenc) {Codificador Key\\ResNet-1D $\theta_k$\\média móvel};
+			\node[queue, right=of keyenc] (queuebank) {Fila de chaves\\negativas};
+			\node[loss, below right=1.0cm and -0.1cm of query] (infonce) {InfoNCE\\aproxima positivo\\afasta negativos};
+
+			\draw[arrow] (signal) -- (augq);
+			\draw[arrow] (signal) -- (augk);
+			\draw[arrow] (augq) -- (query);
+			\draw[arrow] (augk) -- (keyenc);
+			\draw[arrow] (query) -- node[left] {query} (infonce);
+			\draw[arrow] (keyenc) -- node[right] {key positiva} (infonce);
+			\draw[arrow] (keyenc) -- (queuebank);
+			\draw[arrow] (queuebank) -- node[below] {negativas} (infonce);
+			\draw[arrow, dashed] (query.east) -- node[above] {atualização momentum} (keyenc.west);
+		\end{tikzpicture}%
+	}\caption{Esquema de pré-treinamento MoCo para aprendizado auto-supervisionado de representações do ECG/Holter. O codificador query recebe gradientes diretamente; o codificador key é atualizado por média móvel e alimenta uma fila de exemplos negativos.}
+	\label{fig:moco_fluxo}
+\end{figure}
+
+%-------------------------------------
+
+
+%--------fluxo do resnet---------------------
+
+\subsection{Arquitetura Proposta dos Modelos Profundos}
+
+Esta seção descreve, em formato de fluxograma, os principais componentes computacionais utilizados no pipeline de modelagem profunda para análise de sobrevivência. Os diagramas foram estruturados a partir de modelos implementados manualmente em PyTorch, contemplando o extrator convolucional ResNet-1D, o pré-treinamento contrastivo MoCo, as formulações de tempo discreto e a arquitetura híbrida final com fusão entre ECG e covariáveis clínicas.
+
+\subsection{Encoder ResNet-1D para Sinais de ECG}
+
+A Figura~\ref{fig:resnet1d_fluxo} apresenta o fluxo do encoder ResNet-1D utilizado para extrair representações temporais dos sinais de ECG/Holter com três derivações. A rede preserva a dimensão temporal até a saída do encoder, produzindo um mapa de características tridimensional.
+
+\begin{figure}[htbp]
+	\centering
+	\resizebox{0.88\textwidth}{!}{%
+		\begin{tikzpicture}[
+			node distance=0.9cm and 0.95cm,
+			block/.style={draw, rounded corners, align=center, minimum height=1.0cm, minimum width=2.5cm, fill=blue!7},
+			conv/.style={draw, rounded corners, align=center, minimum height=1.0cm, minimum width=2.9cm, fill=green!9},
+			res/.style={draw, rounded corners, align=center, minimum height=1.2cm, minimum width=3.0cm, fill=orange!12},
+			output/.style={draw, rounded corners, align=center, minimum height=1.0cm, minimum width=3.5cm, fill=purple!10},
+			arrow/.style={-{Latex[length=2.5mm]}, thick}
+			]
+			\node[block] (input) {Entrada\\Sinal ECG/Holter\\3 derivações XYZ\\$[B,3,N]$};
+			\node[conv, right=of input] (stem) {Stem convolucional\\Conv1D $7\times1$, stride 2\\BatchNorm + ReLU\\MaxPool1D};
+			\node[res, right=of stem] (l1) {Layer 1\\2 BasicBlock1D\\64 filtros};
+			\node[res, right=of l1] (l2) {Layer 2\\2 BasicBlock1D\\128 filtros\\stride 2};
+			\node[res, below=of l2] (l3) {Layer 3\\2 BasicBlock1D\\256 filtros\\stride 2};
+			\node[res, left=of l3] (l4) {Layer 4\\2 BasicBlock1D\\512 filtros\\stride 2};
+			\node[output, left=of l4] (out) {Saída do encoder\\Mapa de features\\$[B,512,L_{red}]$};
+
+			\draw[arrow] (input) -- (stem);
+			\draw[arrow] (stem) -- (l1);
+			\draw[arrow] (l1) -- (l2);
+			\draw[arrow] (l2) -- (l3);
+			\draw[arrow] (l3) -- (l4);
+			\draw[arrow] (l4) -- (out);
+
+			\draw[arrow, dashed, bend left=35] (l1.north) to node[above, align=center] {conexões\\residuais} (l2.north);
+			\draw[arrow, dashed] (l3.south) .. controls ++(0,-1.1) and ++(0,-1.1) .. node[below, align=center] {atalho\\identidade/projeção} (l4.south);
+		\end{tikzpicture}%
+	}
+	\caption{Fluxo do encoder ResNet-1D utilizado para extração de características convolucionais temporais dos sinais de ECG/Holter. Cada BasicBlock1D contém duas convoluções 1D com normalização em lote e conexão residual.}
+	\label{fig:resnet1d_fluxo}
+\end{figure}
+
+
+%----------------------------------
+
+
 \subsection{Arquitetura do Encoder: ResNet-18 1D}
 
 A extração de características dos sinais de ECG é realizada por uma versão
@@ -20,6 +292,7 @@ responsáveis pela extração de representações ---  sem a camada de
 classificação final. Essa abordagem é recorrente na literatura quando se
 deseja obter um vetor de características compacto para uso em tarefas
 subsequentes, como a análise de sobrevivência proposta neste trabalho.
+
 
 \subsubsection{Da ResNet-18 2D para a ResNet-18 1D}
 
@@ -42,6 +315,7 @@ dimensão temporal. Essa estratégia é amplamente consolidada na literatura
 de sinais biomédicos, com aplicações em ECG de derivação única
 \cite{hannun2019cardiologist} e em ECG de 12 derivações
 \cite{ribeiro2020automatic}.
+
 
 \subsubsection{Estrutura das 17 Camadas do Encoder}
 
@@ -107,14 +381,58 @@ profundas. Arquiteturas mais profundas, como ResNet-34 ou ResNet-50, tendem
 a demandar volumes maiores de dados para generalizar adequadamente,
 tornando a ResNet-18 uma escolha mais equilibrada à escala do problema.
 Segundo, a adaptação unidimensional da ResNet-18 é amplamente empregada
-na literatura de sinais biomédicos \cite{hannun2019cardiologist,
-	ribeiro2020automatic}, demonstrando capacidade suficiente para a extração
+na literatura de sinais biomédicos \cite{hannun2019cardiologist, ribeiro2020automatic}, demonstrando capacidade suficiente para a extração
 de padrões morfológicos relevantes em sinais de ECG com múltiplas
 derivações.
 
 Ao final do encoder, um \textit{Global Average Pooling} reduz a representação
 temporal para um vetor fixo de 512 dimensões por amostra, independentemente do
 comprimento da série de entrada.
+
+
+\subsection{Arquitetura Híbrida Final}
+
+A Figura~\ref{fig:arquitetura_hibrida_fluxo} descreve a arquitetura final usada para combinar sinais ECG/Holter e covariáveis clínicas. O treinamento foi organizado em duas etapas. Primeiro, o encoder ResNet-1D foi pré-treinado de forma auto-supervisionada pelo método MoCo, utilizando apenas o objetivo contrastivo para aprender representações do sinal. Em seguida, os pesos aprendidos nessa etapa foram transferidos para o ramo de ECG da arquitetura híbrida. Na etapa supervisionada, a ResNet-1D inicializada com os pesos do MoCo passou a atuar como extrator de características, sendo treinada em conjunto com a rede de covariáveis clínicas, o módulo de fusão e os cabeçotes de sobrevivência em tempo discreto. O mapa temporal extraído do ECG é agregado por média global no eixo temporal e reduzido por um gargalo denso; em paralelo, as covariáveis clínicas passam por uma rede densa própria. Por fim, os vetores de ECG e de covariáveis são concatenados e enviados ao cabeçote de risco em tempo discreto.
+
+\begin{figure}[htbp]
+	\centering
+	\resizebox{0.52\textwidth}{!}{%
+		\begin{tikzpicture}[
+			node distance=0.38cm and 0.7cm,
+			input/.style={draw, rounded corners, align=center, minimum height=0.68cm, minimum width=2.45cm, fill=blue!7, font=\scriptsize},
+			proc/.style={draw, rounded corners, align=center, minimum height=0.68cm, minimum width=2.65cm, fill=green!10, font=\scriptsize},
+			bottleneck/.style={draw, rounded corners, align=center, minimum height=0.68cm, minimum width=2.7cm, fill=orange!12, font=\scriptsize},
+			fusion/.style={draw, rounded corners, align=center, minimum height=0.68cm, minimum width=2.6cm, fill=purple!10, font=\scriptsize},
+			output/.style={draw, rounded corners, align=center, minimum height=0.68cm, minimum width=2.65cm, fill=red!10, font=\scriptsize},
+			arrow/.style={-{Latex[length=1.8mm]}, thick}
+			]
+			\node[input] (ecg) {Sinal ECG/Holter\\3 derivações XYZ};
+			\node[proc, below=of ecg] (resnet) {ResNet-1D\\encoder MoCo};
+			\node[proc, below=of resnet] (gap) {Agregação temporal\\média em $dim=2$};
+			\node[bottleneck, below=of gap] (ecgb) {Gargalo ECG\\512--64--16};
+			\node[fusion, below=of ecgb] (concat) {Concatenação\\ECG 16 + clínica 16};
+			\node[proc, below=of concat] (head) {Head de risco\\32--32--20};
+			\node[output, below=of head] (out) {Logits brutos\\20 bins temporais};
+
+			\node[input, right=of resnet] (clin) {Covariáveis clínicas\\6 features};
+			\node[bottleneck, below=of clin] (clinnet) {ClinicalNet\\6--32--16};
+
+			\draw[arrow] (ecg) -- (resnet);
+			\draw[arrow] (resnet) -- (gap);
+			\draw[arrow] (gap) -- (ecgb);
+			\draw[arrow] (ecgb) -- (concat);
+			\draw[arrow] (clin) -- (clinnet);
+			\draw[arrow] (clinnet) |- (concat);
+			\draw[arrow] (concat) -- (head);
+			\draw[arrow] (head) -- (out);
+		\end{tikzpicture}%
+	}
+	\caption{Arquitetura híbrida final: extração de características do sinal por ResNet-1D/MoCo, compressão do ECG em gargalo de 16 dimensões, processamento clínico em paralelo, fusão balanceada e predição de logits para modelos de sobrevivência em tempo discreto.}
+	\label{fig:arquitetura_hibrida_fluxo}
+\end{figure}
+
+
+%------------------------------------------------------------
 
 
 \subsection{Módulo de Projeção e Fusão Híbrida}
@@ -173,6 +491,43 @@ total é definida como $\mathcal{L} = \mathcal{L}_1 + \alpha \cdot \mathcal{L}_2
 onde $\mathcal{L}_1$ corresponde à log-verossimilhança negativa e $\mathcal{L}_2$
 é um termo de \textit{ranking} que penaliza inversões na ordenação do risco entre
 pares de pacientes com diferentes tempos de evento.
+
+
+\subsection{Formulações de Sobrevivência em Tempo Discreto}
+
+A Figura~\ref{fig:tempo_discreto_fluxo} apresenta as três formulações de tempo discreto usadas no cabeçote de sobrevivência. A rede híbrida retorna logits brutos para os intervalos temporais; em seguida, cada modelo aplica uma transformação probabilística e uma função de perda específica.
+
+\begin{figure}[htbp]
+	\centering
+	\resizebox{0.88\textwidth}{!}{%
+		\begin{tikzpicture}[
+			node distance=0.9cm and 1.0cm,
+			input/.style={draw, rounded corners, align=center, minimum height=1cm, minimum width=3.2cm, fill=blue!7},
+			branch/.style={draw, rounded corners, align=center, minimum height=1cm, minimum width=3.4cm, fill=green!10},
+			loss/.style={draw, rounded corners, align=center, minimum height=1cm, minimum width=4.3cm, fill=orange!12},
+			arrow/.style={-{Latex[length=2.5mm]}, thick}
+			]
+			\node[input] (logits) {Logits brutos\\$[B, K]$\\$K=20$ bins};
+			\node[branch, right=of logits] (lh) {LogisticHazard\\Sigmoid por bin\\$h_k=P(T=k|T\geq k)$};
+			\node[loss, right=of lh] (lhloss) {Loss por hazard discreto\\evento: $h_k$\\censura: $S(t)$};
+
+			\node[branch, below=of lh] (pmf) {PMF\\Softmax com bin extra\\$p_k=P(T=k)$};
+			\node[loss, right=of pmf] (pmfloss) {Loss de verossimilhança\\evento: $p_k$\\censura: $\sum_{j>k}p_j$};
+
+			\node[branch, below=of pmf] (dh) {DeepHitSingle\\Softmax/PMF\\CDF para risco};
+			\node[loss, right=of dh] (dhloss) {Loss total\\$L=L_1+\alpha L_2$\\PMF + ranking};
+
+			\draw[arrow] (logits) -- (lh);
+			\draw[arrow] (logits) |- (pmf);
+			\draw[arrow] (logits) |- (dh);
+			\draw[arrow] (lh) -- (lhloss);
+			\draw[arrow] (pmf) -- (pmfloss);
+			\draw[arrow] (dh) -- (dhloss);
+		\end{tikzpicture}%
+	}
+	\caption{Transformação dos logits brutos nos três modelos de sobrevivência em tempo discreto: LogisticHazard, PMF e DeepHitSingle.}
+	\label{fig:tempo_discreto_fluxo}
+\end{figure}
 
 \subsection{Discretização do Tempo: Transformação LabTrans}
 

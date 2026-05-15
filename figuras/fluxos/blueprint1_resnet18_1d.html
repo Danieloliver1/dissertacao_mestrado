@@ -1,0 +1,111 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.bw { font-family: "Times New Roman", Times, serif; background: #fff; color: #000; padding: 20px 18px 14px; max-width: 680px; margin: 0 auto; }
+.cap { font-family: "Times New Roman", Times, serif; font-size: 11px; color: #000; text-align: justify; margin-top: 8px; border-top: 1px solid #000; padding-top: 6px; line-height: 1.55; }
+</style>
+<div class="bw">
+<svg width="100%" viewBox="0 0 620 720" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M1.5 1L8.5 5L1.5 9" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="arrd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M1.5 1L8.5 5L1.5 9" fill="none" stroke="#555" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<!-- ─── TÍTULO ─── -->
+<text x="310" y="18" text-anchor="middle" font-family="Times New Roman" font-size="12" font-weight="bold">Blueprint 1 — ResNet-18 1D: Encoder de ECG</text>
+
+<!-- ─── ENTRADA ─── -->
+<rect x="140" y="30" width="280" height="46" rx="3" fill="#f0f0f0" stroke="#000" stroke-width="1"/>
+<text x="280" y="48" text-anchor="middle" font-family="Times New Roman" font-size="10" font-weight="bold">Entrada: Sinal ECG 3 Derivações (XYZ)</text>
+<text x="280" y="63" text-anchor="middle" font-family="Times New Roman" font-size="9">[Batch, 3, N_Amostras]</text>
+<line x1="280" y1="76" x2="280" y2="92" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+
+<!-- ─── STEM ─── -->
+<rect x="100" y="92" width="360" height="72" rx="3" fill="#e0e0e0" stroke="#000" stroke-width="1"/>
+<text x="280" y="110" text-anchor="middle" font-family="Times New Roman" font-size="10" font-weight="bold">Módulo Tronco (Stem)</text>
+<text x="280" y="125" text-anchor="middle" font-family="Times New Roman" font-size="9">Conv1D (kernel=7, stride=2, padding=3, 3→64 filtros)</text>
+<text x="280" y="140" text-anchor="middle" font-family="Times New Roman" font-size="9">→  BatchNorm1D  →  ReLU  →  MaxPool1D (kernel=3, stride=2)</text>
+<text x="280" y="155" text-anchor="middle" font-family="Times New Roman" font-size="9" font-style="italic">saída: [Batch, 64, N/4]</text>
+<line x1="280" y1="164" x2="280" y2="180" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+
+<!-- ─── HELPER: BasicBlock detail (lateral) ─── -->
+<rect x="460" y="175" width="150" height="130" rx="3" fill="#fff" stroke="#888" stroke-width="0.7" stroke-dasharray="4 2"/>
+<text x="535" y="190" text-anchor="middle" font-family="Times New Roman" font-size="9" font-weight="bold">BasicBlock1D</text>
+<rect x="472" y="198" width="126" height="20" rx="2" fill="#efefef" stroke="#aaa" stroke-width="0.5"/>
+<text x="535" y="212" text-anchor="middle" font-family="Times New Roman" font-size="8">Conv1D (k=3, p=1) + BN + ReLU</text>
+<rect x="472" y="226" width="126" height="20" rx="2" fill="#efefef" stroke="#aaa" stroke-width="0.5"/>
+<text x="535" y="240" text-anchor="middle" font-family="Times New Roman" font-size="8">Conv1D (k=3, p=1) + BN</text>
+<circle cx="535" cy="270" r="10" fill="#fff" stroke="#888" stroke-width="0.8"/>
+<text x="535" y="275" text-anchor="middle" font-family="Times New Roman" font-size="11" font-weight="bold">+</text>
+<line x1="535" y1="218" x2="535" y2="226" stroke="#888" stroke-width="0.6" marker-end="url(#arrd)"/>
+<line x1="535" y1="246" x2="535" y2="260" stroke="#888" stroke-width="0.6" marker-end="url(#arrd)"/>
+<path d="M472 207 Q458 207 458 270 L525 270" fill="none" stroke="#888" stroke-width="0.7" stroke-dasharray="3 2" marker-end="url(#arrd)"/>
+<text x="452" y="242" text-anchor="middle" font-family="Times New Roman" font-size="7" font-style="italic" transform="rotate(-90,452,242)">skip</text>
+<rect x="472" y="286" width="126" height="16" rx="2" fill="#efefef" stroke="#aaa" stroke-width="0.5"/>
+<text x="535" y="298" text-anchor="middle" font-family="Times New Roman" font-size="8">ReLU</text>
+<line x1="535" y1="280" x2="535" y2="286" stroke="#888" stroke-width="0.6" marker-end="url(#arrd)"/>
+
+<!-- ─── LAYER 1 ─── -->
+<rect x="80" y="180" width="340" height="60" rx="3" fill="#fff" stroke="#000" stroke-width="0.9"/>
+<text x="250" y="198" text-anchor="middle" font-family="Times New Roman" font-size="10" font-weight="bold">Layer 1 — 2 × BasicBlock1D</text>
+<text x="250" y="213" text-anchor="middle" font-family="Times New Roman" font-size="9">64 filtros, kernel=3, padding=1, stride=1</text>
+<text x="250" y="228" text-anchor="middle" font-family="Times New Roman" font-size="9" font-style="italic">saída: [Batch, 64, N/4]  — dimensão preservada</text>
+<!-- skip connection layer 1 -->
+<path d="M80 210 Q55 210 55 240 L80 240" fill="none" stroke="#000" stroke-width="0.8" stroke-dasharray="4 2"/>
+<path d="M80 240 L80 240" fill="none" stroke="#000"/>
+<line x1="80" y1="240" x2="80" y2="240"/>
+<line x1="280" y1="240" x2="280" y2="256" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+
+<!-- ─── LAYER 2 ─── -->
+<rect x="80" y="256" width="340" height="60" rx="3" fill="#fff" stroke="#000" stroke-width="0.9"/>
+<text x="250" y="274" text-anchor="middle" font-family="Times New Roman" font-size="10" font-weight="bold">Layer 2 — 2 × BasicBlock1D</text>
+<text x="250" y="289" text-anchor="middle" font-family="Times New Roman" font-size="9">128 filtros, stride=2 + downsample (Conv1D 1×1)</text>
+<text x="250" y="304" text-anchor="middle" font-family="Times New Roman" font-size="9" font-style="italic">saída: [Batch, 128, N/8]</text>
+<path d="M80 286 Q55 286 55 316 L80 316" fill="none" stroke="#000" stroke-width="0.8" stroke-dasharray="4 2"/>
+<line x1="280" y1="316" x2="280" y2="332" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+
+<!-- ─── LAYER 3 ─── -->
+<rect x="80" y="332" width="340" height="60" rx="3" fill="#fff" stroke="#000" stroke-width="0.9"/>
+<text x="250" y="350" text-anchor="middle" font-family="Times New Roman" font-size="10" font-weight="bold">Layer 3 — 2 × BasicBlock1D</text>
+<text x="250" y="365" text-anchor="middle" font-family="Times New Roman" font-size="9">256 filtros, stride=2 + downsample (Conv1D 1×1)</text>
+<text x="250" y="380" text-anchor="middle" font-family="Times New Roman" font-size="9" font-style="italic">saída: [Batch, 256, N/16]</text>
+<path d="M80 362 Q55 362 55 392 L80 392" fill="none" stroke="#000" stroke-width="0.8" stroke-dasharray="4 2"/>
+<line x1="280" y1="392" x2="280" y2="408" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+
+<!-- ─── LAYER 4 ─── -->
+<rect x="80" y="408" width="340" height="60" rx="3" fill="#fff" stroke="#000" stroke-width="0.9"/>
+<text x="250" y="426" text-anchor="middle" font-family="Times New Roman" font-size="10" font-weight="bold">Layer 4 — 2 × BasicBlock1D</text>
+<text x="250" y="441" text-anchor="middle" font-family="Times New Roman" font-size="9">512 filtros, stride=2 + downsample (Conv1D 1×1)</text>
+<text x="250" y="456" text-anchor="middle" font-family="Times New Roman" font-size="9" font-style="italic">saída: [Batch, 512, N/32]</text>
+<path d="M80 438 Q55 438 55 468 L80 468" fill="none" stroke="#000" stroke-width="0.8" stroke-dasharray="4 2"/>
+<line x1="280" y1="468" x2="280" y2="484" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+
+<!-- Bounding box camadas residuais -->
+<rect x="68" y="168" width="364" height="312" rx="4" fill="none" stroke="#555" stroke-width="0.6" stroke-dasharray="5 3"/>
+<text x="250" y="493" text-anchor="middle" font-family="Times New Roman" font-size="8" font-style="italic">8 BasicBlocks × 2 Conv1D = 16 camadas + Stem 1 + GAP = 18 camadas pesadas</text>
+
+<!-- ─── GAP ─── -->
+<rect x="130" y="494" width="300" height="42" rx="3" fill="#e0e0e0" stroke="#000" stroke-width="1"/>
+<text x="280" y="511" text-anchor="middle" font-family="Times New Roman" font-size="10" font-weight="bold">Global Average Pooling</text>
+<text x="280" y="526" text-anchor="middle" font-family="Times New Roman" font-size="9">mean(dim=2)  →  colapsa dimensão temporal</text>
+<line x1="280" y1="536" x2="280" y2="552" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+
+<!-- ─── SAÍDA ─── -->
+<rect x="100" y="552" width="360" height="46" rx="3" fill="#f0f0f0" stroke="#000" stroke-width="1"/>
+<text x="280" y="571" text-anchor="middle" font-family="Times New Roman" font-size="10" font-weight="bold">Saída do Encoder: Mapa de Features</text>
+<text x="280" y="586" text-anchor="middle" font-family="Times New Roman" font-size="9">[Batch, 512]  — vetor de representação ECG</text>
+
+<!-- legenda skip -->
+<line x1="30" y1="640" x2="65" y2="640" stroke="#000" stroke-width="0.8" stroke-dasharray="4 2"/>
+<text x="72" y="644" font-family="Times New Roman" font-size="9">Conexão residual (skip connection)</text>
+<rect x="200" y="632" width="14" height="14" rx="2" fill="#e0e0e0" stroke="#000" stroke-width="0.7"/>
+<text x="220" y="643" font-family="Times New Roman" font-size="9">Stem / pooling</text>
+<rect x="340" y="632" width="14" height="14" rx="2" fill="#fff" stroke="#000" stroke-width="0.7"/>
+<text x="360" y="643" font-family="Times New Roman" font-size="9">Bloco residual</text>
+</svg>
+<p class="cap"><b>Figura 1 — Arquitetura ResNet-18 1D.</b> O sinal de entrada com 3 derivações (eixos X, Y, Z) é processado pelo módulo <em>stem</em> com convolução de kernel 7 e <em>stride</em> 2, seguido de normalização em lote, ReLU e <em>max pooling</em>, reduzindo a dimensão temporal à metade. Em seguida, quatro estágios de blocos residuais (BasicBlock1D) duplicam progressivamente os filtros (64→128→256→512) e reduzem a dimensão temporal com <em>stride</em> 2. Cada BasicBlock é composto por duas convoluções 1D de kernel 3, normalização em lote e uma conexão residual de identidade (ou <em>downsample</em> por convolução 1×1 quando há mudança de dimensão). O <em>Global Average Pooling</em> colapsa a dimensão temporal produzindo um vetor de 512 dimensões por amostra.</p>
+</div>

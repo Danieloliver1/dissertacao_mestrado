@@ -7,90 +7,102 @@
 \setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
 \setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
 \setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
-\contentsline {chapter}{\chapternumberline {1}\MakeTextUppercase []{Introdução}}{17}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Motivação}{17}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Base de dados}{17}{section.1.2}%
-\contentsline {section}{\numberline {1.3}Principais Desafios}{18}{section.1.3}%
-\contentsline {subsection}{\numberline {1.3.1}Desbalanceamento dos dados}{18}{subsection.1.3.1}%
-\contentsline {subsection}{\numberline {1.3.2}Grande volume dos sinais}{21}{subsection.1.3.2}%
+\contentsline {chapter}{\chapternumberline {1}\MakeTextUppercase []{Introdução}}{18}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Motivação}{18}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Base de dados}{18}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Principais Desafios}{19}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Desbalanceamento dos dados}{19}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Grande volume dos sinais}{22}{subsection.1.3.2}%
 \setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
-\contentsline {chapter}{\chapternumberline {2}\MakeTextUppercase []{fundamentação teórica}}{22}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Logistic-Hazard}{22}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Resnet-18 1D}{22}{section.2.2}%
-\contentsline {section}{\numberline {2.3}Momentum Contrast}{22}{section.2.3}%
-\contentsline {section}{\numberline {2.4}Citações bibliográficas}{22}{section.2.4}%
-\contentsline {section}{\numberline {2.5}Inserindo figuras}{24}{section.2.5}%
-\contentsline {section}{\numberline {2.6}Inserindo tabelas}{25}{section.2.6}%
-\contentsline {subsection}{\numberline {2.6.1}Exemplo de subseção}{26}{subsection.2.6.1}%
-\contentsline {subsection}{\numberline {2.6.2}Uso de siglas}{27}{subsection.2.6.2}%
+\contentsline {chapter}{\chapternumberline {2}\MakeTextUppercase []{fundamentação teórica}}{23}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Logistic-Hazard}{23}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Resnet-18 1D}{23}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Momentum Contrast}{23}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Citações bibliográficas}{23}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Inserindo figuras}{25}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Inserindo tabelas}{26}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Exemplo de subseção}{27}{subsection.2.6.1}%
+\contentsline {subsection}{\numberline {2.6.2}Uso de siglas}{28}{subsection.2.6.2}%
 \setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
-\contentsline {chapter}{\chapternumberline {3}\MakeTextUppercase []{Metodologia}}{28}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Modelos de Análise de Sobrevivência}{28}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Arquitetura do Encoder: ResNet-18 1D}{28}{subsection.3.1.1}%
-\contentsline {subsubsection}{\numberline {3.1.1.1}Da ResNet-18 2D para a ResNet-18 1D}{28}{subsubsection.3.1.1.1}%
-\contentsline {subsubsection}{\numberline {3.1.1.2}Estrutura das 17 Camadas do Encoder}{29}{subsubsection.3.1.1.2}%
-\contentsline {subsubsection}{\numberline {3.1.1.3}Justificativa da Escolha da ResNet-18}{30}{subsubsection.3.1.1.3}%
-\contentsline {subsection}{\numberline {3.1.2}Módulo de Projeção e Fusão Híbrida}{30}{subsection.3.1.2}%
-\contentsline {subsection}{\numberline {3.1.3}Cabeçote de Análise de Sobrevivência}{31}{subsection.3.1.3}%
-\contentsline {subsection}{\numberline {3.1.4}Risco Logístico (Logistic-Hazard)}{31}{subsection.3.1.4}%
-\contentsline {subsection}{\numberline {3.1.5}Função de Massa de Probabilidade (PMF)}{31}{subsection.3.1.5}%
-\contentsline {subsection}{\numberline {3.1.6}DeepHit}{31}{subsection.3.1.6}%
-\contentsline {subsection}{\numberline {3.1.7}Discretização do Tempo: Transformação LabTrans}{32}{subsection.3.1.7}%
-\contentsline {subsection}{\numberline {3.1.8}Função de Perda por Tipo de Paciente}{32}{subsection.3.1.8}%
-\contentsline {subsection}{\numberline {3.1.9}Treinamento: Acumulação de Gradiente e Precisão Mista}{33}{subsection.3.1.9}%
-\contentsline {subsection}{\numberline {3.1.10}Avaliação: C-Index e Agregação de Janelas}{33}{subsection.3.1.10}%
-\contentsline {section}{\numberline {3.2}Exemplo de alíneas}{34}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Usando Fórmulas Matemáticas}{35}{section.3.3}%
-\contentsline {section}{\numberline {3.4}Usando Código-fonte}{37}{section.3.4}%
-\contentsline {section}{\numberline {3.5}Usando Teoremas, Proposições, etc}{37}{section.3.5}%
-\contentsline {section}{\numberline {3.6}Usando Questões}{38}{section.3.6}%
+\contentsline {chapter}{\chapternumberline {3}\MakeTextUppercase []{Metodologia}}{29}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Modelos de Análise de Sobrevivência}{29}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Pré-treinamento Auto-supervisionado: MoCo}{29}{subsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.1.1}Aprendizado Contrastivo como Busca em Dicionário}{30}{subsubsection.3.1.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.1.2}Dicionário Dinâmico com Fila e Encoder com Momento}{30}{subsubsection.3.1.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.1.3}Melhorias do MoCo v2}{31}{subsubsection.3.1.1.3}%
+\contentsline {subsubsection}{\numberline {3.1.1.4}Adaptação para Sinais de ECG}{31}{subsubsection.3.1.1.4}%
+\contentsline {subsubsection}{\numberline {3.1.1.5}Configuração do Treinamento}{32}{subsubsection.3.1.1.5}%
+\contentsline {subsubsection}{\numberline {3.1.1.6}Escolha do Mecanismo de Aprendizado Contrastivo}{32}{subsubsection.3.1.1.6}%
+\contentsline {subsection}{\numberline {3.1.2}Pré-treinamento Contrastivo com MoCo}{33}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.3}Arquitetura Proposta dos Modelos Profundos}{34}{subsection.3.1.3}%
+\contentsline {subsection}{\numberline {3.1.4}Encoder ResNet-1D para Sinais de ECG}{34}{subsection.3.1.4}%
+\contentsline {subsection}{\numberline {3.1.5}Arquitetura do Encoder: ResNet-18 1D}{34}{subsection.3.1.5}%
+\contentsline {subsubsection}{\numberline {3.1.5.1}Da ResNet-18 2D para a ResNet-18 1D}{35}{subsubsection.3.1.5.1}%
+\contentsline {subsubsection}{\numberline {3.1.5.2}Estrutura das 17 Camadas do Encoder}{35}{subsubsection.3.1.5.2}%
+\contentsline {subsubsection}{\numberline {3.1.5.3}Justificativa da Escolha da ResNet-18}{36}{subsubsection.3.1.5.3}%
+\contentsline {subsection}{\numberline {3.1.6}Arquitetura Híbrida Final}{37}{subsection.3.1.6}%
+\contentsline {subsection}{\numberline {3.1.7}Módulo de Projeção e Fusão Híbrida}{37}{subsection.3.1.7}%
+\contentsline {subsection}{\numberline {3.1.8}Cabeçote de Análise de Sobrevivência}{37}{subsection.3.1.8}%
+\contentsline {subsection}{\numberline {3.1.9}Risco Logístico (Logistic-Hazard)}{38}{subsection.3.1.9}%
+\contentsline {subsection}{\numberline {3.1.10}Função de Massa de Probabilidade (PMF)}{39}{subsection.3.1.10}%
+\contentsline {subsection}{\numberline {3.1.11}DeepHit}{39}{subsection.3.1.11}%
+\contentsline {subsection}{\numberline {3.1.12}Formulações de Sobrevivência em Tempo Discreto}{39}{subsection.3.1.12}%
+\contentsline {subsection}{\numberline {3.1.13}Discretização do Tempo: Transformação LabTrans}{40}{subsection.3.1.13}%
+\contentsline {subsection}{\numberline {3.1.14}Função de Perda por Tipo de Paciente}{40}{subsection.3.1.14}%
+\contentsline {subsection}{\numberline {3.1.15}Treinamento: Acumulação de Gradiente e Precisão Mista}{41}{subsection.3.1.15}%
+\contentsline {subsection}{\numberline {3.1.16}Avaliação: C-Index e Agregação de Janelas}{41}{subsection.3.1.16}%
+\contentsline {section}{\numberline {3.2}Exemplo de alíneas}{42}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Usando Fórmulas Matemáticas}{43}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Usando Código-fonte}{45}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Usando Teoremas, Proposições, etc}{45}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Usando Questões}{46}{section.3.6}%
 \setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
-\contentsline {chapter}{\chapternumberline {4}\MakeTextUppercase []{Resultados}}{39}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Resultados da tabela subject-info.csv}{39}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Resultados do modelo de Cox para dados Holter}{40}{subsection.4.1.1}%
-\contentsline {subsubsection}{\numberline {4.1.1.1}Resumo dos resultados do modelo de Cox para dados Holter}{42}{subsubsection.4.1.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Resultados do modelo de Cox para dados de eventos e condições cardiovasculares}{42}{subsection.4.1.2}%
-\contentsline {subsection}{\numberline {4.1.3}Resultados do modelo de Cox para dados demográficos clínicos}{44}{subsection.4.1.3}%
-\contentsline {subsection}{\numberline {4.1.4}Resultados do modelo de Cox para dados eletrocardiograma de alta resolução}{45}{subsection.4.1.4}%
-\contentsline {section}{\numberline {4.2}Modelos de Aprendizado Profundo para Sobrevivência}{56}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Sobre LogisticHazard}{56}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Sobre PMF}{56}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Sobre DeepHitSingle}{56}{subsection.4.2.3}%
-\contentsline {section}{\numberline {4.3}MoCo (Momentum Contrast)}{58}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Resultados do Experimento A}{60}{section.4.4}%
-\contentsline {section}{\numberline {4.5}Resultados do Experimento B}{61}{section.4.5}%
+\contentsline {chapter}{\chapternumberline {4}\MakeTextUppercase []{Resultados}}{47}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Resultados da tabela subject-info.csv}{47}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Resultados do modelo de Cox para dados Holter}{48}{subsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.1.1}Resumo dos resultados do modelo de Cox para dados Holter}{50}{subsubsection.4.1.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Resultados do modelo de Cox para dados de eventos e condições cardiovasculares}{50}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}Resultados do modelo de Cox para dados demográficos clínicos}{52}{subsection.4.1.3}%
+\contentsline {subsection}{\numberline {4.1.4}Resultados do modelo de Cox para dados eletrocardiograma de alta resolução}{53}{subsection.4.1.4}%
+\contentsline {section}{\numberline {4.2}Modelos de Aprendizado Profundo para Sobrevivência}{64}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Sobre LogisticHazard}{64}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Sobre PMF}{64}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Sobre DeepHitSingle}{64}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}MoCo (Momentum Contrast)}{66}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Resultados do Experimento A}{68}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Resultados do Experimento B}{69}{section.4.5}%
 \setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
-\contentsline {chapter}{\chapternumberline {5}\MakeTextUppercase []{Conclusões e Trabalhos Futuros}}{63}{chapter.5}%
+\contentsline {chapter}{\chapternumberline {5}\MakeTextUppercase []{Conclusões e Trabalhos Futuros}}{71}{chapter.5}%
 \setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
-\contentsline {chapter}{\MakeTextUppercase []{REFER\^ENCIAS}}{64}{section*.45}%
-\contentsline {chapter}{AP\^ENDICES}{66}{section*.45}%
+\contentsline {chapter}{\MakeTextUppercase []{REFER\^ENCIAS}}{72}{section*.49}%
+\contentsline {chapter}{AP\^ENDICES}{74}{section*.49}%
 \renewcommand *{\cftappendixname }{AP\^ENDICE \space }
 \renewcommand *{\cftappendixname }{\bfseries AP\^ENDICE \space }
 \setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
 \setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
 \cftinsert {A}
-\contentsline {appendix}{\chapternumberline {A}\normalfont Exemplo de apêndice}{66}{appendix.A}%
+\contentsline {appendix}{\chapternumberline {A}\normalfont Exemplo de apêndice}{74}{appendix.A}%
 \setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
 \setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
 \cftinsert {A}
-\contentsline {appendix}{\chapternumberline {B}\normalfont Questionário utilizado para...}{67}{appendix.B}%
+\contentsline {appendix}{\chapternumberline {B}\normalfont Questionário utilizado para...}{75}{appendix.B}%
 \setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
 \setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
 \cftinsert {A}
-\contentsline {appendix}{\chapternumberline {C}\normalfont Códigos-fontes utilizados para...}{68}{appendix.C}%
+\contentsline {appendix}{\chapternumberline {C}\normalfont Códigos-fontes utilizados para...}{76}{appendix.C}%
 \setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
 \setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
 \cftinsert {A}
-\contentsline {appendix}{\chapternumberline {D}\normalfont \textit {IEEE CEFC 2016}}{69}{appendix.D}%
-\contentsline {chapter}{ANEXOS}{71}{appendix.D}%
+\contentsline {appendix}{\chapternumberline {D}\normalfont \textit {IEEE CEFC 2016}}{77}{appendix.D}%
+\contentsline {chapter}{ANEXOS}{79}{appendix.D}%
 \cftinsert {AAA}
 \renewcommand *{\cftappendixname }{ANEXO \space }
 \renewcommand *{\cftappendixname }{\bfseries ANEXO \space }
 \setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
 \setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
 \cftinsert {A}
-\contentsline {appendix}{\chapternumberline {A}\normalfont Exemplo de um anexo}{71}{appendix.anexochapback.1}%
+\contentsline {appendix}{\chapternumberline {A}\normalfont Exemplo de um anexo}{79}{appendix.anexochapback.1}%
 \setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
 \setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
 \cftinsert {A}
-\contentsline {appendix}{\chapternumberline {B}\normalfont Exemplo de um anexo em PDF}{72}{appendix.anexochapback.2}%
+\contentsline {appendix}{\chapternumberline {B}\normalfont Exemplo de um anexo em PDF}{80}{appendix.anexochapback.2}%

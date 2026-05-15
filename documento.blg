@@ -189,45 +189,45 @@ Warning--campo year vazio ou faltando em lifelines_docs_cox
 | Em caso de dúvidas ou problemas com este estilo procure |
 | http://www.abntex.net.br/                               |
 +---------------------------------------------------------+
-You've used 31 entries,
+You've used 33 entries,
             6714 wiz_defined-function locations,
-            1320 strings with 13137 characters,
-and the built_in function-call counts, 30516 in all, are:
-= -- 3209
-> -- 567
-< -- 585
-+ -- 858
-- -- 166
-* -- 1878
-:= -- 3482
-add.period$ -- 80
-call.type$ -- 33
-change.case$ -- 236
-chr.to.int$ -- 47
-cite$ -- 60
-duplicate$ -- 2559
-empty$ -- 1797
-format.name$ -- 852
-if$ -- 6779
+            1327 strings with 13405 characters,
+and the built_in function-call counts, 32574 in all, are:
+= -- 3346
+> -- 669
+< -- 586
++ -- 900
+- -- 195
+* -- 2048
+:= -- 3746
+add.period$ -- 88
+call.type$ -- 35
+change.case$ -- 269
+chr.to.int$ -- 49
+cite$ -- 62
+duplicate$ -- 2649
+empty$ -- 1931
+format.name$ -- 1009
+if$ -- 7264
 int.to.chr$ -- 17
 int.to.str$ -- 3
-missing$ -- 496
-newline$ -- 131
-num.names$ -- 70
-pop$ -- 619
+missing$ -- 536
+newline$ -- 140
+num.names$ -- 80
+pop$ -- 671
 preamble$ -- 1
-purify$ -- 99
+purify$ -- 109
 quote$ -- 0
-skip$ -- 3157
+skip$ -- 3268
 stack$ -- 1
-substring$ -- 1176
-swap$ -- 973
-text.length$ -- 28
+substring$ -- 1250
+swap$ -- 1020
+text.length$ -- 29
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 20
+type$ -- 21
 warning$ -- 34
-while$ -- 128
+while$ -- 143
 width$ -- 0
-write$ -- 375
+write$ -- 405
 (There were 32 error messages)
