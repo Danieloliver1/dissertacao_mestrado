@@ -5,53 +5,21 @@
 \providecommand{\abntbstabout}[1]{}
 \abntbstabout{v-1.9.7 }
 
-\bibitem[]{rakov2003lightning}
+\bibitem[]{he2020momentum}
 \abntrefinfo{nada}{NADA}{a}
-{[S.l.: s.n.].}
-
-\bibitem[]{elat2015densidade}
-\abntrefinfo{nada}{NADA}{b}
-{}
-
-\bibitem[]{LangtangenLogg2017}
-\abntrefinfo{nada}{NADA}{c}
-{[S.l.: s.n.].}
-
-\bibitem[]{secretaria1999}
-\abntrefinfo{nada}{NADA}{d}
-{}
-
-\bibitem[]{NBR10520:2002}
-\abntrefinfo{nada}{NADA}{e}
-{[S.l.].}
-
-\bibitem[]{Almeida2018}
-\abntrefinfo{nada}{NADA}{f}
-{Disserta\c{c}\~{a}o (Mestrado).}
-
-\bibitem[]{Gondim2017}
-\abntrefinfo{nada}{NADA}{g}
-{Tese (Doutorado).}
-
-\bibitem[]{manuais1989}
-\abntrefinfo{nada}{NADA}{h}
-{[S.l.].}
-
-\bibitem[]{feitosa2016}
-\abntrefinfo{nada}{NADA}{i}
-{}
-
-\bibitem[]{UFC2012}
-\abntrefinfo{nada}{NADA}{j}
-{}
-
-\bibitem[]{NASA2016}
-\abntrefinfo{nada}{NADA}{k}
 {}
 
 \bibitem[]{lifelines_docs_cox}
-\abntrefinfo{nada}{NADA}{l}
+\abntrefinfo{nada}{NADA}{b}
 {}
+
+\bibitem[Allison 1982]{allison1982discrete}
+\abntrefinfo{Allison}{ALLISON}{1982}
+{ALLISON, P.~D. Discrete-time methods for the analysis of event histories.
+\textbf{Sociological Methodology}, American Sociological Association, v.~13, p.
+  61--98, 1982.
+Dispon{\'\i}vel em: \url{https://www.jstor.org/stable/270718}. Acesso em: 17
+  mar. 2026.}
 
 \bibitem[Biganzoli \textit{et al.} 1998]{biganzoli1998feedforward}
 \abntrefinfo{Biganzoli \textit{et al.}}{BIGANZOLI \textit{et al.}}{1998}
@@ -63,11 +31,29 @@ Dispon{\'\i}vel em:
   \url{https://onlinelibrary.wiley.com/doi/abs/10.1002/(SICI)1097-0258(19980530)17:10\%3C1169::AID-SIM796\%3E3.0.CO;2-D}.
   Acesso em: 09 mai. 2026.}
 
+\bibitem[Chen \textit{et al.} 2020]{chen2020simclr}
+\abntrefinfo{Chen \textit{et al.}}{CHEN \textit{et al.}}{2020a}
+{CHEN, T.; KORNBLITH, S.; NOROUZI, M.; HINTON, G. A simple framework for
+  contrastive learning of visual representations. In:  \textbf{Proceedings of
+  the 37th International Conference on Machine Learning (ICML)}. [s.n.], 2020.
+  p. 1597--1607. Dispon{\'\i}vel em: \url{https://arxiv.org/abs/2002.05709}.
+  Acesso em: 05 mar. 2026.}
+
 \bibitem[Chen \textit{et al.} 2020]{chen2020mocov2}
-\abntrefinfo{Chen \textit{et al.}}{CHEN \textit{et al.}}{2020}
+\abntrefinfo{Chen \textit{et al.}}{CHEN \textit{et al.}}{2020b}
 {CHEN, X.; FAN, H.; GIRSHICK, R.; HE, K. Improved baselines with momentum
   contrastive learning.
-\textbf{arXiv preprint arXiv:2003.04297}, 2020.}
+\textbf{arXiv preprint arXiv:2003.04297}, 2020.
+Dispon{\'\i}vel em: \url{https://arxiv.org/abs/2003.04297}. Acesso em: 05 mar.
+  2026.}
+
+\bibitem[Chen \textit{et al.} 2021]{chen2021mocov3}
+\abntrefinfo{Chen \textit{et al.}}{CHEN \textit{et al.}}{2021}
+{CHEN, X.; XIE, S.; HE, K. An empirical study of training self-supervised
+  vision transformers. In:  \textbf{Proceedings of the IEEE/CVF International
+  Conference on Computer Vision (ICCV)}. [s.n.], 2021. p. 9640--9649.
+  Dispon{\'\i}vel em: \url{https://arxiv.org/abs/2104.02057}. Acesso em: 05
+  mar. 2026.}
 
 \bibitem[Efron 1988]{efron1988logistic}
 \abntrefinfo{Efron}{EFRON}{1988}
@@ -94,14 +80,6 @@ Dispon{\'\i}vel em: \url{https://peerj.com/articles/6257/}. Acesso em: 09 mai.
 \textbf{Nature Medicine}, Nature Publishing Group, v.~25, n.~1, p. 65--69,
   2019.}
 
-\bibitem[He \textit{et al.} 2019]{he2020momentum}
-\abntrefinfo{He \textit{et al.}}{HE \textit{et al.}}{2019}
-{HE, K.; FAN, H.; WU, Y.; XIE, S.; GIRSHICK, R. Momentum contrast for
-  unsupervised visual representation learning.
-\textbf{arXiv preprint arXiv:1911.05722}, 2019.
-Dispon{\'\i}vel em: \url{https://arxiv.org/abs/1911.05722}. Acesso em: 05 mar.
-  2026.}
-
 \bibitem[He \textit{et al.} 2020]{he2019moco}
 \abntrefinfo{He \textit{et al.}}{HE \textit{et al.}}{2020}
 {HE, K.; FAN, H.; WU, Y.; XIE, S.; GIRSHICK, R. Momentum contrast for
@@ -122,6 +100,12 @@ Dispon{\'\i}vel em: \url{https://arxiv.org/abs/1911.05722}. Acesso em: 05 mar.
 Dispon{\'\i}vel em:
   \url{https://jornal.usp.br/radio-usp/doencas-cardiovasculares-sao-a-principal-causa-de-mortes-no-brasil-segundo-o-ministerio-da-saude/}.
   Acesso em: 03 mar. 2026.}
+
+\bibitem[Kvamme 2019]{pycox2019}
+\abntrefinfo{Kvamme}{KVAMME}{2019}
+{KVAMME, H. \textbf{pycox: Survival analysis with PyTorch}. [S.l.]: GitHub,
+  2019. \url{https://github.com/havakv/pycox}.
+Acesso em: 20 mar. 2026.}
 
 \bibitem[Kvamme e Borgan 2019]{kvamme2019continuous}
 \abntrefinfo{Kvamme e Borgan}{KVAMME; BORGAN}{2019}
@@ -145,6 +129,14 @@ Dispon{\'\i}vel em: \url{https://arxiv.org/abs/1910.06724}. Acesso em: 09 mai.
   2018.  (AAAI 2018), p. 2314--2321. Dispon{\'\i}vel em:
   \url{http://medianetlab.ee.ucla.edu/papers/AAAI\_2018\_DeepHit}. Acesso em:
   09 mai. 2026.}
+
+\bibitem[Oord \textit{et al.} 2018]{oord2018cpc}
+\abntrefinfo{Oord \textit{et al.}}{OORD \textit{et al.}}{2018}
+{OORD, A. van~den; LI, Y.; VINYALS, O. Representation learning with contrastive
+  predictive coding.
+\textbf{arXiv preprint arXiv:1807.03748}, 2018.
+Dispon{\'\i}vel em: \url{https://arxiv.org/abs/1807.03748}. Acesso em: 05 mar.
+  2026.}
 
 \bibitem[Prabhakararao e Manimegalai 2020]{physionet2020music}
 \abntrefinfo{Prabhakararao e Manimegalai}{PRABHAKARARAO; MANIMEGALAI}{2020a}
