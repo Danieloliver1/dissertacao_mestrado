@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.3.5)  8 JUN 2026 13:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.3.5)  1 JUL 2026 16:44
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1608,7 +1608,7 @@ Overfull \hbox (4.56003pt too wide) in paragraph at lines 243--244
 
 [6
 
-] (1-pre-textuais/resumo.tex [7]) [8] (1-pre-textuais/abstract.tex) [9
+] (1-pre-textuais/resumo.tex) [7] [8] (1-pre-textuais/abstract.tex) [9
 
 ] (documento.lof) [10
 
@@ -1617,12 +1617,7 @@ Overfull \hbox (4.56003pt too wide) in paragraph at lines 243--244
 
 ] (1-pre-textuais/lista-de-simbolos.tex [14
 
-]
-Overfull \hbox (3.71384pt too wide) in paragraph at lines 37--38
-[]\T1/ptm/m/n/12 (-20) Parâmetro do mo-delo de aná-lise de so-bre-vi-vên-cia em tempo dis-creto (Logistic-
- []
-
-[15]) (documento.toc [16
+] [15]) (documento.toc [16
 
 ] [17]) [18] (2-textuais/1-introducao.tex
 Cap\'{\i }tulo 1.
@@ -1630,59 +1625,63 @@ Cap\'{\i }tulo 1.
 
 
 ]
-Overfull \hbox (0.64255pt too wide) in paragraph at lines 39--40
+
+LaTeX Warning: Citation `physionet2020cardiovascular' on page 20 undefined on input line 74.
+
+[20] [21]
+Overfull \hbox (0.64255pt too wide) in paragraph at lines 111--112
 []\T1/ptm/m/n/12 (-20) Os da-dos uti-li-za-dos neste tra-ba-lho fo-ram ob-ti-dos na pla-ta-forma Phy-si-o-Net ([]PRABHA-
  []
 
-[20]
-<figuras/distribuicao_causa_da_morte.png, id=472, 714.7503pt x 426.393pt>
+[22]
+<figuras/distribuicao_causa_da_morte.png, id=488, 714.7503pt x 426.393pt>
 File: figuras/distribuicao_causa_da_morte.png Graphic file (type png)
 <use figuras/distribuicao_causa_da_morte.png>
-Package pdftex.def Info: figuras/distribuicao_causa_da_morte.png  used on input line 50.
+Package pdftex.def Info: figuras/distribuicao_causa_da_morte.png  used on input line 122.
 (pdftex.def)             Requested size: 455.24408pt x 271.58934pt.
 File: figuras/distribuicao_causa_da_morte.png Graphic file (type png)
 <use figuras/distribuicao_causa_da_morte.png>
-Package pdftex.def Info: figuras/distribuicao_causa_da_morte.png  used on input line 50.
+Package pdftex.def Info: figuras/distribuicao_causa_da_morte.png  used on input line 122.
 (pdftex.def)             Requested size: 455.24408pt x 271.58934pt.
 
-Overfull \hbox (4.99997pt too wide) in paragraph at lines 50--51
+Overfull \hbox (4.99997pt too wide) in paragraph at lines 122--123
  []$[]$ 
  []
 
 
-LaTeX Warning: Citation `physionet2020cardiovascular' on page 21 undefined on input line 54.
+LaTeX Warning: Citation `physionet2020cardiovascular' on page 23 undefined on input line 126.
 
-[21 <./figuras/distribuicao_causa_da_morte.png>] [22]) (2-textuais/2-fundamentacao-teorica.tex [23]
+[23 <./figuras/distribuicao_causa_da_morte.png>] [24]) (2-textuais/2-fundamentacao-teorica.tex [25]
 Cap\'{\i }tulo 2.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-[24
+[26
 
-] [25] [26] [27] [28] [29] [30] [31] [32] [33] [34] [35] [36]
+] [27] [28] [29] [30] [31] [32] [33] [34] [35] [36] [37] [38]
 Overfull \hbox (20.56804pt too wide) in paragraph at lines 330--331
 []\T1/ptm/b/n/12 (-20) Escalonamento adap-ta-tivo da taxa de apren-di-zado. \T1/ptm/m/n/12 (-20) O sche-du-ler \T1/cmtt/m/n/12 ReduceLROnPlateau
  []
 
-[37]
+[39]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 361.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 361.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 361.
- [38]
+ [40]
 
-LaTeX Warning: Citation `antolini2005' on page 39 undefined on input line 395.
-
-
-LaTeX Warning: Citation `graf1999' on page 39 undefined on input line 395.
+LaTeX Warning: Citation `antolini2005' on page 41 undefined on input line 395.
 
 
-LaTeX Warning: Citation `gerds2006' on page 39 undefined on input line 395.
+LaTeX Warning: Citation `graf1999' on page 41 undefined on input line 395.
 
-[39]
+
+LaTeX Warning: Citation `gerds2006' on page 41 undefined on input line 395.
+
+[41]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 397.
@@ -1696,32 +1695,32 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 397.
 
 
-LaTeX Warning: Citation `antolini2005' on page 40 undefined on input line 401.
+LaTeX Warning: Citation `antolini2005' on page 42 undefined on input line 401.
 
 
-LaTeX Warning: Citation `antolini2005' on page 40 undefined on input line 406.
-
-[40]
-
-LaTeX Warning: Citation `graf1999' on page 41 undefined on input line 414.
-
-
-LaTeX Warning: Citation `gerds2006' on page 41 undefined on input line 420.
-
-
-LaTeX Warning: Citation `graf1999' on page 41 undefined on input line 420.
-
-[41]
-
-LaTeX Warning: Citation `graf1999' on page 42 undefined on input line 428.
-
-
-LaTeX Warning: Citation `gerds2006' on page 42 undefined on input line 428.
-
-
-LaTeX Warning: Citation `graf1999' on page 42 undefined on input line 445.
+LaTeX Warning: Citation `antolini2005' on page 42 undefined on input line 406.
 
 [42]
+
+LaTeX Warning: Citation `graf1999' on page 43 undefined on input line 414.
+
+
+LaTeX Warning: Citation `gerds2006' on page 43 undefined on input line 420.
+
+
+LaTeX Warning: Citation `graf1999' on page 43 undefined on input line 420.
+
+[43]
+
+LaTeX Warning: Citation `graf1999' on page 44 undefined on input line 428.
+
+
+LaTeX Warning: Citation `gerds2006' on page 44 undefined on input line 428.
+
+
+LaTeX Warning: Citation `graf1999' on page 44 undefined on input line 445.
+
+[44]
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 451.
  (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
@@ -1730,173 +1729,141 @@ Overfull \hbox (19.90424pt too wide) in paragraph at lines 453--455
 []\T1/ptm/m/n/12 (-20) O Int. NBLL é uma mé-trica de qua-li-dade pro-ba-bi-lís-tica: por ser ba-se-ado na log-verossimilhança,
  []
 
-) (2-textuais/3-metodologia.tex [43]
+) (2-textuais/3-metodologia.tex [45]
 Cap\'{\i }tulo 3.
-[44
+[46
 
-] [45] [46] [47] [48] [49] [50] [51]
+] [47] [48] [49] [50]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 429.
- [52] [53] [54] [55]
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 262.
+ [51] [52] [53] [54] [55] [56] [57] [58] [59] [60] [61] [62]
 
-LaTeX Warning: Citation `micikevicius2018mixed' on page 56 undefined on input line 602.
+LaTeX Warning: Citation `micikevicius2018mixed' on page 63 undefined on input line 717.
 
 
-Overfull \hbox (45.3181pt too wide) in paragraph at lines 604--613
+Overfull \hbox (45.3181pt too wide) in paragraph at lines 719--728
 []\T1/ptm/m/n/12 (-20) Na acu-mu-la-ção de gra-di-ente, os gra-di-en-tes são acu-mu-la-dos ao longo de \T1/cmtt/m/n/12 accumulation_steps
  []
 
 
-LaTeX Warning: Citation `harrell1982evaluating' on page 56 undefined on input line 626.
+LaTeX Warning: Citation `harrell1982evaluating' on page 63 undefined on input line 741.
 
-[56] [57] [58] [59] [60]) (2-textuais/4-resultados.tex [61]
+[63]) (2-textuais/4-resultados.tex [64]
 Cap\'{\i }tulo 4.
-[62
+[65
 
-] [63]
+]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 86.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 82.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 86.
- [64] [65] [66] [67] [68] [69] [70]
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 82.
+ [66] [67] [68] [69] [70] [71] [72] [73]
 
-LaTeX Warning: Float too large for page by 34.29024pt on input line 509.
+LaTeX Warning: Float too large for page by 34.29024pt on input line 505.
 
-[71
+[74
 
-] [72]
+] [75]
 
-LaTeX Warning: Float too large for page by 16.39078pt on input line 580.
+LaTeX Warning: Float too large for page by 16.39078pt on input line 576.
 
-[73] [74
+[76] [77
 
 ]
 
-LaTeX Warning: Float too large for page by 83.50146pt on input line 785.
+LaTeX Warning: Float too large for page by 83.50146pt on input line 781.
 
-[75] [76]
+[78] [79]
 
-LaTeX Warning: Float too large for page by 28.7108pt on input line 857.
+LaTeX Warning: Float too large for page by 28.7108pt on input line 853.
 
-[77] [78
+[80] [81
 
-] [79] [80]
-<figuras/moco/distribuicao_loss.png, id=996, 1002.6258pt x 371.4678pt>
+] [82] [83]
+<figuras/moco/distribuicao_loss.png, id=1003, 1002.6258pt x 371.4678pt>
 File: figuras/moco/distribuicao_loss.png Graphic file (type png)
 <use figuras/moco/distribuicao_loss.png>
-Package pdftex.def Info: figuras/moco/distribuicao_loss.png  used on input line 1064.
+Package pdftex.def Info: figuras/moco/distribuicao_loss.png  used on input line 1060.
 (pdftex.def)             Requested size: 455.24408pt x 168.66669pt.
 File: figuras/moco/distribuicao_loss.png Graphic file (type png)
 <use figuras/moco/distribuicao_loss.png>
-Package pdftex.def Info: figuras/moco/distribuicao_loss.png  used on input line 1064.
+Package pdftex.def Info: figuras/moco/distribuicao_loss.png  used on input line 1060.
 (pdftex.def)             Requested size: 455.24408pt x 168.66669pt.
 
-Overfull \hbox (11.79996pt too wide) in paragraph at lines 1064--1065
+Overfull \hbox (11.79996pt too wide) in paragraph at lines 1060--1061
  []$[]$ 
  []
 
-<figuras/moco/loss_detalhada.png, id=997, 1002.6258pt x 370.986pt>
+<figuras/moco/loss_detalhada.png, id=1004, 1002.6258pt x 370.986pt>
 File: figuras/moco/loss_detalhada.png Graphic file (type png)
 <use figuras/moco/loss_detalhada.png>
-Package pdftex.def Info: figuras/moco/loss_detalhada.png  used on input line 1075.
+Package pdftex.def Info: figuras/moco/loss_detalhada.png  used on input line 1071.
 (pdftex.def)             Requested size: 455.24408pt x 168.4479pt.
 File: figuras/moco/loss_detalhada.png Graphic file (type png)
 <use figuras/moco/loss_detalhada.png>
-Package pdftex.def Info: figuras/moco/loss_detalhada.png  used on input line 1075.
+Package pdftex.def Info: figuras/moco/loss_detalhada.png  used on input line 1071.
 (pdftex.def)             Requested size: 455.24408pt x 168.4479pt.
 
-Overfull \hbox (11.79996pt too wide) in paragraph at lines 1075--1076
+Overfull \hbox (11.79996pt too wide) in paragraph at lines 1071--1072
  []$[]$ 
  []
 
-<figuras/moco/loss_geral.png, id=998, 999.2532pt x 352.1958pt>
+<figuras/moco/loss_geral.png, id=1005, 999.2532pt x 352.1958pt>
 File: figuras/moco/loss_geral.png Graphic file (type png)
 <use figuras/moco/loss_geral.png>
-Package pdftex.def Info: figuras/moco/loss_geral.png  used on input line 1087.
+Package pdftex.def Info: figuras/moco/loss_geral.png  used on input line 1083.
 (pdftex.def)             Requested size: 455.24408pt x 160.45355pt.
 File: figuras/moco/loss_geral.png Graphic file (type png)
 <use figuras/moco/loss_geral.png>
-Package pdftex.def Info: figuras/moco/loss_geral.png  used on input line 1087.
+Package pdftex.def Info: figuras/moco/loss_geral.png  used on input line 1083.
 (pdftex.def)             Requested size: 455.24408pt x 160.45355pt.
 
-Overfull \hbox (11.79996pt too wide) in paragraph at lines 1087--1088
+Overfull \hbox (11.79996pt too wide) in paragraph at lines 1083--1084
  []$[]$ 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<figuras/moco/lr_loss.png, id=999, 1002.6258pt x 495.7722pt>
+<figuras/moco/lr_loss.png, id=1006, 1002.6258pt x 495.7722pt>
 File: figuras/moco/lr_loss.png Graphic file (type png)
 <use figuras/moco/lr_loss.png>
-Package pdftex.def Info: figuras/moco/lr_loss.png  used on input line 1099.
+Package pdftex.def Info: figuras/moco/lr_loss.png  used on input line 1095.
 (pdftex.def)             Requested size: 455.24408pt x 225.10768pt.
 File: figuras/moco/lr_loss.png Graphic file (type png)
 <use figuras/moco/lr_loss.png>
-Package pdftex.def Info: figuras/moco/lr_loss.png  used on input line 1099.
+Package pdftex.def Info: figuras/moco/lr_loss.png  used on input line 1095.
 (pdftex.def)             Requested size: 455.24408pt x 225.10768pt.
 
-Overfull \hbox (11.79996pt too wide) in paragraph at lines 1099--1100
+Overfull \hbox (11.79996pt too wide) in paragraph at lines 1095--1096
  []$[]$ 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<figuras/moco/melhores_epocas.png, id=1000, 1003.1076pt x 352.6776pt>
+<figuras/moco/melhores_epocas.png, id=1007, 1003.1076pt x 352.6776pt>
 File: figuras/moco/melhores_epocas.png Graphic file (type png)
 <use figuras/moco/melhores_epocas.png>
-Package pdftex.def Info: figuras/moco/melhores_epocas.png  used on input line 1111.
+Package pdftex.def Info: figuras/moco/melhores_epocas.png  used on input line 1107.
 (pdftex.def)             Requested size: 455.24408pt x 160.05418pt.
 File: figuras/moco/melhores_epocas.png Graphic file (type png)
 <use figuras/moco/melhores_epocas.png>
-Package pdftex.def Info: figuras/moco/melhores_epocas.png  used on input line 1111.
+Package pdftex.def Info: figuras/moco/melhores_epocas.png  used on input line 1107.
 (pdftex.def)             Requested size: 455.24408pt x 160.05418pt.
 
-Overfull \hbox (11.79996pt too wide) in paragraph at lines 1111--1112
+Overfull \hbox (11.79996pt too wide) in paragraph at lines 1107--1108
  []$[]$ 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<figuras/tensaoimpedanciahumana.png, id=1001, 752.8125pt x 436.63126pt>
-File: figuras/tensaoimpedanciahumana.png Graphic file (type png)
-<use figuras/tensaoimpedanciahumana.png>
-Package pdftex.def Info: figuras/tensaoimpedanciahumana.png  used on input line 1129.
-(pdftex.def)             Requested size: 455.24408pt x 264.04613pt.
-File: figuras/tensaoimpedanciahumana.png Graphic file (type png)
-<use figuras/tensaoimpedanciahumana.png>
-Package pdftex.def Info: figuras/tensaoimpedanciahumana.png  used on input line 1129.
-(pdftex.def)             Requested size: 455.24408pt x 264.04613pt.
+) (2-textuais/5-conclusao.tex [84 <./figuras/moco/distribuicao_loss.png> <./figuras/moco/loss_detalhada.png>]
 
-Overfull \hbox (11.79996pt too wide) in paragraph at lines 1129--1130
- []$[]$ 
- []
+LaTeX Warning: Text page 85 contains only floats.
 
-[81 <./figuras/moco/distribuicao_loss.png> <./figuras/moco/loss_detalhada.png>]
-
-LaTeX Warning: Text page 82 contains only floats.
-
-[82 <./figuras/moco/loss_geral.png> <./figuras/moco/lr_loss.png> <./figuras/moco/melhores_epocas.png>]
-<figuras/figura-3.png, id=1015, 429.10312pt x 240.9pt>
-File: figuras/figura-3.png Graphic file (type png)
-<use figuras/figura-3.png>
-Package pdftex.def Info: figuras/figura-3.png  used on input line 1143.
-(pdftex.def)             Requested size: 455.24408pt x 255.577pt.
-File: figuras/figura-3.png Graphic file (type png)
-<use figuras/figura-3.png>
-Package pdftex.def Info: figuras/figura-3.png  used on input line 1143.
-(pdftex.def)             Requested size: 455.24408pt x 255.577pt.
-
-Overfull \hbox (11.79996pt too wide) in paragraph at lines 1143--1144
- []$[]$ 
- []
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[83 <./figuras/tensaoimpedanciahumana.png>] [84 <./figuras/figura-3.png>]) (2-textuais/5-conclusao.tex [85]
+[85 <./figuras/moco/loss_geral.png> <./figuras/moco/lr_loss.png> <./figuras/moco/melhores_epocas.png>]
 Cap\'{\i }tulo 5.
 ) (documento.bbl [86
 
@@ -1934,7 +1901,7 @@ File: lstlang1.sty 2025/11/14 1.11b listings language file
 
 
 pdfTeX warning: pdflatex (file ./3-pos-textuais/apendices/PID4416093.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-<3-pos-textuais/apendices/PID4416093.pdf, id=1105, 614.295pt x 794.97pt>
+<3-pos-textuais/apendices/PID4416093.pdf, id=1094, 614.295pt x 794.97pt>
 File: 3-pos-textuais/apendices/PID4416093.pdf Graphic file (type pdf)
 <use 3-pos-textuais/apendices/PID4416093.pdf>
 Package pdftex.def Info: 3-pos-textuais/apendices/PID4416093.pdf  used on input line 7.
@@ -1945,7 +1912,7 @@ pdfTeX warning: pdflatex (file ./3-pos-textuais/apendices/PID4416093.pdf): PDF i
 
 
 pdfTeX warning: pdflatex (file ./3-pos-textuais/apendices/PID4416093.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-<3-pos-textuais/apendices/PID4416093.pdf, id=1107, page=1, 614.295pt x 794.97pt>
+<3-pos-textuais/apendices/PID4416093.pdf, id=1096, page=1, 614.295pt x 794.97pt>
 File: 3-pos-textuais/apendices/PID4416093.pdf Graphic file (type pdf)
 <use 3-pos-textuais/apendices/PID4416093.pdf, page 1>
 Package pdftex.def Info: 3-pos-textuais/apendices/PID4416093.pdf , page1 used on input line 7.
@@ -1977,12 +1944,12 @@ Package pdftex.def Info: 3-pos-textuais/apendices/PID4416093.pdf , page1 used on
 
 ]
 \bfseries ANEXO B.
-<3-pos-textuais/anexos/Sikasil.pdf, id=1145, 597.23125pt x 845.1575pt>
+<3-pos-textuais/anexos/Sikasil.pdf, id=1134, 597.23125pt x 845.1575pt>
 File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
 <use 3-pos-textuais/anexos/Sikasil.pdf>
 Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf  used on input line 9.
 (pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
-<3-pos-textuais/anexos/Sikasil.pdf, id=1147, page=1, 597.23125pt x 845.1575pt>
+<3-pos-textuais/anexos/Sikasil.pdf, id=1136, page=1, 597.23125pt x 845.1575pt>
 File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
 <use 3-pos-textuais/anexos/Sikasil.pdf, page 1>
 Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page1 used on input line 9.
@@ -2009,7 +1976,7 @@ Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page1 used on input
  [96
 
  <./3-pos-textuais/anexos/Sikasil.pdf>]
-<3-pos-textuais/anexos/Sikasil.pdf, id=1167, page=2, 597.23125pt x 845.1575pt>
+<3-pos-textuais/anexos/Sikasil.pdf, id=1156, page=2, 597.23125pt x 845.1575pt>
 File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
 <use 3-pos-textuais/anexos/Sikasil.pdf, page 2>
 Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page2 used on input line 9.
@@ -2049,17 +2016,17 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 47764 strings out of 467867
- 908950 string characters out of 5418335
- 1711380 words of memory out of 5000000
- 74987 multiletter control sequences out of 15000+600000
- 734711 words of font info for 477 fonts, out of 8000000 for 9000
+ 47719 strings out of 467867
+ 907546 string characters out of 5418335
+ 1711330 words of memory out of 5000000
+ 74936 multiletter control sequences out of 15000+600000
+ 738912 words of font info for 494 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 99i,20n,120p,2951b,1494s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\danie\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/rsfs/rsfs10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on documento.pdf (98 pages, 1770572 bytes).
+ 99i,18n,120p,2951b,1494s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\danie\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt0900.pk> <C:\Users\danie\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/rsfs/rsfs10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on documento.pdf (98 pages, 1739132 bytes).
 PDF statistics:
- 1674 PDF objects out of 1728 (max. 8388607)
- 359 named destinations out of 1000 (max. 500000)
- 102252 words of extra memory for PDF output out of 106986 (max. 10000000)
+ 1678 PDF objects out of 1728 (max. 8388607)
+ 340 named destinations out of 1000 (max. 500000)
+ 106850 words of extra memory for PDF output out of 106986 (max. 10000000)
 

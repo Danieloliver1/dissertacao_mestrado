@@ -1,15 +1,11 @@
 \babel@toc {brazil}{}\relax 
-\babel@toc {english}{}\relax 
-\babel@toc {brazil}{}\relax 
-\contentsline {figure}{\numberline {1}{\ignorespaces Gráfico de barras da distribuição de causa dos pacientes.}}{21}{figure.caption.16}%
-\contentsline {figure}{\numberline {2}{\ignorespaces Esquema de pré-treinamento MoCo para aprendizado auto-supervisionado de representações do ECG/Holter. O codificador query recebe gradientes diretamente; o codificador key é atualizado por média móvel e alimenta uma fila de exemplos negativos.}}{48}{figure.caption.18}%
-\contentsline {figure}{\numberline {3}{\ignorespaces Fluxo do encoder ResNet-1D utilizado para extração de características convolucionais temporais dos sinais de ECG/Holter. Cada BasicBlock1D contém duas convoluções 1D com normalização em lote e conexão residual.}}{49}{figure.caption.19}%
-\contentsline {figure}{\numberline {4}{\ignorespaces Arquitetura híbrida final: extração de características do sinal por ResNet-1D/MoCo, compressão do ECG em gargalo de 16 dimensões, processamento clínico em paralelo, fusão balanceada e predição de logits para modelos de sobrevivência em tempo discreto.}}{53}{figure.caption.20}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Transformação dos logits brutos nos três modelos de sobrevivência em tempo discreto: LogisticHazard, PMF e DeepHitSingle.}}{54}{figure.caption.21}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{81}{figure.caption.37}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{81}{figure.caption.38}%
-\contentsline {figure}{\numberline {8}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{82}{figure.caption.39}%
-\contentsline {figure}{\numberline {9}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{82}{figure.caption.40}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{82}{figure.caption.41}%
-\contentsline {figure}{\numberline {11}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{83}{figure.caption.42}%
-\contentsline {figure}{\numberline {12}{\ignorespaces Produção anual das dissertações de mestrado e teses de doutorado entre os anos de 1990 e 2008}}{84}{figure.caption.43}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Gráfico de barras da distribuição de causa dos pacientes.}}{23}{figure.caption.16}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Esquema de pré-treinamento MoCo para aprendizado auto-supervisionado de representações do ECG/Holter. O codificador query recebe gradientes diretamente; o codificador key é atualizado por média móvel e alimenta uma fila de exemplos negativos.}}{56}{figure.caption.19}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Fluxo do encoder ResNet-1D utilizado para extração de características convolucionais temporais dos sinais de ECG/Holter. Cada BasicBlock1D contém duas convoluções 1D com normalização em lote e conexão residual.}}{56}{figure.caption.20}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Arquitetura híbrida final: extração de características do sinal por ResNet-1D/MoCo, compressão do ECG em gargalo de 16 dimensões, processamento clínico em paralelo, fusão balanceada e predição de logits para modelos de sobrevivência em tempo discreto.}}{60}{figure.caption.21}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Transformação dos logits brutos nos três modelos de sobrevivência em tempo discreto: LogisticHazard, PMF e DeepHitSingle.}}{62}{figure.caption.22}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{84}{figure.caption.38}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{84}{figure.caption.39}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{85}{figure.caption.40}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{85}{figure.caption.41}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Gráfico de tensão considerando a impedância humana}}{85}{figure.caption.42}%

@@ -10,6 +10,35 @@ convolucional profundo para extração de características dos sinais eletrocard
 uma rede de projeção para as variáveis clínicas e um cabeçote de predição baseado
 em modelos de tempo discreto.
 
+\subsection{Justificativa da Versão do MoCo Adotada}
+
+Embora a literatura sobre \textit{Momentum Contrast} apresente evoluções
+sucessivas do método --- MoCo v1 \cite{he2019moco}, MoCo v2
+\cite{chen2020mocov2} e MoCo v3 \cite{chen2021mocov3} ---, este trabalho adota
+a formulação da segunda versão, que combina a fila dinâmica de amostras
+negativas (\textit{queue}) e o encoder de momentum do MoCo v1 com o cabeçote
+de projeção não linear e as augmentações mais fortes introduzidas no MoCo v2.
+A escolha se justifica pela natureza do problema de instabilidade que o MoCo
+v3 se propõe a resolver: Chen, Xie e He (2021) demonstram que os colapsos e
+oscilações de perda observados no treinamento contrastivo de larga escala
+decorrem, majoritariamente, da camada de projeção linear de \textit{patches}
+característica de \textit{Vision Transformers} (ViT), que o MoCo v3 corrige
+congelando essa camada com pesos aleatórios fixos. Uma vez que o encoder
+utilizado neste trabalho é uma ResNet-18 1D --- e não um ViT ---, essa fonte
+específica de instabilidade não se aplica, tornando desnecessária a principal
+motivação para a adoção do v3.
+
+Adicionalmente, o MoCo v3 substitui a fila de negativos por \textit{batches}
+de tamanho elevado (da ordem de milhares de amostras) para garantir contraste
+suficiente apenas com os negativos do próprio lote. Dado o tamanho reduzido do
+conjunto de dados disponível (aproximadamente 870 pacientes) e as limitações
+de memória de GPU associadas ao processamento de sinais de ECG de alta
+resolução temporal (24.000 amostras por segmento), a manutenção da fila de
+negativos ($K = 8192$) foi preferida à sua remoção, uma vez que ela permite
+manter um número expressivo de comparações negativas por passo de treinamento
+mesmo com \textit{batch sizes} moderados ($256$), o que seria inviável na
+formulação estritamente definida pelo v3.
+
 \subsection{Pré-treinamento Auto-supervisionado: MoCo}
 
 Dado o tamanho reduzido do conjunto de dados disponível --- aproximadamente
@@ -190,6 +219,92 @@ coeficiente de momento $m = 0{,}999$ e dimensão do espaço de projeção
 $d = 256$. O tamanho do dicionário foi fixado em $K = 8{.}192$, valor
 que garante um conjunto rico de amostras negativas sem exceder a memória
 disponível na GPU utilizada.
+
+%------------- justificativa dos experimentos -----------------------
+
+\section{Processo Iterativo de Desenvolvimento do MoCo: Variações Experimentais}
+\label{sec:processo-iterativo-moco}
+
+Ao longo do processo experimental, o framework \textit{Momentum Contrast} (MoCo) foi submetido a sucessivas iterações de adaptação e refinamento visando otimizar seu desempenho em cenários de dados escassos e desbalanceados. Esse processo iterativo não representa uma evolução metodológica disruptiva, mas sim um refinamento gradual dos componentes arquiteturais e das parametrizações, motivado por hipóteses específicas sobre a capacidade expressiva do modelo e a qualidade das representações aprendidas.
+
+As variações implementadas focalizaram-se primordialmente em três eixos: (i) a arquitetura do encoder base, explorando diferentes implementações de ResNet-18 1D, incluindo versão manual, implementação via biblioteca \texttt{tsai} e versões com mecanismos de atenção e Transformer; (ii) os hiperparâmetros do contraste, incluindo tamanho da fila de negativos ($K$), dimensionalidade do \textit{embedding} ($d$) e temperatura da função \textit{softmax} ($\tau$); e (iii) as estratégias de augmentação de dados e configurações de treinamento, como agressividade das transformações, tamanho da janela temporal e critérios de parada.
+
+Cada versão foi avaliada segundo métricas de convergência, estabilidade numérica e qualidade das representações, com as descobertas de versões anteriores informando decisões de design em versões subsequentes. Essa abordagem permite identificar quais modificações geram melhorias genuínas e quais constituem artefatos de ajuste de hiperescala, fornecendo fundamentação empírica para a seleção final do modelo. A Tabela~\ref{tab:moco_versions} sintetiza os principais hiperparâmetros e características arquiteturais de cada versão, facilitando a comparação sistemática.
+
+
+\begin{table}[htbp]
+	\centering
+	\caption{Síntese comparativa dos hiperparâmetros e características arquiteturais das cinco variações experimentais do MoCo.}
+	\label{tab:moco_versions}
+	\scriptsize
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{llllll}
+			\toprule
+			\textbf{Parâmetro}                          & \textbf{Versão 1}         & \textbf{Versão 2}           & \textbf{Versão 3}          & \textbf{Versão 4}         & \textbf{Versão 5}          \\
+			\midrule
+			Arquitetura base                            & ResNet-18 1D manual       & XResNet1d18 (\texttt{tsai}) & ResNet-18 1D manual        & ResNet-18 1D manual       & ResNet-18 1D + Transformer \\
+			Dimensão do \textit{embedding} ($d$)        & 128                       & 128                         & 256                        & 128                       & 256                        \\
+			Tamanho da fila ($K$)                       & 4.096                     & 4.096                       & 8.192                      & 4.096                     & 8.192                      \\
+			Coeficiente de \textit{momentum} ($m$)      & 0,999                     & 0,999                       & 0,999                      & 0,999                     & 0,999                      \\
+			Temperatura ($\tau$)                        & 0,07                      & 0,07                        & 0,07                       & 0,07                      & 0,07                       \\
+			\textit{Batch size}                         & 256                       & 256                         & 256                        & 256                       & 256                        \\
+			\textit{Window size} (amostras)             & 12.000                    & 12.000                      & 24.000                     & 12.000                    & 24.000                     \\
+			Tempo equivalente                           & $\sim$1 min               & $\sim$1 min                 & $\sim$2 min                & $\sim$1 min               & $\sim$2 min                \\
+			Probabilidade de augmentação                & 80\%                      & 80\%                        & 70\%                       & 80\%                      & 80\%                       \\
+			\textit{Weight decay}                       & $1 \times 10^{-4}$        & $1 \times 10^{-4}$          & $5 \times 10^{-4}$         & $1 \times 10^{-4}$        & $5 \times 10^{-4}$         \\
+			Épocas máximas                              & 200                       & 200                         & 500                        & 300                       & 500                        \\
+			\textit{Early stopping} (\textit{patience}) & --                        & --                          & 50                         & --                        & 50                         \\
+			Amostras por paciente                       & 100                       & 100                         & 100                        & 100                       & 100                        \\
+			Mecanismo de atenção                        & Não                       & Não                         & Não                        & Não                       & Sim (Transformer)          \\
+			LR scheduler                                & \textit{Cosine Annealing} & \textit{Cosine Annealing}   & \texttt{ReduceLROnPlateau} & \textit{Cosine Annealing} & \texttt{ReduceLROnPlateau} \\
+			\bottomrule
+		\end{tabular}%
+	}
+\end{table}
+
+\subsection{Versões 1 e 2: Adaptação Base e Otimização Algorítmica}
+\label{subsec:moco-versoes-1-2}
+
+O ponto de partida consistiu na implementação direta da formulação do MoCo v2, transpondo os mecanismos de contraste visual para o domínio temporal de sinais de ECG Holter. A Versão 1 utilizou uma ResNet-18 1D manual como encoder base, configurada conforme a Tabela~\ref{tab:moco_versions}: fila de negativos de tamanho $K = 4096$, dimensão de \textit{embedding} $d = 128$, coeficiente de \textit{momentum} $m = 0{,}999$ e temperatura $\tau = 0{,}07$, conforme recomendações originais.
+
+Os segmentos de ECG foram processados em janelas de 12.000 amostras, aproximadamente 1 minuto a 200 Hz com três derivações, com \textit{batch size} de 256 amostras e treinamento de 200 épocas. As augmentações foram aplicadas diretamente em GPU mediante perturbações no domínio temporal: escalonamento aleatório de $0{,}8$ a $1{,}2\times$, ruído gaussiano com variância 0,05 e mascaramento temporal de 10\% da janela, com probabilidade de 80\%. Essa configuração serviu como \textit{baseline}, validando a viabilidade da abordagem contrastiva para ECG e estabelecendo a arquitetura fundamental.
+
+A Versão 2 substituiu a implementação manual pela arquitetura XResNet1d18 disponibilizada pela biblioteca \texttt{tsai}, incorporando otimizações algorítmicas mediante refinamentos em inicialização de pesos, normalização de camadas e composição de blocos residuais. Embora mantendo os mesmos hiperparâmetros da Versão 1, essas melhorias de implementação reduziram a complexidade computacional e estabilizaram o treinamento. Contudo, as curvas de perda e as representações aprendidas não exibiram divergências significativas em relação à Versão 1, indicando que o modelo havia convergido próximo a um ponto de equilíbrio local. Essa observação empiricamente validada motivou a exploração de estratégias mais agressivas nas versões subsequentes.
+
+\subsection{Versão 3: Regime Rigoroso com Fila Expandida}
+\label{subsec:moco-versao-3}
+
+Motivada pela hipótese de que o tamanho reduzido da fila de negativos ($K = 4096$) comprometia a qualidade do contraste em datasets limitados, a Versão 3 adotou uma configuração rigorosa com expansão sistemática dos hiperparâmetros. A dimensão do \textit{embedding} foi dobrada para $d = 256$, ampliando o espaço de representação e permitindo capturar estruturas mais complexas dos padrões morfológicos do ECG.
+
+Concomitantemente, a fila de negativos foi expandida para $K = 8192$, dobrando o número de comparações negativas por iteração e reduzindo o risco de colapso da representação. Essa expansão foi viabilizada pela retomada de um encoder ResNet-18 1D manual em vez da biblioteca \texttt{tsai}, proporcionando controle fino sobre a alocação de memória e evitando abstrações que pudessem limitar otimizações em GPU.
+
+O tamanho da janela de ECG foi aumentado para 24.000 amostras, aproximadamente 2 minutos, fornecendo mais contexto temporal e capturando variações fisiológicas de maior escala, incluindo ciclos completos de variabilidade da frequência cardíaca. A agressividade de augmentação foi levemente reduzida para 70\% de probabilidade, evitando degradação excessiva que pudesse prejudicar o aprendizado de padrões sutis, enquanto o \textit{weight decay} foi aumentado para $5 \times 10^{-4}$, fornecendo regularização mais forte. O número de épocas foi elevado para 500 com estratégia de parada antecipada (\textit{patience} = 50), permitindo exploração mais profunda do espaço de parâmetros com proteção contra \textit{overfitting}. Essa configuração produziu representações de maior qualidade, validando experimentalmente a hipótese de que datasets escassos beneficiam-se de dicionários de negativos maiores e janelas temporais mais extensas.
+
+\subsection{Versão 4: Regime Ultra-Conservador como Controle Ablativo}
+\label{subsec:moco-versao-4}
+
+A Versão 4 representou uma reversão estratégica, retornando aos hiperparâmetros da Versão 1 ($d = 128$, $K = 4096$, \textit{window size} = 12.000 amostras e \textit{weight decay} = $10^{-4}$), com extensão moderada do treinamento para 300 épocas. Essa configuração foi proposta como controle ablativo, testando a hipótese nula de que as expansões da Versão 3 ofereciam ganho real ou se consistiam meramente em artefatos de ajuste de escala sem impacto substantivo na aprendizagem de representações.
+
+O objetivo específico era isolar o efeito de mudanças individuais de hiperparâmetros, como dimensão de \textit{embedding}, tamanho da fila e tamanho da janela, por meio de uma configuração regredida, permitindo posterior análise comparativa entre as curvas de treinamento. Embora mais eficiente computacionalmente, com redução aproximada de 40\% no uso de memória em relação à Versão 3, a Versão 4 confirmou empiricamente que a Versão 3 representava um avanço genuíno, não apenas um artefato de \textit{scaling}, validando que a expansão de hiperparâmetros correspondia a ganhos reais na qualidade do contraste.
+
+\subsection{Versão 5: Integração de Atenção Temporal e Transformer}
+\label{subsec:moco-versao-5}
+
+Considerando que sinais de ECG contêm dependências de longo prazo estruturadas, por exemplo variações cíclicas no intervalo RR, mudanças de ritmo cardíaco ao longo de 24 horas e correlações entre diferentes derivações, a Versão 5 incorporou mecanismos explícitos de atenção ao encoder contrastivo, representando o primeiro desvio significativo da arquitetura ResNet pura.
+
+Conforme a Tabela~\ref{tab:moco_versions}, a arquitetura compõe-se de três componentes sequenciais: (1) uma ResNet-18 1D que extrai características locais em múltiplas escalas temporais, produzindo um tensor de dimensão $[\text{batch}, 512, \text{seq\_len}]$; (2) um encoder Transformer com 8 cabeçotes de atenção (\texttt{nhead = 8}), dimensão \textit{feedforward} de 1.024 dimensões e \textit{dropout} de 0,3, operando sobre a sequência temporal para aprender dependências globais entre regiões distantes do sinal; e (3) um cabeçote de projeção MLP que mapeia as representações aprendidas para o espaço contrastivo de $d = 256$ dimensões.
+
+O módulo \texttt{GPU\_ECG\_Augmenter}, integrado à pipeline de treinamento, aplica as mesmas perturbações calibradas com probabilidade de 80\% diretamente em GPU, reduzindo o overhead de transferência de dados CPU--GPU. A configuração de treinamento mantém os hiperparâmetros expandidos da Versão 3: fila $K = 8192$, \textit{embedding} $d = 256$, \textit{window size} = 24.000 e \textit{weight decay} = $5 \times 10^{-4}$, preservando os ganhos comprovados enquanto adiciona a capacidade expressiva do Transformer. Essa arquitetura híbrida permite que o modelo aprenda não apenas características morfológicas locais, extraídas pela ResNet, mas também padrões temporais estruturados de variação, aprendidos pelo Transformer, potencialmente capturando fenômenos fisiológicos como variabilidade da frequência cardíaca, mudanças progressivas de ritmo ao longo de 24 horas e correlações entre derivações.
+
+\subsection{Justificativa da Seleção Final: Versão 5}
+\label{subsec:justificativa-versao-5}
+
+A escolha da Versão 5 como modelo de pré-treinamento definitivo fundamenta-se em três critérios convergentes. Primeiro, a incorporação de mecanismos de atenção Transformer permite capturar dependências temporais de longo prazo inerentes a registros Holter de 24 horas, indo além das características locais extraíveis por convoluções puras; a comparação com a Versão 4 demonstra que esse ganho arquitetural não estava disponível em modelos puramente convolucionais.
+
+Segundo, a configuração parametrizada segundo os aprendizados das Versões 3 e 4, com fila expandida $K = 8192$, \textit{embedding} de alta dimensão $d = 256$ e janelas maiores de 24.000 amostras, fornece sinal contrastivo suficiente mesmo em cenários de dados limitados, com aproximadamente 870 pacientes, mitigando o risco de colapso de representação. Terceiro, a execução de augmentações em GPU elimina gargalos de entrada e saída e de transferência de dados, permitindo treinamento mais eficiente e escalável.
+
+Os pesos aprendidos pelo \texttt{encoder\_q}, composto por ResNet e Transformer, na Versão 5 são posteriormente utilizados para inicializar o \textit{backbone} do modelo híbrido de análise de sobrevivência, substituindo pesos aleatórios e fornecendo uma base de representação rica para o aprendizado supervisionado subsequente. Essa estratégia progressiva de otimização e integração de componentes arquiteturais, sintetizada na Tabela~\ref{tab:moco_versions}, garante que o pré-treinamento auto-supervisionado capture tanto estruturas morfológicas quanto dinâmicas fisiológicas relevantes para a predição de eventos cardíacos adversos.
+
 
 %---------------colocar os fluxos do moco
 
@@ -646,17 +761,17 @@ agregação com três variantes:
 	      a picos e a robustez a ruídos.
 \end{itemize}
 
-O escore agregado de cada paciente é então utilizado para o cálculo do
-\textit{C-index} com a biblioteca \textit{lifelines}, tendo como referência
-o tempo de sobrevivência e o indicador de evento de cada indivíduo.
+% O escore agregado de cada paciente é então utilizado para o cálculo do
+% \textit{C-index} com a biblioteca \textit{lifelines}, tendo como referência
+% o tempo de sobrevivência e o indicador de evento de cada indivíduo.
 
 
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-\section{Exemplo de alíneas}\label{sec:exemplo-de-algoritmos-e-figuras}
+% \section{Exemplo de alíneas}\label{sec:exemplo-de-algoritmos-e-figuras}
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
 %\begin{algorithm}[h!]
 %	\SetSpacedAlgorithm
@@ -675,7 +790,7 @@ Texto texto texto texto texto texto texto texto texto texto texto texto texto te
 %	}	
 %\end{algorithm}
 
-Texto texto texto texto texto texto texto texto texto texto texto.
+% Texto texto texto texto texto texto texto texto texto texto texto.
 
 %\begin{algorithm}[H]
 %	\Entrada{o proprio texto}
@@ -700,149 +815,149 @@ Texto texto texto texto texto texto texto texto texto texto texto.
 %	\end{algorithmic}
 %\end{algorithm}
 
-Exemplo de alíneas com números:
+% Exemplo de alíneas com números:
 
-\begin{alineascomnumero}
-	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
-	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
-	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
-	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
-	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
-	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
-\end{alineascomnumero}
+% \begin{alineascomnumero}
+% 	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
+% 	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
+% 	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
+% 	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
+% 	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
+% 	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
+% \end{alineascomnumero}
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-Ou então figuras podem ser incorporadas de arquivos externos, como é o caso da \autoref{fig-grafico-1}. Se a figura que ser incluída se tratar de um diagrama, um gráfico ou uma ilustração que você mesmo produza, priorize o uso de imagens vetoriais no formato PDF. Com isso, o tamanho do arquivo final do trabalho será menor, e as imagens terão uma apresentação melhor, principalmente quando impressas, uma vez que imagens vetorias são perfeitamente escaláveis para qualquer dimensão. Nesse caso, se for utilizar o Microsoft Excel para produzir gráficos, ou o Microsoft Word para produzir ilustrações, exporte-os como PDF e os incorpore ao documento conforme o exemplo abaixo. No entanto, para manter a coerência no uso de software livre (já que você está usando LaTeX e abnTeX),  teste a ferramenta InkScape\index{InkScape}. ao CorelDraw\index{CorelDraw} ou ao Adobe Illustrator\index{Adobe! Illustrator}.  De todo modo, caso não seja possível  utilizar arquivos de imagens como PDF, utilize qualquer outro formato, como JPEG, GIF, BMP, etc.  Nesse caso, você pode tentar aprimorar as imagens incorporadas com o software livre \index{Gimp}Gimp. Ele é uma alternativa livre ao Adobe Photoshop\index{Adobe! Photoshop}.
+% Ou então figuras podem ser incorporadas de arquivos externos, como é o caso da \autoref{fig-grafico-1}. Se a figura que ser incluída se tratar de um diagrama, um gráfico ou uma ilustração que você mesmo produza, priorize o uso de imagens vetoriais no formato PDF. Com isso, o tamanho do arquivo final do trabalho será menor, e as imagens terão uma apresentação melhor, principalmente quando impressas, uma vez que imagens vetorias são perfeitamente escaláveis para qualquer dimensão. Nesse caso, se for utilizar o Microsoft Excel para produzir gráficos, ou o Microsoft Word para produzir ilustrações, exporte-os como PDF e os incorpore ao documento conforme o exemplo abaixo. No entanto, para manter a coerência no uso de software livre (já que você está usando LaTeX e abnTeX),  teste a ferramenta InkScape\index{InkScape}. ao CorelDraw\index{CorelDraw} ou ao Adobe Illustrator\index{Adobe! Illustrator}.  De todo modo, caso não seja possível  utilizar arquivos de imagens como PDF, utilize qualquer outro formato, como JPEG, GIF, BMP, etc.  Nesse caso, você pode tentar aprimorar as imagens incorporadas com o software livre \index{Gimp}Gimp. Ele é uma alternativa livre ao Adobe Photoshop\index{Adobe! Photoshop}.
 
-\section{Usando Fórmulas Matemáticas}
+% \section{Usando Fórmulas Matemáticas}
 
-Para escrever um símbolo matemático no texto, escreva símbolo entre cifrões, por exemplo, $\alpha$, $\beta$ e $\gamma$ são símbolo do alfabeto grego. Se você quiser inserir equações enumeradas, siga a estrutura de
-\begin{equation}
-	\label{eq:indices}
-	k_{n+1} = n^2 + k_n^2 - k_{n-1}.
-\end{equation}
-Observe a pontuação, pois a equação faz parte da frase e do parágrafo. Como a equação faz parte da frase, não se utiliza o \textit{label} numérico \ref{eq:indices}.
+% Para escrever um símbolo matemático no texto, escreva símbolo entre cifrões, por exemplo, $\alpha$, $\beta$ e $\gamma$ são símbolo do alfabeto grego. Se você quiser inserir equações enumeradas, siga a estrutura de
+% \begin{equation}
+% 	\label{eq:indices}
+% 	k_{n+1} = n^2 + k_n^2 - k_{n-1}.
+% \end{equation}
+% Observe a pontuação, pois a equação faz parte da frase e do parágrafo. Como a equação faz parte da frase, não se utiliza o \textit{label} numérico \ref{eq:indices}.
 
-Quando for citar a Equação \ref{eq:indices} novamente no texto, utiliza-se o \textit{label} numérico. Repare que a palavra ``Equação'' foi escrita com ``E'' maiúsculo.
+% Quando for citar a Equação \ref{eq:indices} novamente no texto, utiliza-se o \textit{label} numérico. Repare que a palavra ``Equação'' foi escrita com ``E'' maiúsculo.
 
-Um exemplo de equações com frações é dado por
-\begin{equation}
-	\label{eq:fracao}
-	\begin{aligned}
-		x = a_0 + \cfrac{1}{a_1
-			+ \cfrac{1}{a_2
-				+ \cfrac{1}{a_3 + \cfrac{1}{a_4} } } }.
-	\end{aligned}
-\end{equation}
+% Um exemplo de equações com frações é dado por
+% \begin{equation}
+% 	\label{eq:fracao}
+% 	\begin{aligned}
+% 		x = a_0 + \cfrac{1}{a_1
+% 			+ \cfrac{1}{a_2
+% 				+ \cfrac{1}{a_3 + \cfrac{1}{a_4} } } }.
+% 	\end{aligned}
+% \end{equation}
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-\begin{equation}
-	\begin{aligned}
-		k_{n+1} = n^2 + k_n^2 - k_{n-1}.
-	\end{aligned}
-\end{equation}
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
+% \begin{equation}
+% 	\begin{aligned}
+% 		k_{n+1} = n^2 + k_n^2 - k_{n-1}.
+% 	\end{aligned}
+% \end{equation}
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-\begin{equation}
-	\label{eq:trigo}
-	\begin{aligned}
-		\cos (2\theta) = \cos^2 \theta - \sin^2 \theta
-	\end{aligned}.
-\end{equation}
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
+% \begin{equation}
+% 	\label{eq:trigo}
+% 	\begin{aligned}
+% 		\cos (2\theta) = \cos^2 \theta - \sin^2 \theta
+% 	\end{aligned}.
+% \end{equation}
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-\begin{equation}
-	\label{eq:matriz}
-	\begin{aligned}
-		A_{m,n} =
-		\begin{pmatrix}
-			a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
-			a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
-			\vdots  & \vdots  & \ddots & \vdots  \\
-			a_{m,1} & a_{m,2} & \cdots & a_{m,n}
-		\end{pmatrix}
-	\end{aligned}.
-\end{equation}
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
+% \begin{equation}
+% 	\label{eq:matriz}
+% 	\begin{aligned}
+% 		A_{m,n} =
+% 		\begin{pmatrix}
+% 			a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+% 			a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+% 			\vdots  & \vdots  & \ddots & \vdots  \\
+% 			a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+% 		\end{pmatrix}
+% 	\end{aligned}.
+% \end{equation}
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-\begin{equation}
-	\label{eq:sistema}
-	\begin{aligned}
-		f(n) = \left\{
-		\begin{array}{l l}
-			n/2      & \quad \text{if $n$ is even} \\
-			-(n+1)/2 & \quad \text{if $n$ is odd}
-		\end{array} \right.
-	\end{aligned}.
-\end{equation}
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
+% \begin{equation}
+% 	\label{eq:sistema}
+% 	\begin{aligned}
+% 		f(n) = \left\{
+% 		\begin{array}{l l}
+% 			n/2      & \quad \text{if $n$ is even} \\
+% 			-(n+1)/2 & \quad \text{if $n$ is odd}
+% 		\end{array} \right.
+% 	\end{aligned}.
+% \end{equation}
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
 
-%\section{Usando Algoritmos}
+% %\section{Usando Algoritmos}
 
-%\begin{algorithm}[h!]
-%	\SetSpacedAlgorithm
-%	\caption{\label{alg:algoritmo_de_colonica_de_formigas}Algoritmo de Otimização por Colônia de Formiga}
-%	\Entrada{Entrada do Algoritmo}
-%	\Saida{Saida do Algoritmo}
-%	\Inicio{
-%		Atribua os valores dos parâmetros\;
-%		Inicialize as trilhas de feromônios\;
-%		\Enqto{não atingir o critério de parada}{
-%			\Para{cada formiga}{
-%				Construa as Soluções\;
-%			}
-%			Aplique Busca Local (Opcional)\;
-%			Atualize o Feromônio\;
-%		}	
-%	}		
-%\end{algorithm}
+% %\begin{algorithm}[h!]
+% %	\SetSpacedAlgorithm
+% %	\caption{\label{alg:algoritmo_de_colonica_de_formigas}Algoritmo de Otimização por Colônia de Formiga}
+% %	\Entrada{Entrada do Algoritmo}
+% %	\Saida{Saida do Algoritmo}
+% %	\Inicio{
+% %		Atribua os valores dos parâmetros\;
+% %		Inicialize as trilhas de feromônios\;
+% %		\Enqto{não atingir o critério de parada}{
+% %			\Para{cada formiga}{
+% %				Construa as Soluções\;
+% %			}
+% %			Aplique Busca Local (Opcional)\;
+% %			Atualize o Feromônio\;
+% %		}	
+% %	}		
+% %\end{algorithm}
 
-\section{Usando Código-fonte}
+% \section{Usando Código-fonte}
 
-Um exemplo de código-fonte, ou código de programação encontra-se no Apendice \ref{ap:A}
-
-
-\section{Usando Teoremas, Proposições, etc}
-
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-\begin{teo}[Pitágoras]
-	Em todo triângulo retângulo o quadrado do comprimento da
-	hipotenusa é igual a soma dos quadrados dos comprimentos dos catetos. Usando o Apêndice \ref{ap:C}
-\end{teo}
+% Um exemplo de código-fonte, ou código de programação encontra-se no Apendice \ref{ap:A}
 
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+% \section{Usando Teoremas, Proposições, etc}
 
-\begin{teo}[Fermat]
-	Não existem inteiros $n > 2$, e $x, y, z$ tais que $x^n + y^n = z$
-\end{teo}
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-\begin{prop}
-	Para demonstrar o Teorema de Pitágoras...
-\end{prop}
-
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-\begin{exem}
-	Este é um exemplo do uso do ambiente exem definido acima.
-\end{exem}
-
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+% \begin{teo}[Pitágoras]
+% 	Em todo triângulo retângulo o quadrado do comprimento da
+% 	hipotenusa é igual a soma dos quadrados dos comprimentos dos catetos. Usando o Apêndice \ref{ap:C}
+% \end{teo}
 
 
-\begin{xdefinicao}
-	Definimos o produto de ...
-\end{xdefinicao}
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+% \begin{teo}[Fermat]
+% 	Não existem inteiros $n > 2$, e $x, y, z$ tais que $x^n + y^n = z$
+% \end{teo}
 
-\section{Usando Questões}
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-Um exemplo de questionário encontra-se no Apêndice \ref{ap:B}.
+% \begin{prop}
+% 	Para demonstrar o Teorema de Pitágoras...
+% \end{prop}
 
-%Movido para o Apêndice
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+
+% \begin{exem}
+% 	Este é um exemplo do uso do ambiente exem definido acima.
+% \end{exem}
+
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+
+
+% \begin{xdefinicao}
+% 	Definimos o produto de ...
+% \end{xdefinicao}
+
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+
+% \section{Usando Questões}
+
+% Um exemplo de questionário encontra-se no Apêndice \ref{ap:B}.
+
+% %Movido para o Apêndice
 

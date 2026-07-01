@@ -27,9 +27,81 @@ pacientes apresentaram eventos de \gls{MSC}, as coletas foram feitas em 8 hospit
 
 
 
-\section{Base de dados}\label{sec:BaseDeDados}
+\section{Base de Dados}\label{sec:BaseDeDados}
 
-De acordo com a pesquisa \cite{physionet2020music}, os dados coletados incluem sinais de ECG Holter de 24 horas de 3 derivações (96\%) e 2 derivações (4\%), dados de \gls{ECG} em repouso de alta resolução com três derivações de 20 minutos, além de dados clínicos e demográficos dos pacientes, ecocardiografia e exames laboratoriais de sangue. Esses dados foram registrados em uma tabela CSV com 105 variáveis. Os dados são ricos tanto em sinais de ECG para o encontro de padrões de ondas e intervalos, como o QT, mudanças nas frequências, amplitude de onda e picos RR, quanto em dados clínicos e demográficos, o que permite uma análise abrangente dos fatores de risco associados a eventos cardíacos adversos. Existem vários métodos para análise usando esses dados; dentre as variáveis citadas, existe duas variáveis que irei usar como ponto de partida que se chama Follow-up period from enrollment (days)  \cite{physionet2020music_dataset}. Que se trata o tempo do período de acompanhamento dos pacientes, ou seja, o tempo que os pacientes ficaram em observação clínica e acompanhamento, e o Cause of death \cite{physionet2020music_dataset} que se trata da causa da morte dos pacientes, ou seja, se o paciente morreu por causa de uma arritmia cardíaca ou por outra causa. A partir dessas duas variáveis, o objetivo deste trabalho é analisar a relação entre o tempo de acompanhamento dos pacientes e a causa da morte, buscando identificar padrões ou associações que possam contribuir para a compreensão dos fatores de risco relacionados a eventos cardíacos adversos.
+De acordo com \citeonline{physionet2020music}, os dados coletados incluem sinais de ECG
+Holter de 24 horas com três derivações (96\%) e duas derivações (4\%), registros de
+eletrocardiograma (\gls{ECG}) em repouso de alta resolução com três derivações e duração de
+20 minutos, além de dados clínicos e demográficos dos pacientes, ecocardiografia e exames
+laboratoriais de sangue. Todas essas informações foram consolidadas em uma tabela no formato
+\gls{CSV} com 105 variáveis \cite{physionet2020music_dataset}. Os dados são ricos tanto em
+sinais de ECG — que permitem identificar padrões de ondas e intervalos como QT, variações de
+frequência, amplitude de onda e intervalos RR — quanto em variáveis clínicas e demográficas,
+possibilitando uma análise abrangente dos fatores de risco associados a eventos cardíacos
+adversos.
+
+Dentre as 105 variáveis disponíveis, duas constituem o ponto de partida deste trabalho. A
+primeira é o \textit{Follow-up period from enrollment (days)} \cite{physionet2020music_dataset},
+que registra o tempo, em dias, durante o qual cada paciente permaneceu sob observação clínica
+desde a data de inclusão no estudo. A segunda é a variável \textit{Cause of death}
+\cite{physionet2020music_dataset}, que classifica o desfecho de cada paciente por meio de
+códigos numéricos: o Código 0 corresponde a pacientes vivos ao final do acompanhamento
+(73,2\%); o Código 1 indica óbito por causas não cardíacas (6,1\%); o Código 3 corresponde
+à Morte Súbita Cardíaca (\gls{MSC}), de origem elétrica (9,5\%); e os Códigos 6 e 7
+referem-se à morte por falência de bomba cardíaca, isto é, à progressão terminal da
+insuficiência cardíaca no ambiente hospitalar (11,2\%).
+
+Do ponto de vista fisiopatológico, os dois tipos de desfecho cardíaco fatal presentes nesta base
+de dados possuem mecanismos distintos. A Morte Súbita Cardíaca (Código 3) é um evento de
+natureza \textbf{elétrica}: o sistema de condução cardíaca sofre uma disfunção abrupta — tipicamente
+uma fibrilação ventricular — que interrompe o ritmo coordenado do coração em segundos,
+independentemente da condição mecânica do músculo cardíaco. Já a falência de bomba (Códigos
+6 e 7) é um evento de natureza \textbf{mecânica}: o miocárdio perde progressivamente a capacidade
+de ejetar sangue de forma eficiente, em um processo gradual e clinicamente anunciado, associado
+à deterioração da função sistólica ou diastólica. Essa distinção fisiopatológica implica que os
+dois desfechos possuem assinaturas morfológicas distintas no sinal de ECG, o que tem
+consequências diretas sobre a definição do evento de interesse nos experimentos deste trabalho.
+
+Diante disso, este trabalho adota dois cenários experimentais complementares, conforme
+detalhado a seguir.
+
+\textbf{Cenário 1 — Mortalidade Cardíaca Geral (Desfecho Composto).} Neste cenário, o evento
+de interesse é definido como qualquer óbito de causa cardíaca, englobando tanto a Morte Súbita
+Cardíaca (Código 3) quanto a falência de bomba (Códigos 6 e 7). Pacientes com óbito por
+causas não cardíacas (Código 1) são tratados como censurados, à semelhança dos pacientes
+vivos ao final do acompanhamento (Código 0). Esse agrupamento resulta em 205 pacientes com
+evento (20,67\% da base), proporção considerada favorável para o treinamento de modelos
+preditivos baseados em redes neurais \cite{physionet2020cardiovascular}. A justificativa clínica
+para esse cenário é que, do ponto de vista do médico assistente, ambos os desfechos representam
+a progressão fatal da doença cardíaca e demandam estratificação precoce de risco. A justificativa
+metodológica é que o maior número de eventos positivos permite um aprendizado mais robusto
+das representações do sinal de ECG pelo modelo, especialmente na etapa de pré-treinamento
+auto-supervisionado com o Momentum Contrast (MoCo).
+
+\textbf{Cenário 2 — Morte Súbita Cardíaca (Desfecho Específico).} Neste cenário, o evento de
+interesse é restrito exclusivamente à Morte Súbita Cardíaca (Código 3), que representa 9,5\%
+dos pacientes (94 casos). Todos os demais pacientes — incluindo os que faleceram por falência
+de bomba (Códigos 6 e 7) ou por causas não cardíacas (Código 1) — são tratados como
+censurados. Esse cenário é clinicamente mais específico, pois a \gls{MSC} possui
+uma assinatura morfológica própria no ECG — relacionada a alterações do intervalo QT,
+variabilidade da frequência cardíaca e padrões de repolarização ventricular — que o modelo
+deve aprender a identificar de forma isolada. A desvantagem é o maior grau de
+desbalanceamento, que exige estratégias adicionais de regularização e ponderação durante o
+treinamento.
+
+A comparação entre os dois cenários permite avaliar, de forma estruturada, tanto a capacidade
+do modelo de capturar o risco cardíaco fatal em sentido amplo quanto sua capacidade de
+discriminar especificamente o mecanismo elétrico da morte súbita — contribuindo para a
+compreensão do valor preditivo incremental do sinal de ECG Holter em cada contexto clínico.
+
+\textbf{Cenário 3: Eventos Cardiovasculares Adversos Maiores (Desfecho Composto MACE).}
+
+Neste terceiro cenário, adota-se a formulação de um desfecho composto inspirado no padrão-ouro de ensaios clínicos cardiológicos internacionais, conhecido como MACE (\textit{Major Adverse Cardiovascular Events}). O evento de interesse é definido por uma lógica binária inclusiva (OR), sendo assinalado como positivo caso o paciente apresente Morte Súbita Cardíaca em até 4 anos, ou progressão para Insuficiência Cardíaca severa em até 4 anos, ou óbito cardiovascular documentado durante o acompanhamento. A fusão dessas condições eleva substancialmente a prevalência da classe minoritária, resultando em 266 pacientes com evento positivo, aproximadamente 30\% da coorte válida de estudo.
+
+A adoção deste cenário justifica-se por uma dupla necessidade, unindo a prática clínica à ciência de dados. Do ponto de vista clínico, o desfecho composto absorve as ambiguidades inerentes à classificação médica nos registros de óbito, especialmente em cenários nos quais a fronteira entre falência mecânica progressiva e colapso elétrico terminal é frequentemente sobreposta no momento do preenchimento do laudo. Além disso, o MACE reflete com maior precisão a vulnerabilidade sistêmica global do miocárdio a curto e médio prazo.
+
+Do ponto de vista computacional e metodológico, a ampliação do número de eventos atua como uma solução intrínseca para o severo desbalanceamento de classes, aqui denominado ``Paradoxo da Maioria''. Essa densidade amostral ampliada fornece o volume necessário de exemplos positivos para que a arquitetura de aprendizado profundo, em especial os blocos de autoatenção (Transformers), consiga estabilizar o cálculo de gradientes e mapear características anômalas no ECG sem colapsar rumo à previsão majoritária nula, isto é, risco zero.
+
 
 \section{Principais Desafios}\label{sec:PrincipaisDesafios}
 
