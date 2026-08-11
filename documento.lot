@@ -1,18 +1,18 @@
 \babel@toc {brazil}{}\relax 
-\contentsline {table}{\numberline {1}{\ignorespaces Hiperparâmetros do pré-treinamento MoCo no domínio ECG.}}{40}{table.caption.17}%
-\contentsline {table}{\numberline {2}{\ignorespaces Síntese comparativa dos hiperparâmetros e características arquiteturais das cinco variações experimentais do MoCo.}}{52}{table.caption.18}%
-\contentsline {table}{\numberline {3}{\ignorespaces Modelo de Cox com variáveis do Holter na coorte completa ($n=992$; 205 eventos).}}{67}{table.caption.23}%
-\contentsline {table}{\numberline {4}{\ignorespaces Modelo de Cox com variáveis do Holter na amostra filtrada com tr\^es deriva\c {c}\~oes completas ($n=898$; 189 eventos).}}{68}{table.caption.24}%
-\contentsline {table}{\numberline {5}{\ignorespaces Modelo de Cox com variáveis arrítmicas na coorte completa ($n=992$; 205 eventos).}}{69}{table.caption.25}%
-\contentsline {table}{\numberline {6}{\ignorespaces Modelo de Cox com variáveis arrítmicas na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{70}{table.caption.26}%
-\contentsline {table}{\numberline {7}{\ignorespaces Modelo de Cox com dados clínicos e antropométricos na coorte completa ($n=992$; 205 eventos).}}{70}{table.caption.27}%
-\contentsline {table}{\numberline {8}{\ignorespaces Modelo de Cox com dados clínicos e antropométricos na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{71}{table.caption.28}%
-\contentsline {table}{\numberline {9}{\ignorespaces Modelo de Cox com variáveis eletrocardiográficas na coorte completa ($n=992$; 205 eventos).}}{72}{table.caption.29}%
-\contentsline {table}{\numberline {10}{\ignorespaces Modelo de Cox com variáveis eletrocardiográficas na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{73}{table.caption.30}%
-\contentsline {table}{\numberline {11}{\ignorespaces Análise de Cox univariável — coeficiente, razão de risco, C-index e significância por variável ($n=992$; 205 eventos).}}{75}{table.caption.31}%
-\contentsline {table}{\numberline {12}{\ignorespaces Fator de inflação da variância (VIF) — avaliação de multicolinearidade entre as variáveis candidatas.}}{76}{table.caption.32}%
-\contentsline {table}{\numberline {13}{\ignorespaces Análise de Cox multivariável — variáveis com $p < 0{,}05$ na análise univariável ($n=992$; 205 eventos).}}{77}{table.caption.33}%
-\contentsline {table}{\numberline {14}{\ignorespaces Análise de Cox univariável — amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{79}{table.caption.34}%
-\contentsline {table}{\numberline {15}{\ignorespaces Fator de inflação da variância (VIF) — amostra filtrada com três derivações completas ($n=898$).}}{80}{table.caption.35}%
-\contentsline {table}{\numberline {16}{\ignorespaces Análise de Cox multivariável — amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{81}{table.caption.36}%
-\contentsline {table}{\numberline {17}{\ignorespaces Desempenho dos modelos de sobrevivência profunda segundo o conjunto de covariáveis e a disponibilidade de ECG dos pacientes.}}{83}{table.caption.37}%
+\contentsline {table}{\numberline {1}{\ignorespaces Hiperparâmetros do pré-treinamento MoCo no domínio ECG.}}{41}{table.caption.17}%
+\contentsline {table}{\numberline {2}{\ignorespaces Síntese comparativa dos hiperparâmetros e características arquiteturais das cinco variações experimentais do MoCo.}}{53}{table.caption.18}%
+\contentsline {table}{\numberline {3}{\ignorespaces Modelo de Cox com variáveis do Holter na coorte completa ($n=992$; 205 eventos).}}{68}{table.caption.23}%
+\contentsline {table}{\numberline {4}{\ignorespaces Modelo de Cox com variáveis do Holter na amostra filtrada com tr\^es deriva\c {c}\~oes completas ($n=898$; 189 eventos).}}{69}{table.caption.24}%
+\contentsline {table}{\numberline {5}{\ignorespaces Modelo de Cox com variáveis arrítmicas na coorte completa ($n=992$; 205 eventos).}}{70}{table.caption.25}%
+\contentsline {table}{\numberline {6}{\ignorespaces Modelo de Cox com variáveis arrítmicas na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{71}{table.caption.26}%
+\contentsline {table}{\numberline {7}{\ignorespaces Modelo de Cox com dados clínicos e antropométricos na coorte completa ($n=992$; 205 eventos).}}{71}{table.caption.27}%
+\contentsline {table}{\numberline {8}{\ignorespaces Modelo de Cox com dados clínicos e antropométricos na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{72}{table.caption.28}%
+\contentsline {table}{\numberline {9}{\ignorespaces Modelo de Cox com variáveis eletrocardiográficas na coorte completa ($n=992$; 205 eventos).}}{73}{table.caption.29}%
+\contentsline {table}{\numberline {10}{\ignorespaces Modelo de Cox com variáveis eletrocardiográficas na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{74}{table.caption.30}%
+\contentsline {table}{\numberline {11}{\ignorespaces Análise de Cox univariável — coeficiente, razão de risco, C-index e significância por variável ($n=992$; 205 eventos).}}{76}{table.caption.31}%
+\contentsline {table}{\numberline {12}{\ignorespaces Fator de inflação da variância (VIF) — avaliação de multicolinearidade entre as variáveis candidatas.}}{77}{table.caption.32}%
+\contentsline {table}{\numberline {13}{\ignorespaces Análise de Cox multivariável — variáveis com $p < 0{,}05$ na análise univariável ($n=992$; 205 eventos).}}{78}{table.caption.33}%
+\contentsline {table}{\numberline {14}{\ignorespaces Análise de Cox univariável — amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{80}{table.caption.34}%
+\contentsline {table}{\numberline {15}{\ignorespaces Fator de inflação da variância (VIF) — amostra filtrada com três derivações completas ($n=898$).}}{81}{table.caption.35}%
+\contentsline {table}{\numberline {16}{\ignorespaces Análise de Cox multivariável — amostra filtrada com três derivações completas ($n=898$; 189 eventos).}}{82}{table.caption.36}%
+\contentsline {table}{\numberline {17}{\ignorespaces Desempenho dos modelos de sobrevivência profunda segundo o conjunto de covariáveis e a disponibilidade de ECG dos pacientes.}}{84}{table.caption.37}%

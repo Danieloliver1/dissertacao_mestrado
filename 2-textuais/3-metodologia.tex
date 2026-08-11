@@ -13,7 +13,7 @@ em modelos de tempo discreto.
 \subsection{Justificativa da Versão do MoCo Adotada}
 
 Embora a literatura sobre \textit{Momentum Contrast} apresente evoluções
-sucessivas do método --- MoCo v1 \cite{he2019moco}, MoCo v2
+sucessivas do método --- MoCo v1 \cite{he2020momentum}, MoCo v2
 \cite{chen2020mocov2} e MoCo v3 \cite{chen2021mocov3} ---, este trabalho adota
 a formulação da segunda versão, que combina a fila dinâmica de amostras
 negativas (\textit{queue}) e o encoder de momentum do MoCo v1 com o cabeçote
@@ -34,7 +34,7 @@ suficiente apenas com os negativos do próprio lote. Dado o tamanho reduzido do
 conjunto de dados disponível (aproximadamente 870 pacientes) e as limitações
 de memória de GPU associadas ao processamento de sinais de ECG de alta
 resolução temporal (24.000 amostras por segmento), a manutenção da fila de
-negativos ($K = 8192$) foi preferida à sua remoção, uma vez que ela permite
+negativos ($K_{queue} = 8192$) foi preferida à sua remoção, uma vez que ela permite
 manter um número expressivo de comparações negativas por passo de treinamento
 mesmo com \textit{batch sizes} moderados ($256$), o que seria inviável na
 formulação estritamente definida pelo v3.
@@ -51,11 +51,11 @@ exposto a poucos exemplos positivos, dificultando o aprendizado de padrões
 morfológicos discriminativos no ECG. Para contornar essa dupla limitação ---
 escassez de dados e desbalanceamento ---,  foi adotada uma estratégia de
 pré-treinamento auto-supervisionado baseada no \textit{Momentum Contrast}
-(MoCo v2) \cite{he2019moco, chen2020mocov2}, antes do treinamento
+(MoCo v2) \cite{he2020momentum, chen2020mocov2}, antes do treinamento
 supervisionado para análise de sobrevivência.
 
 O MoCo foi originalmente proposto para o aprendizado de representações visuais
-a partir de imagens \cite{he2019moco}, onde duas versões augmentadas de uma
+a partir de imagens \cite{he2020momentum}, onde duas versões augmentadas de uma
 mesma imagem --- obtidas por recortes aleatórios, distorção de cor e
 \textit{flipping} horizontal --- formam um par positivo, e imagens distintas
 formam pares negativos. O encoder aprende a aproximar as representações do par
@@ -85,21 +85,21 @@ o treinamento supervisionado subsequente.
 \subsubsection{Aprendizado Contrastivo como Busca em Dicionário}
 
 O MoCo formula o aprendizado de representações como um problema de busca em
-dicionário \cite{he2019moco}. Dado um sinal de consulta (\textit{query}) $q$
+dicionário \cite{he2020momentum}. Dado um sinal de consulta (\textit{query}) $q$
 e um conjunto de chaves (\textit{keys}) $\{k_0, k_1, k_2, \ldots\}$, o
 objetivo é treinar um encoder de forma que $q$ seja similar à sua chave
 positiva correspondente $k^+$ e dissimilar a todas as demais chaves negativas.
-A função de perda contrastiva utilizada é a InfoNCE \cite{he2019moco}:
+A função de perda contrastiva utilizada é a InfoNCE \cite{he2020momentum}:
 
 \begin{equation}
 	\mathcal{L}_q = -\log \frac{\exp(q \cdot k^+ / \tau)}
-	{\sum_{i=0}^{K} \exp(q \cdot k_i / \tau)}
+	{\sum_{i=0}^{K_{queue}} \exp(q \cdot k_i / \tau)}
 	\label{eq:infonce}
 \end{equation}
 
-\noindent onde $\tau$ é um hiperparâmetro de temperatura e $K$ é o número
+\noindent onde $\tau$ é um hiperparâmetro de temperatura e $K_{queue}$ é o número
 total de chaves no dicionário. Intuitivamente, essa perda corresponde ao
-logaritmo negativo de um classificador \textit{softmax} de $(K+1)$ classes,
+logaritmo negativo de um classificador \textit{softmax} de $(K_{queue}+1)$ classes,
 cujo objetivo é identificar $k^+$ dentre todas as chaves disponíveis.
 
 No contexto deste trabalho, uma \textit{query} e uma chave formam um par
@@ -111,7 +111,7 @@ características morfológicas estruturais do sinal.
 \subsubsection{Dicionário Dinâmico com Fila e Encoder com Momento}
 
 A principal contribuição do MoCo é manter o dicionário como uma \textbf{fila}
-de amostras codificadas \cite{he2019moco}, desacoplando o tamanho do
+de amostras codificadas \cite{he2020momentum}, desacoplando o tamanho do
 dicionário do tamanho do mini-\textit{batch}. A cada iteração, o mini-batch
 atual é inserido na fila e o mini-batch mais antigo é removido. Isso permite
 que o dicionário seja muito maior do que o que a memória da GPU comportaria
@@ -120,7 +120,7 @@ em uma abordagem ponta a ponta (\textit{end-to-end}).
 Para garantir a consistência das representações armazenadas na fila, o encoder
 das chaves $f_k$ não é atualizado por retropropagação, mas sim por uma
 \textbf{atualização com momento} (\textit{momentum update}) a partir do
-encoder de consulta $f_q$ \cite{he2019moco}:
+encoder de consulta $f_q$ \cite{he2020momentum}:
 
 \begin{equation}
 	\theta_k \leftarrow m\,\theta_k + (1 - m)\,\theta_q
@@ -131,7 +131,7 @@ encoder de consulta $f_q$ \cite{he2019moco}:
 é atualizado por retropropagação; $\theta_k$ evolui lentamente, garantindo
 que as chaves armazenadas na fila sejam consistentes entre si, mesmo que
 tenham sido geradas em iterações diferentes. Neste trabalho, o valor
-$m = 0{,}999$ foi adotado, conforme recomendado em \cite{he2019moco}.
+$m = 0{,}999$ foi adotado, conforme recomendado em \cite{he2020momentum}.
 
 \subsubsection{Melhorias do MoCo v2}
 
@@ -165,7 +165,7 @@ InfoNCE é minimizada conforme a Equação~\ref{eq:infonce}.
 \subsubsection{Configuração do Treinamento}
 
 O pré-treinamento foi conduzido com as seguintes configurações: tamanho do
-dicionário $K = 8{.}192$, dimensão do espaço de projeção $d = 256$,
+dicionário $K_{\text{queue}} = 8{.}192$, dimensão do espaço de projeção $d_z = 256$,
 coeficiente de momento $m = 0{,}999$, temperatura $\tau = 0{,}07$, tamanho
 do mini-\textit{batch} de 256 amostras e taxa de aprendizado inicial de
 $0{,}001$ com otimizador SGD (momento $= 0{,}9$, \textit{weight decay}
@@ -182,16 +182,16 @@ inicialização aleatória.
 
 O aprendizado contrastivo pode ser instanciado por diferentes mecanismos
 que diferem na forma como as chaves negativas são mantidas e como o encoder
-de chaves é atualizado \cite{he2019moco}. Três abordagens principais são
+de chaves é atualizado \cite{he2020momentum}. Três abordagens principais são
 comparadas na literatura: (i) o mecanismo \textit{end-to-end}, no qual
 as chaves negativas provêm do mesmo mini-\textit{batch} e são atualizadas
 por retropropagação; (ii) o \textit{memory bank}, no qual as representações
 de todas as amostras do conjunto de dados são armazenadas em memória e
 amostradas aleatoriamente a cada iteração; e (iii) o MoCo, que mantém um
 dicionário dinâmico como fila e atualiza o encoder de chaves por momento
-\cite{he2019moco}.
+\cite{he2020momentum}.
 
-A comparação experimental conduzida em \cite{he2019moco} demonstra que o
+A comparação experimental conduzida em \cite{he2020momentum} demonstra que o
 MoCo supera os demais mecanismos sob o protocolo de classificação linear
 no ImageNet, independentemente do tamanho do dicionário. O mecanismo
 \textit{end-to-end} é limitado pelo tamanho do mini-\textit{batch} --- e
@@ -201,7 +201,7 @@ chaves armazenadas foram codificadas por diferentes versões do encoder ao
 longo do treinamento. O MoCo resolve ambos os problemas simultaneamente:
 o dicionário como fila permite um número grande de negativos sem depender
 do tamanho do batch, e a atualização com momento garante a consistência
-das chaves armazenadas \cite{he2019moco}.
+das chaves armazenadas \cite{he2020momentum}.
 
 Adicionalmente, \cite{chen2020mocov2} demonstra que duas modificações
 simples ao MoCo original --- a substituição da cabeça de projeção linear
@@ -214,9 +214,9 @@ desempenho relatada nos artigos originais, mantendo o requisito de
 viabilidade computacional em uma única GPU.
 
 Os hiperparâmetros foram definidos seguindo as recomendações de
-\cite{he2019moco} e \cite{chen2020mocov2}: temperatura $\tau = 0{,}07$,
+\cite{he2020momentum} e \cite{chen2020mocov2}: temperatura $\tau = 0{,}07$,
 coeficiente de momento $m = 0{,}999$ e dimensão do espaço de projeção
-$d = 256$. O tamanho do dicionário foi fixado em $K = 8{.}192$, valor
+$d_z = 256$. O tamanho do dicionário foi fixado em $K_{\text{queue}} = 8{.}192$, valor
 que garante um conjunto rico de amostras negativas sem exceder a memória
 disponível na GPU utilizada.
 
@@ -227,7 +227,7 @@ disponível na GPU utilizada.
 
 Ao longo do processo experimental, o framework \textit{Momentum Contrast} (MoCo) foi submetido a sucessivas iterações de adaptação e refinamento visando otimizar seu desempenho em cenários de dados escassos e desbalanceados. Esse processo iterativo não representa uma evolução metodológica disruptiva, mas sim um refinamento gradual dos componentes arquiteturais e das parametrizações, motivado por hipóteses específicas sobre a capacidade expressiva do modelo e a qualidade das representações aprendidas.
 
-As variações implementadas focalizaram-se primordialmente em três eixos: (i) a arquitetura do encoder base, explorando diferentes implementações de ResNet-18 1D, incluindo versão manual, implementação via biblioteca \texttt{tsai} e versões com mecanismos de atenção e Transformer; (ii) os hiperparâmetros do contraste, incluindo tamanho da fila de negativos ($K$), dimensionalidade do \textit{embedding} ($d$) e temperatura da função \textit{softmax} ($\tau$); e (iii) as estratégias de augmentação de dados e configurações de treinamento, como agressividade das transformações, tamanho da janela temporal e critérios de parada.
+As variações implementadas focalizaram-se primordialmente em três eixos: (i) a arquitetura do encoder base, explorando diferentes implementações de ResNet-18 1D, incluindo versão manual, implementação via biblioteca \texttt{tsai} e versões com mecanismos de atenção e Transformer; (ii) os hiperparâmetros do contraste, incluindo tamanho da fila de negativos ($K_{\text{queue}}$), dimensionalidade do \textit{embedding} ($d_z$) e temperatura da função \textit{softmax} ($\tau$); e (iii) as estratégias de augmentação de dados e configurações de treinamento, como agressividade das transformações, tamanho da janela temporal e critérios de parada.
 
 Cada versão foi avaliada segundo métricas de convergência, estabilidade numérica e qualidade das representações, com as descobertas de versões anteriores informando decisões de design em versões subsequentes. Essa abordagem permite identificar quais modificações geram melhorias genuínas e quais constituem artefatos de ajuste de hiperescala, fornecendo fundamentação empírica para a seleção final do modelo. A Tabela~\ref{tab:moco_versions} sintetiza os principais hiperparâmetros e características arquiteturais de cada versão, facilitando a comparação sistemática.
 
@@ -243,8 +243,8 @@ Cada versão foi avaliada segundo métricas de convergência, estabilidade numé
 			\textbf{Parâmetro}                          & \textbf{Versão 1}         & \textbf{Versão 2}           & \textbf{Versão 3}          & \textbf{Versão 4}         & \textbf{Versão 5}          \\
 			\midrule
 			Arquitetura base                            & ResNet-18 1D manual       & XResNet1d18 (\texttt{tsai}) & ResNet-18 1D manual        & ResNet-18 1D manual       & ResNet-18 1D + Transformer \\
-			Dimensão do \textit{embedding} ($d$)        & 128                       & 128                         & 256                        & 128                       & 256                        \\
-			Tamanho da fila ($K$)                       & 4.096                     & 4.096                       & 8.192                      & 4.096                     & 8.192                      \\
+			Dimensão do \textit{embedding} ($d_z$)      & 128                       & 128                         & 256                        & 128                       & 256                        \\
+			Tamanho da fila ($K_{\text{queue}}$)        & 4.096                     & 4.096                       & 8.192                      & 4.096                     & 8.192                      \\
 			Coeficiente de \textit{momentum} ($m$)      & 0,999                     & 0,999                       & 0,999                      & 0,999                     & 0,999                      \\
 			Temperatura ($\tau$)                        & 0,07                      & 0,07                        & 0,07                       & 0,07                      & 0,07                       \\
 			\textit{Batch size}                         & 256                       & 256                         & 256                        & 256                       & 256                        \\
@@ -265,7 +265,7 @@ Cada versão foi avaliada segundo métricas de convergência, estabilidade numé
 \subsection{Versões 1 e 2: Adaptação Base e Otimização Algorítmica}
 \label{subsec:moco-versoes-1-2}
 
-O ponto de partida consistiu na implementação direta da formulação do MoCo v2, transpondo os mecanismos de contraste visual para o domínio temporal de sinais de ECG Holter. A Versão 1 utilizou uma ResNet-18 1D manual como encoder base, configurada conforme a Tabela~\ref{tab:moco_versions}: fila de negativos de tamanho $K = 4096$, dimensão de \textit{embedding} $d = 128$, coeficiente de \textit{momentum} $m = 0{,}999$ e temperatura $\tau = 0{,}07$, conforme recomendações originais.
+O ponto de partida consistiu na implementação direta da formulação do MoCo v2, transpondo os mecanismos de contraste visual para o domínio temporal de sinais de ECG Holter. A Versão 1 utilizou uma ResNet-18 1D manual como encoder base, configurada conforme a Tabela~\ref{tab:moco_versions}: fila de negativos de tamanho $K_{\text{queue}} = 4096$, dimensão de \textit{embedding} $d_z = 128$, coeficiente de \textit{momentum} $m = 0{,}999$ e temperatura $\tau = 0{,}07$, conforme recomendações originais.
 
 Os segmentos de ECG foram processados em janelas de 12.000 amostras, aproximadamente 1 minuto a 200 Hz com três derivações, com \textit{batch size} de 256 amostras e treinamento de 200 épocas. As augmentações foram aplicadas diretamente em GPU mediante perturbações no domínio temporal: escalonamento aleatório de $0{,}8$ a $1{,}2\times$, ruído gaussiano com variância 0,05 e mascaramento temporal de 10\% da janela, com probabilidade de 80\%. Essa configuração serviu como \textit{baseline}, validando a viabilidade da abordagem contrastiva para ECG e estabelecendo a arquitetura fundamental.
 
@@ -274,16 +274,16 @@ A Versão 2 substituiu a implementação manual pela arquitetura XResNet1d18 dis
 \subsection{Versão 3: Regime Rigoroso com Fila Expandida}
 \label{subsec:moco-versao-3}
 
-Motivada pela hipótese de que o tamanho reduzido da fila de negativos ($K = 4096$) comprometia a qualidade do contraste em datasets limitados, a Versão 3 adotou uma configuração rigorosa com expansão sistemática dos hiperparâmetros. A dimensão do \textit{embedding} foi dobrada para $d = 256$, ampliando o espaço de representação e permitindo capturar estruturas mais complexas dos padrões morfológicos do ECG.
+Motivada pela hipótese de que o tamanho reduzido da fila de negativos ($K_{\text{queue}} = 4096$) comprometia a qualidade do contraste em datasets limitados, a Versão 3 adotou uma configuração rigorosa com expansão sistemática dos hiperparâmetros. A dimensão do \textit{embedding} foi dobrada para $d_z = 256$, ampliando o espaço de representação e permitindo capturar estruturas mais complexas dos padrões morfológicos do ECG.
 
-Concomitantemente, a fila de negativos foi expandida para $K = 8192$, dobrando o número de comparações negativas por iteração e reduzindo o risco de colapso da representação. Essa expansão foi viabilizada pela retomada de um encoder ResNet-18 1D manual em vez da biblioteca \texttt{tsai}, proporcionando controle fino sobre a alocação de memória e evitando abstrações que pudessem limitar otimizações em GPU.
+Concomitantemente, a fila de negativos foi expandida para $K_{\text{queue}} = 8192$, dobrando o número de comparações negativas por iteração e reduzindo o risco de colapso da representação. Essa expansão foi viabilizada pela retomada de um encoder ResNet-18 1D manual em vez da biblioteca \texttt{tsai}, proporcionando controle fino sobre a alocação de memória e evitando abstrações que pudessem limitar otimizações em GPU.
 
 O tamanho da janela de ECG foi aumentado para 24.000 amostras, aproximadamente 2 minutos, fornecendo mais contexto temporal e capturando variações fisiológicas de maior escala, incluindo ciclos completos de variabilidade da frequência cardíaca. A agressividade de augmentação foi levemente reduzida para 70\% de probabilidade, evitando degradação excessiva que pudesse prejudicar o aprendizado de padrões sutis, enquanto o \textit{weight decay} foi aumentado para $5 \times 10^{-4}$, fornecendo regularização mais forte. O número de épocas foi elevado para 500 com estratégia de parada antecipada (\textit{patience} = 50), permitindo exploração mais profunda do espaço de parâmetros com proteção contra \textit{overfitting}. Essa configuração produziu representações de maior qualidade, validando experimentalmente a hipótese de que datasets escassos beneficiam-se de dicionários de negativos maiores e janelas temporais mais extensas.
 
 \subsection{Versão 4: Regime Ultra-Conservador como Controle Ablativo}
 \label{subsec:moco-versao-4}
 
-A Versão 4 representou uma reversão estratégica, retornando aos hiperparâmetros da Versão 1 ($d = 128$, $K = 4096$, \textit{window size} = 12.000 amostras e \textit{weight decay} = $10^{-4}$), com extensão moderada do treinamento para 300 épocas. Essa configuração foi proposta como controle ablativo, testando a hipótese nula de que as expansões da Versão 3 ofereciam ganho real ou se consistiam meramente em artefatos de ajuste de escala sem impacto substantivo na aprendizagem de representações.
+A Versão 4 representou uma reversão estratégica, retornando aos hiperparâmetros da Versão 1 ($d_z = 128$, $K_{\text{queue}} = 4096$, \textit{window size} = 12.000 amostras e \textit{weight decay} = $10^{-4}$), com extensão moderada do treinamento para 300 épocas. Essa configuração foi proposta como controle ablativo, testando a hipótese nula de que as expansões da Versão 3 ofereciam ganho real ou se consistiam meramente em artefatos de ajuste de escala sem impacto substantivo na aprendizagem de representações.
 
 O objetivo específico era isolar o efeito de mudanças individuais de hiperparâmetros, como dimensão de \textit{embedding}, tamanho da fila e tamanho da janela, por meio de uma configuração regredida, permitindo posterior análise comparativa entre as curvas de treinamento. Embora mais eficiente computacionalmente, com redução aproximada de 40\% no uso de memória em relação à Versão 3, a Versão 4 confirmou empiricamente que a Versão 3 representava um avanço genuíno, não apenas um artefato de \textit{scaling}, validando que a expansão de hiperparâmetros correspondia a ganhos reais na qualidade do contraste.
 
@@ -292,16 +292,16 @@ O objetivo específico era isolar o efeito de mudanças individuais de hiperpar�
 
 Considerando que sinais de ECG contêm dependências de longo prazo estruturadas, por exemplo variações cíclicas no intervalo RR, mudanças de ritmo cardíaco ao longo de 24 horas e correlações entre diferentes derivações, a Versão 5 incorporou mecanismos explícitos de atenção ao encoder contrastivo, representando o primeiro desvio significativo da arquitetura ResNet pura.
 
-Conforme a Tabela~\ref{tab:moco_versions}, a arquitetura compõe-se de três componentes sequenciais: (1) uma ResNet-18 1D que extrai características locais em múltiplas escalas temporais, produzindo um tensor de dimensão $[\text{batch}, 512, \text{seq\_len}]$; (2) um encoder Transformer com 8 cabeçotes de atenção (\texttt{nhead = 8}), dimensão \textit{feedforward} de 1.024 dimensões e \textit{dropout} de 0,3, operando sobre a sequência temporal para aprender dependências globais entre regiões distantes do sinal; e (3) um cabeçote de projeção MLP que mapeia as representações aprendidas para o espaço contrastivo de $d = 256$ dimensões.
+Conforme a Tabela~\ref{tab:moco_versions}, a arquitetura compõe-se de três componentes sequenciais: (1) uma ResNet-18 1D que extrai características locais em múltiplas escalas temporais, produzindo um tensor de dimensão $[\text{batch}, 512, \text{seq\_len}]$; (2) um encoder Transformer com 8 cabeçotes de atenção (\texttt{nhead = 8}), dimensão \textit{feedforward} de 1.024 dimensões e \textit{dropout} de 0,3, operando sobre a sequência temporal para aprender dependências globais entre regiões distantes do sinal; e (3) um cabeçote de projeção MLP que mapeia as representações aprendidas para o espaço contrastivo de $d_z = 256$ dimensões.
 
-O módulo \texttt{GPU\_ECG\_Augmenter}, integrado à pipeline de treinamento, aplica as mesmas perturbações calibradas com probabilidade de 80\% diretamente em GPU, reduzindo o overhead de transferência de dados CPU--GPU. A configuração de treinamento mantém os hiperparâmetros expandidos da Versão 3: fila $K = 8192$, \textit{embedding} $d = 256$, \textit{window size} = 24.000 e \textit{weight decay} = $5 \times 10^{-4}$, preservando os ganhos comprovados enquanto adiciona a capacidade expressiva do Transformer. Essa arquitetura híbrida permite que o modelo aprenda não apenas características morfológicas locais, extraídas pela ResNet, mas também padrões temporais estruturados de variação, aprendidos pelo Transformer, potencialmente capturando fenômenos fisiológicos como variabilidade da frequência cardíaca, mudanças progressivas de ritmo ao longo de 24 horas e correlações entre derivações.
+O módulo \texttt{GPU\_ECG\_Augmenter}, integrado à pipeline de treinamento, aplica as mesmas perturbações calibradas com probabilidade de 80\% diretamente em GPU, reduzindo o overhead de transferência de dados CPU--GPU. A configuração de treinamento mantém os hiperparâmetros expandidos da Versão 3: fila $K_{\text{queue}} = 8192$, \textit{embedding} $d_z = 256$, \textit{window size} = 24.000 e \textit{weight decay} = $5 \times 10^{-4}$, preservando os ganhos comprovados enquanto adiciona a capacidade expressiva do Transformer. Essa arquitetura híbrida permite que o modelo aprenda não apenas características morfológicas locais, extraídas pela ResNet, mas também padrões temporais estruturados de variação, aprendidos pelo Transformer, potencialmente capturando fenômenos fisiológicos como variabilidade da frequência cardíaca, mudanças progressivas de ritmo ao longo de 24 horas e correlações entre derivações.
 
 \subsection{Justificativa da Seleção Final: Versão 5}
 \label{subsec:justificativa-versao-5}
 
 A escolha da Versão 5 como modelo de pré-treinamento definitivo fundamenta-se em três critérios convergentes. Primeiro, a incorporação de mecanismos de atenção Transformer permite capturar dependências temporais de longo prazo inerentes a registros Holter de 24 horas, indo além das características locais extraíveis por convoluções puras; a comparação com a Versão 4 demonstra que esse ganho arquitetural não estava disponível em modelos puramente convolucionais.
 
-Segundo, a configuração parametrizada segundo os aprendizados das Versões 3 e 4, com fila expandida $K = 8192$, \textit{embedding} de alta dimensão $d = 256$ e janelas maiores de 24.000 amostras, fornece sinal contrastivo suficiente mesmo em cenários de dados limitados, com aproximadamente 870 pacientes, mitigando o risco de colapso de representação. Terceiro, a execução de augmentações em GPU elimina gargalos de entrada e saída e de transferência de dados, permitindo treinamento mais eficiente e escalável.
+Segundo, a configuração parametrizada segundo os aprendizados das Versões 3 e 4, com fila expandida $K_{\text{queue}} = 8192$, \textit{embedding} de alta dimensão $d_z = 256$ e janelas maiores de 24.000 amostras, fornece sinal contrastivo suficiente mesmo em cenários de dados limitados, com aproximadamente 870 pacientes, mitigando o risco de colapso de representação. Terceiro, a execução de augmentações em GPU elimina gargalos de entrada e saída e de transferência de dados, permitindo treinamento mais eficiente e escalável.
 
 Os pesos aprendidos pelo \texttt{encoder\_q}, composto por ResNet e Transformer, na Versão 5 são posteriormente utilizados para inicializar o \textit{backbone} do modelo híbrido de análise de sobrevivência, substituindo pesos aleatórios e fornecendo uma base de representação rica para o aprendizado supervisionado subsequente. Essa estratégia progressiva de otimização e integração de componentes arquiteturais, sintetizada na Tabela~\ref{tab:moco_versions}, garante que o pré-treinamento auto-supervisionado capture tanto estruturas morfológicas quanto dinâmicas fisiológicas relevantes para a predição de eventos cardíacos adversos.
 
@@ -675,12 +675,12 @@ com a probabilidade de sobreviver até o instante de censura
 %
 \begin{equation}
 	\mathcal{L}_{\text{LH}} = -\frac{1}{N} \sum_{i=1}^{N}
-	\left[ d_i \left( \log h_{t_i} + \log S(t_i - 1) \right)
+	\left[ d_i \left( \log h_{k_i} + \log S(t_{k_i} - 1) \right)
 		+ (1 - d_i) \log S(t_i) \right]
 \end{equation}
 %
-onde $h_{t_k} = \sigma(\phi_k)$ é o risco discreto no intervalo $k$, obtido
-pela função sigmoide sobre o logit $\phi_k$, e $S(t_k) = \prod_{j \leq k}(1 - h_{t_j})$
+onde $h_k = \sigma(\phi_k)$ é o risco discreto no intervalo $k$, obtido
+pela função sigmoide sobre o logit $\phi_k$, e $S(t_k) = \prod_{j \leq k}(1 - h_j)$
 é a função de sobrevivência estimada.
 
 Para os métodos PMF e DeepHit, a distribuição de probabilidade sobre os intervalos
@@ -700,12 +700,10 @@ O DeepHit acrescenta um segundo termo de perda baseado em \textit{ranking}
 %
 onde $\mathcal{L}_2$ penaliza pares de pacientes $(i, j)$ em que $t_i < t_j$
 e $d_i = 1$, mas o modelo atribui risco cumulativo menor ao paciente $i$
-do que ao paciente $j$ no tempo $t_i$. A penalidade é suavizada por uma
-função exponencial com parâmetro $\sigma$:
-%
+do que ao paciente $j$ no tempo $t_i$. A penalidade é suavizada por uma função exponencial com parâmetro $\sigma_{DH}$:
 \begin{equation}
 	\mathcal{L}_2 = \sum_{i: d_i=1} \sum_{j} \mathbf{1}[t_i < t_j]
-	\cdot \exp\!\left( -\frac{F(t_i \mid \mathbf{x}_i) - F(t_i \mid \mathbf{x}_j)}{\sigma} \right)
+	\cdot \exp\!\left( -\frac{F(t_i \mid \mathbf{x}_i) - F(t_i \mid \mathbf{x}_j)}{\sigma_{DH}} \right)
 \end{equation}
 
 \subsection{Treinamento: Acumulação de Gradiente e Precisão Mista}

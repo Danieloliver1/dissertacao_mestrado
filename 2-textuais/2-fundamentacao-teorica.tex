@@ -7,15 +7,15 @@ A análise de sobrevivência, também denominada análise de tempo até o evento
 
 A censura é um aspecto estrutural dos dados clínicos longitudinais e não pode ser ignorada: excluir pacientes censurados implica viés de seleção, ao passo que tratá-los como se tivessem experimentado o evento introduz viés de informação. Modelos baseados na verossimilhança para dados com censura à direita (\textit{right-censored likelihood}) resolvem esse problema ao incorporar, para cada paciente, a contribuição probabilística adequada ao seu status observado: a probabilidade de ocorrência do evento no tempo observado, para pacientes com evento, e a probabilidade de sobrevivência até o tempo de censura, para pacientes censurados.
 
-A abordagem adotada neste trabalho é a da análise de sobrevivência em tempo discreto com redes neurais, na qual o eixo temporal contínuo é discretizado em $m$ intervalos
+A abordagem adotada neste trabalho é a da análise de sobrevivência em tempo discreto com redes neurais, na qual o eixo temporal contínuo é discretizado em $K$ intervalos
 \begin{equation}
-	[c_0,c_1),\ [c_1,c_2),\ \ldots,\ [c_{m-1},c_m),
+	[c_0,c_1),\ [c_1,c_2),\ \ldots,\ [c_{K-1},c_K),
 \end{equation}
 e a rede neural aprende a distribuição do tempo de falha sobre esses intervalos. Conforme proposto por \citeonline{kvamme2019continuous}, os pontos de corte são definidos pelos quantis da distribuição empírica dos tempos de evento observados, em contraste com o esquema equidistante comumente utilizado. Os autores demonstram que tal estratégia é preferível especialmente em conjuntos de dados de menor dimensão, como o presente estudo com 992 pacientes. Esse esquema de discretização é implementado pela classe \texttt{DiscreteTimeTransform}, que ajusta os cortes com base nos quantis dos tempos dos pacientes com evento e garante que o horizonte temporal seja sempre coberto pelo último intervalo.
 
 A rede neural recebe as covariáveis de cada paciente, incluindo sinais de ECG e dados clínicos, e produz um vetor de logits
 \begin{equation}
-	\bm{\phi} = (\phi_0, \phi_1, \ldots, \phi_{m-1}) \in \mathbb{R}^m,
+	\bm{\phi} = (\phi_0, \phi_1, \ldots, \phi_{K-1}) \in \mathbb{R}^K,
 \end{equation}
 a partir do qual as probabilidades de sobrevivência são computadas de acordo com a parametrização adotada. Três funções de perda foram implementadas e avaliadas comparativamente neste estudo, cada uma correspondendo a uma parametrização distinta da distribuição do tempo de falha: \textit{Logistic-Hazard}, \textit{PMF} e \textit{DeepHitSingle}.
 
@@ -23,7 +23,7 @@ a partir do qual as probabilidades de sobrevivência são computadas de acordo c
 
 A formulação \textit{Logistic-Hazard}, denominada \textit{Nnet-Survival} por \citeonline{gensheimer2019scalable}, parametriza a função de risco discreta $h_k$, definida como a probabilidade condicional de o evento ocorrer no intervalo $k$, dado que o paciente sobreviveu até o início desse intervalo. Trata-se de um modelo teoricamente fundamentado na verossimilhança de modelos de sobrevivência em tempo discreto, formulados no contexto sociológico por \citeonline{allison1982discrete} e conectados à regressão logística por \citeonline{efron1988logistic}. A aplicação de redes neurais \textit{feedforward} a esse arcabouço foi explorada por \citeonline{biganzoli1998feedforward} por meio de uma abordagem de regressão logística parcial para dados censurados. \citeonline{gensheimer2019scalable} unificam e formalizam essa linha, propondo o treinamento com gradiente estocástico por mini-batches, o que torna o modelo escalável a grandes conjuntos de dados, e demonstram sua competitividade com modelos como \textit{Cox-nnet} e \textit{DeepSurv}.
 
-Para cada bin temporal $k \in \{0,1,\ldots,m-1\}$, o risco discreto é obtido pela aplicação da função sigmoide sobre o logit correspondente:
+Para cada bin temporal $k \in \{0,1,\ldots,K-1\}$, o risco discreto é obtido pela aplicação da função sigmoide sobre o logit correspondente:
 \begin{equation}
 	h_k = \sigma(\phi_k) = \frac{1}{1 + e^{-\phi_k}}.
 \end{equation}
@@ -51,13 +51,13 @@ Conforme \citeonline{kvamme2019continuous}, que comparam sistematicamente as par
 
 A formulação PMF, proposta e analisada por \citeonline{kvamme2019continuous}, parametriza diretamente a função de massa de probabilidade $p_k$ sobre os intervalos de tempo discretizados, tratando a distribuição do tempo de falha como um objeto probabilístico explicitamente normalizado. Em vez de estimar funções de risco condicionais para cada bin individualmente, como na formulação \textit{Logistic-Hazard}, o modelo estima a probabilidade de o evento ocorrer especificamente no intervalo $k$, de forma que $\sum_k p_k = 1$.
 
-Para garantir essa propriedade de normalização ao longo de todo o horizonte temporal, incluindo a possibilidade de sobrevivência além do último intervalo observado, \citeonline{kvamme2019continuous} propõem adicionar um logit artificial $\phi_m=0$ ao vetor de saída da rede e aplicar a função \textit{softmax} sobre o vetor aumentado de dimensão $m+1$:
+Para garantir essa propriedade de normalização ao longo de todo o horizonte temporal, incluindo a possibilidade de sobrevivência além do último intervalo observado, \citeonline{kvamme2019continuous} propõem adicionar um logit artificial $\phi_K=0$ ao vetor de saída da rede e aplicar a função \textit{softmax} sobre o vetor aumentado de dimensão $K+1$:
 \begin{equation}
-	p_k = \frac{e^{\phi_k}}{\displaystyle\sum_{j=0}^{m} e^{\phi_j}},\quad k=0,1,\ldots,m,
+	p_k = \frac{e^{\phi_k}}{\displaystyle\sum_{j=0}^{K} e^{\phi_j}},\quad k=0,1,\ldots,K,
 \end{equation}
-onde $\phi_m=0$ representa o logit do bin artificial correspondente à sobrevivência além do horizonte de observação. A função de sobrevivência é obtida pela soma acumulada reversa da PMF; isto é, a probabilidade de o paciente sobreviver além do bin $k$ é a soma das probabilidades de evento em todos os bins posteriores:
+onde $\phi_K=0$ representa o logit do bin artificial correspondente à sobrevivência além do horizonte de observação. A função de sobrevivência é obtida pela soma acumulada reversa da PMF; isto é, a probabilidade de o paciente sobreviver além do bin $k$ é a soma das probabilidades de evento em todos os bins posteriores:
 \begin{equation}
-	S(t_k) = \sum_{j=k+1}^{m} p_j.
+	S(t_k) = \sum_{j=k+1}^{K} p_j.
 \end{equation}
 
 A função de perda é a log-verossimilhança negativa baseada nessa distribuição conjunta. Para pacientes com evento ($d_i=1$), penaliza-se a log-probabilidade da massa no bin correto; para censurados ($d_i=0$), penaliza-se a log-probabilidade de sobrevivência além do bin de censura:
@@ -81,17 +81,17 @@ A função de perda total do DeepHit é uma combinação linear de dois termos c
 \begin{equation}
 	\mathcal{L}_{\text{total}} = \mathcal{L}_1 + \alpha \mathcal{L}_2.
 \end{equation}
-O primeiro termo, de log-verossimilhança ($\mathcal{L}_1$), é idêntico à formulação PMF descrita anteriormente, com a adição do logit artificial $\phi_m=0$ e aplicação de \textit{softmax}. Esse termo garante que a distribuição de probabilidade estimada seja globalmente coerente com os desfechos observados.
+O primeiro termo, de log-verossimilhança ($\mathcal{L}_1$), é idêntico à formulação PMF descrita anteriormente, com a adição do logit artificial $\phi_K=0$ e aplicação de \textit{softmax}. Esse termo garante que a distribuição de probabilidade estimada seja globalmente coerente com os desfechos observados.
 
 O segundo termo, a perda de ordenação ($\mathcal{L}_2$), penaliza pares de pacientes $(i,j)$ em que o paciente $i$ faleceu antes do paciente $j$ ($t_i<t_j$, $d_i=1$), mas o modelo atribuiu menor risco cumulativo a $i$ do que a $j$ no instante $t_i$. Para cada par válido, a penalidade é proporcional à função exponencial da diferença de risco:
 \begin{equation}
-	\eta(i,j) = \exp\!\left(-\frac{F(t_i \mid \mathbf{x}_i) - F(t_i \mid \mathbf{x}_j)}{\sigma}\right),
+	\eta(i,j) = \exp\!\left(-\frac{F(t_i \mid \mathbf{x}_i) - F(t_i \mid \mathbf{x}_j)}{\sigma_{DH}}\right),
 \end{equation}
 onde
 \begin{equation}
 	F(t_k \mid \mathbf{x}) = \sum_{j=0}^{k} p_j(\mathbf{x})
 \end{equation}
-é a função de distribuição acumulada (CDF) do modelo para o paciente com covariáveis $\mathbf{x}$, e $\sigma>0$ é um hiperparâmetro de suavização. A lógica da penalidade é a seguinte: quando $F(t_i \mid \mathbf{x}_i) > F(t_i \mid \mathbf{x}_j)$, isto é, quando o modelo atribui corretamente maior risco cumulativo ao paciente que faleceu primeiro, a diferença é positiva, o expoente é negativo e $\eta \to 0$, produzindo penalidade próxima de zero. Quando a ordenação está incorreta, a diferença é negativa ou nula, o expoente tende a zero e $\eta \to 1$, maximizando a penalidade. A perda de ordenação do \textit{batch} é normalizada pela quantidade de pares válidos:
+é a função de distribuição acumulada (CDF) do modelo para o paciente com covariáveis $\mathbf{x}$,e $\sigma_{DH}>0$ é um hiperparâmetro de suavização. A lógica da penalidade é a seguinte: quando $F(t_i \mid \mathbf{x}_i) > F(t_i \mid \mathbf{x}_j)$, isto é, quando o modelo atribui corretamente maior risco cumulativo ao paciente que faleceu primeiro, a diferença é positiva, o expoente é negativo e $\eta \to 0$, produzindo penalidade próxima de zero. Quando a ordenação está incorreta, a diferença é negativa ou nula, o expoente tende a zero e $\eta \to 1$, maximizando a penalidade. A perda de ordenação do \textit{batch} é normalizada pela quantidade de pares válidos:
 \begin{equation}
 	\mathcal{L}_2 =
 	\frac{\displaystyle\sum_{i:\,d_i=1}\sum_{j:\,t_i<t_j}\eta(i,j)}
@@ -140,12 +140,12 @@ Para essa finalidade, foi implementado um mecanismo de atenção temporal (\text
 \begin{equation}
 	a_l = \mathbf{v}^{\top}\tanh(W_1\mathbf{h}_l + \mathbf{b}_1) \in \mathbb{R}.
 \end{equation}
-Os escores são normalizados via \textit{softmax} ao longo do eixo temporal, produzindo pesos de atenção $\alpha_l = \operatorname{softmax}(a_l)$. O vetor de contexto é então obtido por soma ponderada das representações em cada instante:
+Os escores são normalizados via \textit{softmax} ao longo do eixo temporal, produzindo pesos de atenção $\mathbf{w_l} = \operatorname{softmax}(a_l)$. O vetor de contexto é então obtido por soma ponderada das representações em cada instante:
 \begin{equation}
-	\mathbf{c} = \sum_{l=1}^{L'} \alpha_l\mathbf{h}_l \in \mathbb{R}^{512}.
+	\mathbf{v_{\text{ctx}}} = \sum_{l=1}^{L'} \mathbf{w_l}\mathbf{h}_l \in \mathbb{R}^{512}.
 \end{equation}
 
-O vetor $\mathbf{c}$ constitui a representação condensada da janela de ECG, com contribuição proporcional de cada instante temporal à sua relevância prognóstica aprendida pelo modelo. Instantes com padrões morfológicos normais recebem pesos baixos; instantes com alterações relevantes recebem pesos elevados. Na versão atual do modelo (\texttt{ModeloSurvivalHibrido}), por razões de regularização e estabilidade durante o desenvolvimento, o módulo de atenção foi temporariamente substituído por média simples ao longo da dimensão temporal (\texttt{features.mean(dim=2)}), equivalente ao GAP, mas a arquitetura de atenção permanece implementada para comparação experimental futura.
+O vetor $\mathbf{v_{\text{ctx}}}$ constitui a representação condensada da janela de ECG, com contribuição proporcional de cada instante temporal à sua relevância prognóstica aprendida pelo modelo. Instantes com padrões morfológicos normais recebem pesos baixos; instantes com alterações relevantes recebem pesos elevados. Na versão atual do modelo (\texttt{ModeloSurvivalHibrido}), por razões de regularização e estabilidade durante o desenvolvimento, o módulo de atenção foi temporariamente substituído por média simples ao longo da dimensão temporal (\texttt{features.mean(dim=2)}), equivalente ao GAP, mas a arquitetura de atenção permanece implementada para comparação experimental futura.
 
 \subsection{Modelo Híbrido de Sobrevivência}
 
@@ -153,9 +153,10 @@ O modelo final integra as representações extraídas do sinal de ECG com as var
 
 A fusão das duas modalidades ocorre por concatenação, resultando em um vetor de 32 dimensões:
 \begin{equation}
-	\mathbf{z} = [\mathbf{e}_{16}; \mathbf{c}_{16}] \in \mathbb{R}^{32}
+	\mathbf{f} = [\mathbf{e}_{16}; \mathbf{c}_{16}] \in \mathbb{R}^{32}
 \end{equation}
-onde $\mathbf{e}_{16}$ é a representação do ECG após o gargalo e $\mathbf{c}_{16}$ é a representação clínica. Esse vetor é então processado pela camada de saída (\textit{head}), composta por camadas lineares com ReLU e \textit{Dropout}, produzindo os logits $\bm{\phi} \in \mathbb{R}^m$ correspondentes aos $m$ bins temporais.
+onde $\mathbf{e}_{16}$ é a representação do ECG após o gargalo e $\mathbf{c}_{16}$ é a representação clínica. O vetor $\mathbf{f}$ é então processado pela camada de saída (\textit{head}), composta por camadas lineares com ReLU e \textit{Dropout},
+produzindo os logits $\bm{\phi} \in \mathbb{R}^K$ correspondentes aos $K$ bins temporais.
 
 % A escolha por dimensionalidade igual, 16 para cada modalidade, é uma decisão de projeto deliberada: ela garante que nenhuma das duas fontes de informação domine a fusão por ter maior número de parâmetros ou de dimensões representacionais, estabelecendo uma fusão tardia balanceada (\textit{late fusion}) em que ECG e dados clínicos contribuem com pesos equivalentes a priori. Essa simetria é especialmente relevante neste estudo, dado que o objetivo científico inclui comparar o poder preditivo incremental dos sinais de ECG sobre os dados clínicos isoladamente.
 
@@ -218,16 +219,16 @@ A família de métodos \textit{Momentum Contrast} (MoCo), desenvolvida pelo Face
 \subsection{MoCo v1: Contraste como Busca em Dicionário Dinâmico}
 \label{subsec:moco-v1}
 
-\citeonline{he2020momentum} propõem o \textit{Momentum Contrast} a partir da perspectiva do aprendizado contrastivo como um problema de busca em dicionário (\textit{dictionary look-up}): dada uma amostra de consulta (\textit{query}) $\mathbf{q}$, o objetivo é identificar, em um dicionário de representações, a chave positiva $\mathbf{k}_{+}$ correspondente à mesma amostra original entre $K$ chaves negativas $\{\mathbf{k}_{j}^{-}\}_{j=1}^{K}$.
+\citeonline{he2020momentum} propõem o \textit{Momentum Contrast} a partir da perspectiva do aprendizado contrastivo como um problema de busca em dicionário (\textit{dictionary look-up}): dada uma amostra de consulta (\textit{query}) $\mathbf{q}$, o objetivo é identificar, em um dicionário de representações, a chave positiva  $\mathbf{k}_{+}$ correspondente à mesma amostra original entre $\mathbf{K_{\text{queue}}}$ chaves negativas $\{\mathbf{k}_{j}^{-}\}_{j=1}^{\mathbf{K_{\text{queue}}}}$.
 
 A principal contribuição do MoCo v1 é a construção de um dicionário dinâmico por meio de dois mecanismos interdependentes: uma fila (\textit{queue}) de representações e um encoder de chave atualizado por momento (\textit{momentum-updated encoder}).
 
 \subsubsection{Fila de Representações}
 \label{subsubsec:fila-representacoes}
 
-O dicionário é mantido como uma fila FIFO (\textit{First-In, First-Out}) de representações de mini-batches anteriores \cite{he2020momentum}. A cada iteração de treinamento, as representações produzidas pelo encoder de chave no mini-batch corrente são enfileiradas, e as representações do mini-batch mais antigo são removidas. Seja $B$ o tamanho do mini-batch; após $\lfloor K/B \rfloor$ iterações, o dicionário contém aproximadamente $K$ representações negativas disponíveis para a função de perda.
+O dicionário é mantido como uma fila FIFO (\textit{First-In, First-Out}) de representações de mini-batches anteriores \cite{he2020momentum}. A cada iteração de treinamento, as representações produzidas pelo encoder de chave no mini-batch corrente são enfileiradas, e as representações do mini-batch mais antigo são removidas. Seja $B$ o tamanho do mini-batch; após $\lfloor \mathbf{K_{\text{queue}}}/B \rfloor$  iterações, o dicionário contém aproximadamente $\mathbf{K_{\text{queue}}}$ representações negativas disponíveis para a função de perda.
 
-Essa estrutura desacopla o número de amostras negativas do tamanho do mini-batch, permitindo que $K \gg B$. No presente trabalho, adota-se $K = 8192$ e $B = 256$, de modo que o dicionário mantém $K/B = 32$ mini-batches de histórico. Esse valor de $K$ é deliberadamente menor do que os $K = 65536$ usados originalmente no ImageNet \cite{he2020momentum}, refletindo a escala do conjunto de ECG (992 pacientes $\times$ 100 janelas/paciente = 99.200 amostras), onde uma fila excessivamente grande introduziria representações muito desatualizadas.
+Essa estrutura desacopla o número de amostras negativas do tamanho do mini-batch, permitindo que $\mathbf{K_{\text{queue}}} \gg B$. No presente trabalho, adota-se $\mathbf{K_{\text{queue}}} = 8192$ e $B = 256$, de modo que o dicionário mantém $\mathbf{K_{\text{queue}}}/B = 32$ mini-batches de histórico. Esse valor de $\mathbf{K_{\text{queue}}}$ é deliberadamente menor do que os $\mathbf{K_{\text{queue}}} = 65536$ usados originalmente no ImageNet \cite{he2020momentum}, refletindo a escala do conjunto de ECG (992 pacientes $\times$ 100 janelas/paciente = 99.200 amostras), onde uma fila excessivamente grande introduziria representações muito desatualizadas.
 
 \subsubsection{Encoder de Momento}
 \label{subsubsec:encoder-momento}
@@ -244,20 +245,20 @@ O valor $m = 0{,}999$ é mais conservador do que os valores $m \in \{0{,}99, 0{,
 \subsubsection{Função de Perda InfoNCE}
 \label{subsubsec:infonce}
 
-A função de perda utilizada é a InfoNCE (\textit{Noise Contrastive Estimation}) \cite{oord2018cpc}, que formula o problema contrastivo como uma classificação entre $K+1$ candidatos: identificar a chave positiva $\mathbf{k}_{+}$ entre um conjunto composto por $\mathbf{k}_{+}$ e $K$ chaves negativas $\{\mathbf{k}_{j}^{-}\}_{j=1}^{K}$. A similaridade entre representações é medida pelo produto escalar no espaço $\ell_2$-normalizado:
+A função de perda utilizada é a InfoNCE (\textit{Noise Contrastive Estimation}) \cite{oord2018cpc}, que formula o problema contrastivo como uma classificação entre $\mathbf{K_{\text{queue}}}+1$ candidatos: identificar a chave positiva $\mathbf{k}_{+}$ entre um conjunto composto por $\mathbf{k}_{+}$ e $\mathbf{K_{\text{queue}}}$ chaves negativas $\{\mathbf{k}_{j}^{-}\}_{j=1}^{\mathbf{K_{\text{queue}}}}$. A similaridade entre representações é medida pelo produto escalar no espaço $\ell_2$-normalizado:
 \begin{equation}
 	\mathcal{L}_{\mathrm{InfoNCE}} = -\log
 	\frac{\exp\left(\mathbf{q}\cdot\mathbf{k}_{+}/\tau\right)}
-	{\exp\left(\mathbf{q}\cdot\mathbf{k}_{+}/\tau\right) + \sum_{j=1}^{K}\exp\left(\mathbf{q}\cdot\mathbf{k}_{j}^{-}/\tau\right)},
+	{\exp\left(\mathbf{q}\cdot\mathbf{k}_{+}/\tau\right) + \sum_{j=1}^{\mathbf{K_{\text{queue}}}}\exp\left(\mathbf{q}\cdot\mathbf{k}_{j}^{-}/\tau\right)},
 	\label{eq:infonce}
 \end{equation}
 onde $\tau > 0$ é um hiperparâmetro de temperatura que controla a suavidade (\textit{sharpness}) da distribuição sobre os candidatos. Valores baixos de $\tau$ tornam a distribuição mais concentrada, penalizando mais severamente as chaves negativas com alta similaridade à consulta.
 
 A temperatura adotada é $\tau = 0{,}07$, idêntica à reportada por \citeonline{he2020momentum} como ótima para o ImageNet. No contexto de ECG, a temperatura baixa é justificada pela alta discriminabilidade esperada entre padrões morfológicos distintos, como fibrilação atrial e ritmo sinusal, mas exige que as representações estejam bem normalizadas para evitar saturação dos exponenciais, condição garantida pela normalização $\ell_2$ aplicada nas projeções do modelo.
 
-Na implementação, a perda InfoNCE é computada como uma entropia cruzada categórica padrão (\texttt{nn.CrossEntropyLoss}) sobre os logits $\mathbf{l} \in \mathbb{R}^{K+1}$, onde a classe correta é sempre o índice 0, correspondente à chave positiva. Os logits são construídos como:
+Na implementação, a perda InfoNCE é computada como uma entropia cruzada categórica padrão (\texttt{nn.CrossEntropyLoss}) sobre os logits $\mathbf{l} \in \mathbb{R}^{\mathbf{K_{\text{queue}}}+1}$, onde a classe correta é sempre o índice 0, correspondente à chave positiva. Os logits são construídos como:
 \begin{equation}
-	\mathbf{l} = \left[\frac{\mathbf{q}\cdot\mathbf{k}_{+}}{\tau};\frac{\mathbf{q}\cdot\mathbf{k}_{1}^{-}}{\tau};\ldots;\frac{\mathbf{q}\cdot\mathbf{k}_{K}^{-}}{\tau}\right] \in \mathbb{R}^{K+1},
+	\mathbf{l} = \left[\frac{\mathbf{q}\cdot\mathbf{k}_{+}}{\tau};\frac{\mathbf{q}\cdot\mathbf{k}_{1}^{-}}{\tau};\ldots;\frac{\mathbf{q}\cdot\mathbf{k}_{\mathbf{K_{\text{queue}}}}^{-}}{\tau}\right] \in \mathbb{R}^{\mathbf{K_{\text{queue}}}+1},
 	\label{eq:moco-logits}
 \end{equation}
 de modo que minimizar $\mathcal{L}_{\mathrm{InfoNCE}}$ é equivalente a maximizar a probabilidade \textit{softmax} da classe 0, o que corresponde matematicamente à Equação~\eqref{eq:infonce}.
@@ -347,7 +348,11 @@ A implementação adotada neste trabalho consolida os três avanços da família
 
 \textbf{Estágio 2: codificação e projeção.} As visões são processadas pelos encoders de consulta e chave, respectivamente. Para cada visão $v \in \{1,2\}$, o encoder ResNet-18 1D extrai a representação $\mathbf{h}^{(v)} \in \mathbb{R}^{d}$, e a cabeça de projeção MLP produz o vetor normalizado $\mathbf{z}^{(v)} / \|\mathbf{z}^{(v)}\|_2 \in \mathbb{R}^{256}$.
 
-\textbf{Estágio 3: construção dos logits e perda simétrica.} Para cada direção, os logits $\mathbf{l}^{(v)} \in \mathbb{R}^{K+1}$ são construídos conforme a Equação~\eqref{eq:moco-logits} com as $K = 8192$ chaves da fila, e a perda simétrica $\mathcal{L}_{\mathrm{sym}}$ é computada conforme a Equação~\eqref{eq:moco-sym}.
+% \textbf{Estágio 3: construção dos logits e perda simétrica.} Para cada direção,
+% os logits $\mathbf{l}^{(v)} \in \mathbb{R}^{K+1}$ são construídos conforme a Equação~\eqref{eq:moco-logits} com as $K = 8192$ chaves da fila
+
+\textbf{Estágio 3: construção dos logits e perda simétrica.} Para cada direção,
+os logits $\mathbf{l}^{(v)} \in \mathbb{R}^{\mathbf{K_{\text{queue}}}+1}$ são construídos conforme a Equação~\eqref{eq:moco-logits} com as $\mathbf{K_{\text{queue}}} = 8192$ chaves da fila, e a perda simétrica $\mathcal{L}_{\mathrm{sym}}$ é computada conforme a Equação~\eqref{eq:moco-sym}.
 
 \textbf{Estágio 4: atualização dos parâmetros.} O encoder de consulta $f_q$ é atualizado por retropropagação através de $\mathcal{L}_{\mathrm{sym}}$ via SGD, conforme as Equações~\eqref{eq:sgd-momentum-v}--\eqref{eq:sgd-momentum-theta}, com AMP conforme a Equação~\eqref{eq:amp-scaling}. O encoder de chave $f_k$ é atualizado exclusivamente por EMA, conforme a Equação~\eqref{eq:moco-ema}, com $m = 0{,}999$.
 
@@ -360,18 +365,18 @@ A Tabela~\ref{tab:moco-hparams} sumariza os hiperparâmetros adotados e sua just
 	\small
 	\begin{tabular}{>{\raggedright\arraybackslash}p{0.12\textwidth} >{\raggedright\arraybackslash}p{0.13\textwidth} >{\raggedright\arraybackslash}p{0.22\textwidth} >{\raggedright\arraybackslash}p{0.38\textwidth}}
 		\toprule
-		\textbf{Símbolo} & \textbf{Valor}     & \textbf{Parâmetro}          & \textbf{Justificativa}                                                 \\
+		\textbf{Símbolo}            & \textbf{Valor}     & \textbf{Parâmetro}          & \textbf{Justificativa}                                                 \\
 		\midrule
-		$K$              & 8.192              & Tamanho da fila             & Aproximadamente 8\% do conjunto total; evita chaves obsoletas.         \\
-		$m$              & 0,999              & Momento do encoder          & Alta estabilidade para ECG com variabilidade intra-dia.                \\
-		$\tau$           & 0,07               & Temperatura InfoNCE         & Distribuição concentrada; consistente com \citeonline{he2020momentum}. \\
-		$d_z$            & 256                & Dimensão da projeção        & Compromisso entre capacidade e generalização.                          \\
-		$B$              & 256                & Tamanho do mini-batch       & $K/B = 32$ mini-batches de histórico na fila.                          \\
-		$\eta_0$         & $10^{-3}$          & Taxa de aprendizado         & SGD com momento; escalonado adaptativamente.                           \\
-		$\lambda$        & $5 \times 10^{-4}$ & Decaimento de peso          & Regularização $\ell_2$ padrão para pré-treinamento.                    \\
-		$\beta$          & 0,9                & Momento SGD                 & Suavização do caminho de otimização.                                   \\
-		$L$              & 24.000             & Comprimento da janela       & 24 s a 1.000 Hz; captura ciclos cardíacos completos.                   \\
-		$p$              & 0,80               & Probabilidade de aumentação & 80\% das amostras recebem perturbação por passagem.                    \\
+		$\mathbf{K_{\text{queue}}}$ & 8.192              & Tamanho da fila             & Aproximadamente 8\% do conjunto total; evita chaves obsoletas.         \\
+		$m$                         & 0,999              & Momento do encoder          & Alta estabilidade para ECG com variabilidade intra-dia.                \\
+		$\tau$                      & 0,07               & Temperatura InfoNCE         & Distribuição concentrada; consistente com \citeonline{he2020momentum}. \\
+		$d_z$                       & 256                & Dimensão da projeção        & Compromisso entre capacidade e generalização.                          \\
+		$B$                         & 256                & Tamanho do mini-batch       & $K_{\text{queue}}/B = 32$ mini-batches de histórico na fila.           \\
+		$\eta_0$                    & $10^{-3}$          & Taxa de aprendizado         & SGD com momento; escalonado adaptativamente.                           \\
+		$\lambda$                   & $5 \times 10^{-4}$ & Decaimento de peso          & Regularização $\ell_2$ padrão para pré-treinamento.                    \\
+		$\beta$                     & 0,9                & Momento SGD                 & Suavização do caminho de otimização.                                   \\
+		$L$                         & 24.000             & Comprimento da janela       & 24 s a 1.000 Hz; captura ciclos cardíacos completos.                   \\
+		$p$                         & 0,80               & Probabilidade de aumentação & 80\% das amostras recebem perturbação por passagem.                    \\
 		\bottomrule
 	\end{tabular}
 \end{table}
@@ -383,7 +388,7 @@ A adoção do arcabouço MoCo no pré-treinamento do encoder ResNet-18 1D é mot
 
 O primeiro é a escassez de rótulos positivos: com 205 eventos em 992 pacientes (20,67\%), o treinamento supervisionado direto enfrenta risco de sobreajuste e de sub-representação de padrões morfológicos raros. O pré-treinamento contrastivo utiliza os sinais de todos os 992 pacientes, isto é, $992 \times 100 = 99.200$ janelas de 24 s, para construir representações discriminativas sem qualquer supervisão de sobrevivência. O encoder aprende a distinguir padrões de ECG a partir de 99.200 instâncias, enquanto o \textit{fine-tuning} supervisionado posterior dispõe de apenas 992 rótulos de evento.
 
-O segundo é a vantagem da fila de negativos em cenários de baixa prevalência. A fila com $K = 8192$ representações garante que, a cada iteração, o encoder enfrenta um espectro amplo de morfologias de ECG como amostras negativas. Em um mini-batch de $B = 256$ amostras com 20,67\% de prevalência de evento, o modelo veria em média apenas aproximadamente 53 amostras do grupo de evento por iteração supervisionada; no pré-treinamento contrastivo, todos os 256 sinais do batch contribuem igualmente como âncoras, com $K = 8192$ negativos adicionais da fila, independentemente de seu rótulo de sobrevivência.
+O segundo é a vantagem da fila de negativos em cenários de baixa prevalência. A fila com $\mathbf{K_{\text{queue}}} = 8192$ representações garante que, a cada iteração, o encoder enfrenta um espectro amplo de morfologias de ECG como amostras negativas. Em um mini-batch de $B = 256$ amostras com 20,67\% de prevalência de evento, o modelo veria em média apenas aproximadamente 53 amostras do grupo de evento por iteração supervisionada; no pré-treinamento contrastivo, todos os 256 sinais do batch contribuem igualmente como âncoras, com $\mathbf{K_{\text{queue}}} = 8192$  negativos adicionais da fila, independentemente de seu rótulo de sobrevivência.
 
 Após o pré-treinamento, os pesos do encoder $f_q$ são transferidos para o modelo híbrido de sobrevivência (\texttt{ModeloSurvivalHibrido}), onde o parâmetro \texttt{freeze\_encoder} governa se $\theta_q$ permanece congelado durante o \textit{fine-tuning}, favorecendo a regularização em regimes de poucos dados, ou é ajustado conjuntamente com o restante do modelo.
 

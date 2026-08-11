@@ -31,5 +31,6 @@ corrigindo introdução - 08/06/26
 
 ajustando formatação - 01/07/26
 
-
 criando ponrto de restauração - 10/08/26
+
+ajustando simbolos e listas 11/08/26
