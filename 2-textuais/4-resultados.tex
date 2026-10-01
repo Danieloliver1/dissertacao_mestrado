@@ -1,1163 +1,1824 @@
 \chapter{Resultados}
 \label{chap:resultados}
 
-\section{Resultados da tabela subject-info.csv}
+% ==============================================================================
+% CONFIGURAÇÃO EXPERIMENTAL
+% Precede as seções de resultados das arquiteturas.
+%
+% ⚠️ Dois pontos exigem decisão do autor antes da redação final:
+%
+% 1. A justificativa dos hiperparâmetros. O texto abaixo afirma que os
+%    valores foram fixados após ensaios preliminares. Se esses ensaios não
+%    estiverem registrados, convém suavizar a afirmação ou documentá-los.
+%
+% 2. O tamanho do lote da ResNet-50, reduzido de 256 para 128 por limitação
+%    de memória. Está registrado como nota de rodapé.
+% ==============================================================================
 
-Inicialmente fiz teste com resultados de dados clínicos de pacientes da tabela subject-info.csv \cite{physionet2020music_dataset} para o processo de análise de dados, e usar como gabarito para depois adaptar os sinais ECG, apliquei um modelo de risco proporcional de cox uma técnica de análise bastante utilizada na área da saúde, meus estudos começou pela regressão de cox mas a comprender melhor os dados percebi que para o meu caso o melhor modelo é o LogisticHazard pelo simples fatos que o regressão de cox trabalho com o tempo continuos e o meu trabalho vai trabalhar com tempo discreto, e o modelo de regressão de cox tem a suposição de proporcionalidade dos riscos que não se aplica ao meu caso, já o modelo LogisticHazard é uma extensão do modelo de regressão de cox para o caso de tempo discreto, porem não vou discartar os resultados que obtive com a regressão de cox, pois os resultados me ajudaram a compreender melhor os dados e o processo de análise, e também me ajudaram a compreender melhor o modelo LogisticHazard, e os resultados obtidos com a regressão de cox foram bastante satisfatórios, e me deram uma boa base para continuar meus estudos com o modelo LogisticHazard,a biblioteca  CoxPHFitter em python  \cite{kvamme2019time} \cite{lifelines_docs_cox} que utiliza métodos de Breslow, que corrigi eventos que ocorreram no mesmo intervalo de tempo. David Cox assumiu que o tempo era contínuo, ou seja, era impossível duas pessoas morrerem no exato mesmo milissegundo. Porem é muito comum dois ou mais pacientes terem o evento no mesmo dia. neste caso o método de Breslow é utilizado para corrigir esses eventos que ocorreram no mesmo intervalo de tempo, o estimador de Breslow ele permite que a Regressão de Cox calcule os pesos $\beta$ mesmo quando a vários eventos no mesmo dia.
+\section{Configuração experimental}
+\label{sec:configuracao-experimental}
 
-Calculo matemático que o modelo CoxPHFitter \cite{lifelines_docs_cox} definem a função de risco do modelo de regressão de cox da seguinte forma:
+As arquiteturas avaliadas nas seções seguintes compartilham o mesmo
+protocolo de preparação dos dados, treinamento e avaliação. Essa
+uniformidade é condição para que a comparação entre elas isole o efeito da
+arquitetura, e não o de escolhas acessórias de configuração. Os valores
+adotados resultaram de ensaios preliminares e são apresentados a seguir,
+acompanhados da justificativa correspondente.
+
+\subsection{Representação do sinal}
+\label{subsec:config-sinal}
+
+Cada paciente é representado por janelas extraídas de seu registro de
+24\,horas, e não pelo registro integral. A opção decorre de uma limitação
+prática: a 200\,Hz, três derivações durante 24\,horas correspondem a
+aproximadamente 17 milhões de amostras por paciente, volume incompatível com
+o processamento em lote na memória disponível.
+
+A \autoref{tab:config-sinal} reúne os parâmetros de representação.
+
+% ---- TABELA: parâmetros do sinal ----
+\begin{table}[h!]
+	\captionsetup{width=14cm}
+	\Caption{\label{tab:config-sinal} Parâmetros de representação do sinal}
+	\IBGEtab{}{
+		\begin{tabular}{lll}
+			\toprule
+			Parâmetro                        & Valor                       & Justificativa                        \\
+			\midrule \midrule
+			Comprimento da janela            & 24\,000 amostras            & 2 min, cerca de 140 ciclos cardíacos \\
+			Janelas por paciente (treino)    & 250                         & posições sorteadas a cada época      \\
+			Janelas por paciente (avaliação) & 100                         & posições em grade fixa               \\
+			Margem descartada                & 5 min                       & calibração do equipamento            \\
+			Filtro passa-banda               & 0,5--40\,Hz                 & remove deriva e ruído muscular       \\
+			Normalização                     & escala global por derivação & preserva amplitude relativa          \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+A janela de dois minutos abrange aproximadamente 140 ciclos cardíacos a uma
+frequência de 70\,bpm, quantidade suficiente para que a morfologia se repita
+e para que a variabilidade entre batimentos seja observável. Janelas mais
+curtas podem recair sobre trechos sem conteúdo relevante; janelas mais longas
+elevam o consumo de memória e reduzem o número de amostras disponíveis por
+paciente.
+
+No treinamento, as posições das janelas são sorteadas a cada época,
+funcionando como forma de aumento de dados: o modelo nunca observa
+exatamente o mesmo recorte duas vezes. Na avaliação, as posições seguem grade
+regular determinística, assegurando reprodutibilidade das métricas.
+
+A separação entre filtragem e normalização é deliberada. O filtro
+passa-banda remove o deslocamento de linha de base de cada janela
+individualmente --- deslocamento que varia entre pacientes conforme o
+posicionamento dos eletrodos, tendo-se observado medianas de $-0{,}29$,
+$-0{,}96$ e $+0{,}42$\,mV nas três derivações de um mesmo registro. A escala,
+por sua vez, é estimada uma única vez sobre o conjunto de treinamento de cada
+partição, de modo idêntico para todos os pacientes, o que preserva as
+diferenças de amplitude entre indivíduos --- informação associada a condições
+como baixa voltagem e hipertrofia ventricular. A padronização por janela,
+alternativa descartada, executaria as duas operações simultaneamente e
+eliminaria essa informação.
+
+\subsection{Treinamento}
+\label{subsec:config-treino}
+
+A \autoref{tab:config-treino} apresenta os hiperparâmetros de otimização,
+mantidos constantes em todas as arquiteturas.
+
+% ---- TABELA: hiperparâmetros de treino ----
+\begin{table}[h!]
+	\captionsetup{width=14cm}
+	\Caption{\label{tab:config-treino} Hiperparâmetros de treinamento}
+	\IBGEtab{}{
+		\begin{tabular}{lll}
+			\toprule
+			Parâmetro                 & Valor                  & Justificativa                          \\
+			\midrule \midrule
+			Otimizador                & AdamW                  & desacopla regularização do gradiente   \\
+			Taxa de aprendizado       & $1{,}0 \times 10^{-4}$ & valores maiores causaram instabilidade \\
+			Regularização ($\lambda$) & $1{,}0 \times 10^{-2}$ & limite superior usual                  \\
+			Descarte                  & 0,6                    & compensa a razão parâmetros/eventos    \\
+			Tamanho do lote           & 256\footnotemark[1]    &                                        \\
+			Épocas máximas            & 20                     & melhor época ocorreu antes da quinta   \\
+			Paciência                 & 10 épocas              & sobre média móvel de três              \\
+			Agrupamento               & média e máximo         & estado típico e instante extremo       \\
+			Precisão                  & mista (fp16)           & reduz consumo de memória               \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+\footnotetext[1]{Reduzido para 128 na ResNet-50 por limitação de memória da
+	unidade de processamento gráfico.}
+
+Os valores de regularização e descarte situam-se no extremo superior das
+faixas habituais. A escolha decorre da razão entre o número de parâmetros e
+o de eventos disponíveis: mesmo a arquitetura mais enxuta avaliada dispõe de
+$109\,361$ parâmetros para 37 casos positivos no conjunto de treinamento. Em
+ensaios preliminares, valores menores de regularização produziram perdas de
+treinamento próximas de zero já na terceira época.
+
+O limite de 20 épocas acompanha a observação, recorrente em todas as
+arquiteturas, de que o melhor valor de \gls{AUC} sobre o conjunto de
+validação ocorre nas primeiras épocas. O critério de parada emprega média
+móvel de três épocas em lugar do valor pontual: com sete a onze eventos no
+conjunto de validação, a métrica de uma única época oscila substancialmente
+sem que o modelo tenha se alterado de forma apreciável, e a suavização evita
+que se selecione o pico do ruído.
+
+\subsection{Desbalanceamento entre classes}
+\label{subsec:config-desbalanceamento}
+
+Com prevalência de 10,6\,\%, um classificador que atribua a classe
+majoritária a todos os pacientes alcança acurácia de 89,4\,\% com
+sensibilidade nula. Para evitar a convergência a esse ótimo local, a função
+de perda de entropia cruzada binária foi ponderada pelo fator
 
 \begin{equation}
-	\label{eq:cox_hazard_eng}
-	\underbrace{h(t|x)}_{\text{hazard}} = \overbrace{b_0(t)}^{\text{baseline hazard}} \underbrace{\exp \overbrace{\left( \sum_{i=1}^n b_i(x_i - \overline{x}_i) \right)}^{\text{log-partial hazard}}}_{\text{partial hazard}}
+	w_{+} = \frac{N_0}{N_1} \approx 8{,}5,
+	\label{eq:pos-weight}
 \end{equation}
 
-Onde $b_0(t)$ é a função de risco basal, $b_i$ são os coeficientes de regressão, $x_i$ são as covariáveis e $\overline{x}_i$ são as médias das covariáveis. O modelo de regressão de cox é um modelo sem parâmetros, ou seja, não assume nenhuma forma específica para a função de risco basal, e o modelo de regressão de cox é um modelo semi-paramétrico, pois assume que a função de risco basal é uma função arbitrária, e o modelo de regressão de cox é um modelo multiplicativo, pois assume que a função de risco é multiplicada pela função de risco basal. Quando é semiparametrico o metodo utilizado é Breslow, pois resolve o problema de cox. O modelo de regressão de cox é um modelo de risco proporcional, pois assume que a razão de riscos entre dois indivíduos é constante ao longo do tempo, ou seja, a razão de riscos entre dois indivíduos é dada por:
+\noindent
+em que $N_0$ e $N_1$ denotam, respectivamente, o número de controles e de
+casos no conjunto de treinamento de cada partição. O fator multiplica a
+contribuição dos casos positivos ao gradiente, sendo equivalente a replicar
+cada evento 8,5 vezes sem descartar controles.
 
-\begin{equation}
-	\label{eq:cox_proportional_hazard_eng}
-	\frac{h(t|x_1)}{h(t|x_2)} = \exp \left( \sum_{i=1}^n b_i(x_{1i} - x_{2i}) \right)
-\end{equation}
+Técnicas de subamostragem da classe majoritária foram descartadas: o
+equilíbrio entre classes seria obtido às custas de reduzir a coorte de 517
+para 110 pacientes, sem alterar o número de eventos --- que constitui o
+fator efetivamente limitante --- e com ampliação dos intervalos de confiança.
 
+\subsection{Protocolo de avaliação}
+\label{subsec:config-avaliacao}
 
-Classifiquei alguns dados em grupo relevante para covariáveis, dados como holter, eletrocardiogramas holter, eventos condicoes cardiovasculares, dados demograficos clinicos, e outros dados de apoio como idade, gênero, esses vão estar presentes em todos dados porque são relevantes para a análise. Analise se baseie em modelo de risco de cox me retornando taxa de risco, intervalo de confiança, matriz de variâncias, erros padrão, log da verossimilhança, com base nos resultados selecionei algumas coveriaveis relevantes para para o treinar junto com os sinais ECG, e tambem comparar o quanto o modelo melhorou com os dados sinais ECG.
+A avaliação emprega validação cruzada estratificada em cinco partições. A
+divisão ocorre no nível do paciente, e as janelas são extraídas somente após
+a separação: nenhum indivíduo contribui simultaneamente para treinamento e
+teste. O cuidado é necessário porque janelas de um mesmo registro
+compartilham a assinatura eletrocardiográfica individual --- eixo elétrico,
+morfologia do complexo QRS e relação de amplitude entre derivações ---, e sua
+presença em ambos os conjuntos permitiria ao modelo reconhecer o paciente em
+lugar de estimar o risco.
 
+De cada conjunto de treinamento, uma fração é reservada para a definição do
+critério de parada antecipada e do limiar de decisão. O limiar é obtido pelo
+índice de Youden, que maximiza a soma de sensibilidade e especificidade, e
+apenas aplicado ao conjunto de teste --- sua determinação a partir do próprio
+teste produziria estimativas otimistas.
 
-Foram avaliadas variáveis derivadas do Holter em modelos de regressão de Cox. As variáveis \textit{Holter available} e \textit{Holter onset (hh:mm:ss)} foram desconsideradas, pois não agregavam informa\c{c}\~ao anal\'itica relevante nesta amostra. A variável \textit{Longest RR pause (ms)} também foi excluída devido à elevada proporção de valores ausentes.
+As probabilidades preditas para as janelas de um mesmo paciente são
+agregadas por média antes do cálculo de qualquer métrica. Sem essa agregação,
+um indivíduo com 100 janelas seria contabilizado cem vezes, como se
+correspondesse a cem observações independentes --- o que estreitaria
+artificialmente os intervalos de confiança.
 
+Os intervalos de confiança de 95\,\% foram estimados por reamostragem
+\textit{bootstrap} com 2\,000 repetições, sorteando pacientes com reposição.
+Comparações entre modelos empregaram reamostragem pareada: a mesma amostra
+avalia ambos os modelos, de modo a isolar a incerteza da diferença.
 
+\subsection{Métricas}
+\label{subsec:config-metricas}
 
-\subsection{Resultados do modelo de Cox para dados Holter}
+A métrica principal é a \gls{AUC}, que mede a capacidade de ordenar
+corretamente os pacientes por risco e independe do limiar adotado. Reporta-se
+também a \gls{AP}, cuja linha de base sob classificação aleatória é a
+prevalência da classe positiva --- 0,106 nesta coorte --- em lugar de 0,5, o
+que a torna mais informativa quando os eventos são raros.
 
-% -------------------------------------------------------
-%  Bloco 1 — Antes das tabelas do Holter
-% -------------------------------------------------------
+Sensibilidade, especificidade e \gls{VPP} são reportadas no limiar definido
+na validação. A acurácia não é empregada como critério de comparação pela
+razão já exposta: o classificador trivial a maximiza sem apresentar
+utilidade.
 
-As variáveis do Holter utilizadas na análise estão descritas na
-Tabela~\ref{tab:cox_holter_completo}. As variáveis \textit{Holter available}
-e \textit{Holter onset} foram desconsideradas por não agregarem informação
-analítica relevante — todos os pacientes apresentaram valor igual a 1 na
-primeira, e a segunda corresponde apenas ao horário de início do exame.
-A variável \textit{Longest RR pause (ms)} também foi excluída em razão da
-elevada proporção de valores ausentes (aproximadamente 80\% da amostra).
-As demais variáveis consideradas foram: ritmo do Holter
-(\textit{Holter rhythm}), intervalos RR mínimo, médio, máximo e amplitude
-(\textit{minimum}, \textit{average}, \textit{maximum} e \textit{RR range}),
-extrassístoles em dupla (\textit{Extrasystole couplets}), extrassístole
-ventricular (\textit{Ventricular Extrasystole}), bradicardia
-(\textit{Bradycardia}) e os índices de variabilidade da frequência cardíaca SDNN, SDANN, RMSSD e pNN50. Apresentam-se abaixo dois modelos: o primeiro com a coorte completa ($n=992$) e o segundo com a amostra filtrada para pacientes com as três derivações completas ($n=898$).
+Dois valores de \gls{AUC} são apresentados em cada seção. A média entre
+partições, acompanhada do desvio-padrão, indica a estabilidade do resultado
+em relação à composição das partições. A estimativa agrupada, calculada sobre
+a totalidade dos 517 pacientes --- cada um predito pelo modelo que não o
+observou durante o treinamento ---, é considerada mais confiável por avaliar
+simultaneamente os 55 eventos, enquanto cada partição isolada dispõe de
+apenas onze. Eventuais discrepâncias entre as duas estimativas decorrem de os
+modelos ajustados em cada partição produzirem probabilidades em escalas
+distintas, que não coincidem exatamente ao serem reunidas em ordenamento
+único.
 
-\begin{table}[htbp]
-	\centering
-	\caption{Modelo de Cox com variáveis do Holter na coorte completa ($n=992$; 205 eventos).}
-	\label{tab:cox_holter_completo}
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lcccccc}
+% ==============================================================================
+% RESULTADOS — CNN unidimensional (primeira arquitetura avaliada)
+% Fonte: classificacao_cv.log, execução de 18/09/2026 (5 partições)
+%
+% Esta seção precede as três de ResNet. A ordem adotada vai da arquitetura
+% mais simples para a mais complexa, o que torna natural a progressão do
+% argumento sobre capacidade.
+% ==============================================================================
+
+\section{Rede convolucional aplicada ao sinal bruto}
+\label{sec:resultados-cnn-simples}
+
+A primeira arquitetura avaliada foi uma rede convolucional unidimensional sem
+conexões residuais, composta por quatro blocos sequenciais. Cada bloco
+executa convolução, normalização em lote, ativação \textit{ReLU}, agrupamento
+máximo com fator quatro e descarte. O número de filtros duplica a cada bloco
+--- 16, 32, 64 e 64 --- enquanto o comprimento temporal é dividido por
+quatro, reduzindo-se de 24\,000 para 93 posições.
+
+O núcleo convolucional foi dimensionado em 15 amostras, equivalentes a
+75\,ms na frequência de amostragem de 200\,Hz --- aproximadamente a duração
+de um complexo QRS. Essa escolha difere da convenção herdada de arquiteturas
+para imagens, em que núcleos de três elementos são predominantes e
+corresponderiam, neste contexto, a 15\,ms. O agrupamento global combina média
+e máximo ao longo do tempo, permitindo que a representação final capture
+tanto o estado típico da janela quanto o instante de maior ativação.
+
+A configuração resultante possui $109\,361$ parâmetros treináveis, o menor
+valor entre as arquiteturas aplicadas ao sinal bruto, correspondendo a 311
+parâmetros por paciente do conjunto de treinamento.
+
+\subsection{Protocolo}
+\label{subsec:protocolo-cnn-simples}
+
+Cada paciente foi representado por janelas de 24\,000 amostras, equivalentes
+a dois minutos de registro, das quais 250 foram amostradas por indivíduo no
+treinamento e 100 na avaliação. Na avaliação, as posições das janelas são
+determinísticas, distribuídas em grade regular ao longo do registro, de modo
+a garantir reprodutibilidade.
+
+O sinal passou por filtro passa-banda de 0,5 a 40\,Hz, aplicado a cada janela
+individualmente, seguido de divisão por escala global estimada por derivação
+no conjunto de treinamento de cada partição. A separação entre as duas
+operações é deliberada: o filtro remove o deslocamento de linha de base, que
+é particular de cada paciente, enquanto a escala global preserva as
+diferenças de amplitude entre indivíduos.
+
+O desbalanceamento entre as classes foi tratado por ponderação da função de
+perda, com peso de 8,5 atribuído à classe positiva. A validação cruzada
+empregou cinco partições estratificadas, com divisão no nível do paciente:
+351 indivíduos no treinamento, 62 na validação interna e 104 no conjunto de
+teste de cada partição. As probabilidades preditas para as janelas de um
+mesmo paciente foram agregadas por média antes do cálculo de qualquer
+métrica, uma vez que janelas de um mesmo registro não constituem observações
+independentes.
+
+\subsection{Desempenho}
+\label{subsec:desempenho-cnn-simples}
+
+A \gls{AUC} sobre as predições fora da amostra foi de 0,498, com intervalo de
+confiança de 95\,\% entre 0,411 e 0,586. O intervalo contém o valor 0,5, de
+modo que não é possível afirmar que o modelo discrimine os desfechos acima do
+acaso. Os resultados por partição constam da \autoref{tab:cnn-simples-folds}.
+
+% ---- TABELA 1: desempenho por partição ----
+\begin{table}[h!]
+	\captionsetup{width=13cm}
+	\Caption{\label{tab:cnn-simples-folds} Desempenho da rede convolucional
+		por partição da validação cruzada}
+	\IBGEtab{}{
+		\begin{tabular}{crrrrr}
 			\toprule
-			Vari\'avel                                & Coef.                                                    & HR   & IC 95\% HR & EP   & $p$      & Signific\^ancia \\
+			Partição                          & \multicolumn{1}{c}{AUC}            & \multicolumn{1}{c}{AP} &
+			\multicolumn{1}{c}{Sensibilidade} & \multicolumn{1}{c}{Especificidade} &
+			\multicolumn{1}{c}{VPP}                                                                                                 \\
+			\midrule \midrule
+			0                                 & 0,487                              & 0,200                  & 0,182 & 0,785 & 0,091 \\
+			1                                 & 0,498                              & 0,147                  & 0,091 & 0,925 & 0,125 \\
+			2                                 & 0,489                              & 0,147                  & 0,545 & 0,391 & 0,097 \\
+			3                                 & 0,441                              & 0,113                  & 0,000 & 0,957 & 0,000 \\
+			4                                 & 0,574                              & 0,173                  & 0,545 & 0,435 & 0,103 \\
 			\midrule
-			G\^enero                                  & 0.28                                                     & 1.33 & 0.95--1.85 & 0.17 & 0.10     & N\~ao           \\
-			Idade                                     & 0.33                                                     & 1.39 & 1.18--1.64 & 0.08 & $<0.005$ & Sim             \\
-			Ritmo Holter\textsuperscript{a}           & 0.15                                                     & 1.17 & 1.02--1.33 & 0.07 & 0.02     & Sim             \\
-			RR m\'in. (ms)                            & 0.11                                                     & 1.12 & 0.90--1.39 & 0.11 & 0.32     & N\~ao           \\
-			RR m\'ed. (ms)                            & -0.00                                                    & 1.00 & 0.78--1.27 & 0.12 & 0.97     & N\~ao           \\
-			RR m\'ax. (ms)                            & -0.01                                                    & 0.99 & 0.70--1.39 & 0.17 & 0.95     & N\~ao           \\
-			Amplitude RR (ms)                         & 0.15                                                     & 1.16 & 0.82--1.66 & 0.18 & 0.40     & N\~ao           \\
-			Extrasys. em dupla\textsuperscript{b}     & 0.10                                                     & 1.11 & 1.02--1.20 & 0.04 & 0.01     & Sim             \\
-			Extrasss\'istole vent.\textsuperscript{c} & 0.23                                                     & 1.26 & 1.07--1.49 & 0.08 & 0.01     & Sim             \\
-			Bradicardia                               & -0.03                                                    & 0.97 & 0.83--1.13 & 0.08 & 0.66     & N\~ao           \\
-			SDNN (ms)                                 & -0.92                                                    & 0.40 & 0.17--0.93 & 0.44 & 0.03     & Sim             \\
-			SDANN (ms)                                & 0.51                                                     & 1.66 & 0.74--3.75 & 0.41 & 0.22     & N\~ao           \\
-			RMSSD (ms)                                & 0.31                                                     & 1.37 & 0.96--1.94 & 0.18 & 0.08     & N\~ao           \\
-			pNN50 (\%)                                & -0.18                                                    & 0.84 & 0.58--1.20 & 0.18 & 0.33     & N\~ao           \\
+			Média                             & 0,498                              & 0,156                  & 0,273 & 0,698 & 0,083 \\
+			Desvio-padrão                     & 0,048                              & 0,033                  & 0,264 & 0,264 & 0,048 \\
 			\midrule
-			Concordance                               & \multicolumn{6}{c}{0.67}                                                                                         \\
-			Partial AIC                               & \multicolumn{6}{c}{2714.94}                                                                                      \\
-			Log-likelihood ratio test                 & \multicolumn{6}{c}{72.76 em 14 g.l.; $-\log_2(p)=30.62$}                                                         \\
+			\textit{Out-of-fold}              & 0,498                              & 0,142                  & 0,309 & 0,704 & 0,110 \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} Ritmo Holter: ritmo cardíaco registrado no Holter (\textit{Holter rhythm}).\\
-		\textsuperscript{b} Extrasys. em dupla: extrassístoles em dupla (\textit{Extrasystole couplets}).\\
-		\textsuperscript{c} Extrassístole vent.: extrassístole ventricular (\textit{Ventricular Extrasystole}).
-	\end{flushleft}
 \end{table}
 
-\begin{table}[htbp]
-	\centering
-	\caption{Modelo de Cox com variáveis do Holter na amostra filtrada com tr\^es deriva\c{c}\~oes completas ($n=898$; 189 eventos).}
-	\label{tab:cox_holter_filtrado}
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lcccccc}
+A \gls{AUC} manteve-se próxima de 0,5 em quatro das cinco partições, variando
+de 0,441 a 0,574, com desvio-padrão de 0,048. A estimativa agrupada coincide
+com a média entre partições, ambas em 0,498.
+
+As métricas dependentes de limiar, por outro lado, apresentaram dispersão
+elevada --- desvio-padrão de 0,264 tanto na sensibilidade quanto na
+especificidade, valor próximo ou superior às respectivas médias. A partição~3
+é o caso extremo: sensibilidade nula e especificidade de 0,957, situação em
+que o modelo classificou praticamente todos os pacientes como sobreviventes e
+nenhum dos onze eventos foi identificado. Esse comportamento aproxima-se do
+classificador trivial que atribui a classe majoritária a todos os
+indivíduos, o qual obteria acurácia de 89,4\,\% nesta coorte sem qualquer
+utilidade clínica.
+
+A \gls{AP} agrupada, de 0,142, situa-se acima da prevalência de 0,106, que
+constitui a linha de base dessa métrica sob classificação aleatória.
+
+\subsection{Comportamento durante o treinamento}
+\label{subsec:treinamento-cnn-simples}
+
+A \autoref{tab:cnn-simples-perdas} apresenta a evolução das perdas nas cinco
+partições.
+
+% ---- TABELA 2: perdas ----
+\begin{table}[h!]
+	\captionsetup{width=14cm}
+	\Caption{\label{tab:cnn-simples-perdas} Perdas de treinamento e validação
+		no início e ao término do ajuste, por partição}
+	\IBGEtab{}{
+		\begin{tabular}{crrrrrr}
 			\toprule
-			Vari\'avel                                & Coef.                                                    & HR   & IC 95\% HR & EP   & $p$      & Signific\^ancia \\
-			\midrule
-			G\^enero                                  & 0.34                                                     & 1.41 & 0.99--2.00 & 0.18 & 0.06     & N\~ao           \\
-			Idade                                     & 0.37                                                     & 1.44 & 1.21--1.72 & 0.09 & $<0.005$ & Sim             \\
-			Ritmo Holter\textsuperscript{a}           & 0.17                                                     & 1.18 & 1.03--1.36 & 0.07 & 0.02     & Sim             \\
-			RR m\'in. (ms)                            & 0.16                                                     & 1.18 & 0.86--1.60 & 0.16 & 0.31     & N\~ao           \\
-			RR m\'ed. (ms)                            & -0.03                                                    & 0.97 & 0.75--1.25 & 0.13 & 0.82     & N\~ao           \\
-			RR m\'ax. (ms)                            & -0.05                                                    & 0.95 & 0.48--1.88 & 0.35 & 0.89     & N\~ao           \\
-			Amplitude RR (ms)                         & 0.21                                                     & 1.24 & 0.58--2.64 & 0.39 & 0.58     & N\~ao           \\
-			Extrasys. em dupla\textsuperscript{b}     & 0.10                                                     & 1.11 & 1.02--1.21 & 0.04 & 0.02     & Sim             \\
-			Extrasss\'istole vent.\textsuperscript{c} & 0.20                                                     & 1.23 & 1.04--1.45 & 0.09 & 0.02     & Sim             \\
-			Bradicardia                               & -0.03                                                    & 0.97 & 0.84--1.14 & 0.08 & 0.75     & N\~ao           \\
-			SDNN (ms)                                 & -0.99                                                    & 0.37 & 0.15--0.92 & 0.46 & 0.03     & Sim             \\
-			SDANN (ms)                                & 0.55                                                     & 1.73 & 0.74--4.08 & 0.44 & 0.21     & N\~ao           \\
-			RMSSD (ms)                                & 0.27                                                     & 1.31 & 0.90--1.91 & 0.19 & 0.16     & N\~ao           \\
-			pNN50 (\%)                                & -0.12                                                    & 0.88 & 0.60--1.29 & 0.19 & 0.53     & N\~ao           \\
-			\midrule
-			Concordance                               & \multicolumn{6}{c}{0.68}                                                                                         \\
-			Partial AIC                               & \multicolumn{6}{c}{2461.23}                                                                                      \\
-			Log-likelihood ratio test                 & \multicolumn{6}{c}{72.27 em 14 g.l.; $-\log_2(p)=30.32$}                                                         \\
+			Partição                         & \multicolumn{2}{c}{Época 1}   &
+			\multicolumn{2}{c}{Última época} &
+			\multicolumn{1}{c}{Razão}        & \multicolumn{1}{c}{Épocas}                                                              \\
+			\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+			                                 & \multicolumn{1}{c}{Treino}    & \multicolumn{1}{c}{Validação} &
+			\multicolumn{1}{c}{Treino}       & \multicolumn{1}{c}{Validação} &                               &                         \\
+			\midrule \midrule
+			0                                & 1,282                         & 1,248                         & 0,155 & 3,624 & 23 & 15 \\
+			1                                & 1,268                         & 1,223                         & 0,237 & 4,827 & 20 & 11 \\
+			2                                & 1,280                         & 1,319                         & 0,121 & 3,425 & 28 & 14 \\
+			3                                & 1,291                         & 1,279                         & 0,175 & 2,696 & 15 & 17 \\
+			4                                & 1,283                         & 1,310                         & 0,142 & 2,827 & 20 & 15 \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} Ritmo Holter: ritmo cardíaco registrado no Holter (\textit{Holter rhythm}).\\
-		\textsuperscript{b} Extrasys. em dupla: extrassístoles em dupla (\textit{Extrasystole couplets}).\\
-		\textsuperscript{c} Extrassístole vent.: extrassístole ventricular (\textit{Ventricular Extrasystole}).
-	\end{flushleft}
 \end{table}
 
-\FloatBarrier
-\subsubsection{Resumo dos resultados do modelo de Cox para dados Holter}
+As razões finais entre as perdas de validação e treinamento situaram-se entre
+15 e 28 --- valores que, embora indiquem ajuste excessivo, são
+substancialmente menores que os observados nas arquiteturas residuais
+avaliadas adiante, que alcançaram razões de três a quatro ordens de grandeza
+superiores. A perda de treinamento permaneceu entre 0,121 e 0,237 ao término
+do ajuste, sem aproximar-se de zero.
 
-De modo geral, as duas análises apresentaram resultados consistentes. As variáveis idade, Holter rhythm, Extrasystole couplets, Ventricular Extrasystole e SDNN mantiveram associação estatisticamente significativa com o desfecho nas duas análises. A semelhança entre os achados da coorte completa e da amostra filtrada sugere robustez dos resultados mesmo após a restrição aos pacientes com três derivações completas. O que isso significa é que mesmo com a restrição dos pacientes com três derivações completas, poderei usar essas restriçoes aos sinais de ECG, ao um modelo convulocional resnet, essa filtagem é porque alguns dos pacientes não tem as 3 derivações completas, então a filtragem não atrapallha nos resultados.
+Esse comportamento é consistente com o reduzido número de parâmetros: com
+$109\,361$ pesos e 37 casos positivos no conjunto de treinamento, a rede não
+dispõe de capacidade para ajustar individualmente cada exemplo. A perda de
+validação, contudo, cresce desde a primeira época em todas as partições, o
+que indica que o pouco aprendido não se transfere a pacientes não observados.
 
-\FloatBarrier
+O melhor valor de \gls{AUC} sobre o conjunto de validação ocorreu entre a
+primeira e a quinta época em todas as partições, alcançando 0,764 na
+partição~0 e 0,763 na partição~4. Esses valores elevados sobre sete eventos
+de validação não se sustentaram no conjunto de teste, em que as mesmas
+partições produziram 0,487 e 0,574 --- discrepância que ilustra a
+instabilidade das estimativas obtidas sobre poucos eventos.
 
-% -------------------------------------------------------
-%  Bloco 2 — Antes das tabelas de eventos e condições cardiovasculares
-% -------------------------------------------------------
+\subsection{Matriz de confusão}
+\label{subsec:confusao-cnn-simples}
 
+A \autoref{tab:cnn-simples-confusao} apresenta a matriz de confusão agregada,
+construída a partir das predições fora da amostra e do limiar mediano entre
+as partições.
 
-\subsection{Resultados do modelo de Cox para dados de eventos e condições cardiovasculares}
-
-As variáveis de eventos e condições cardiovasculares selecionadas para os
-modelos reduzidos foram: número de extrassístoles
-ventriculares por hora, taquicardia ventricular não sustentada com mais de
-dez batimentos (\textit{Non-sustained ventricular tachycardia}, CH$>$10),
-número de extrassístoles supraventriculares em 24 horas e taquiarritmia
-supraventricular paroxística (\textit{Paroxysmal supraventricular
-	tachyarrhythmia}). As variáveis gênero e idade foram incluídas em todos os
-modelos como covariáveis de controle padrão.
-
-Para dados de eventos e condições cardiovasculares apresentaram resultados consistentes. Em ambas as análises, apenas idade e taquicardia
-ventricular não sustentada (CH$>$10) mantiveram associação estatisticamente
-significativa com o desfecho. A semelhança entre os achados da coorte completa
-e da amostra filtrada sugere robustez dos resultados mesmo após a restrição
-aos pacientes com três derivações completas. Apresentam-se abaixo dois modelos:
-o primeiro com a coorte completa ($n=992$) e o segundo com a amostra filtrada
-para pacientes com as três derivações completas ($n=898$).
-
-\begin{table}[htbp]
-	\centering
-	\caption{Modelo de Cox com variáveis arrítmicas na coorte completa ($n=992$; 205 eventos).}
-	\label{tab:cox_arritmia_completo}
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lcccccc}
+% ---- TABELA 3: matriz de confusão ----
+\begin{table}[h!]
+	\captionsetup{width=11cm}
+	\Caption{\label{tab:cnn-simples-confusao} Matriz de confusão agregada da
+		rede convolucional}
+	\IBGEtab{}{
+		\begin{tabular}{lrr}
 			\toprule
-			Vari\'avel                        & Coef.                                                   & HR   & IC 95\% HR & EP   & $p$      & Signific\^ancia \\
-			\midrule
-			G\^enero                          & 0.24                                                    & 1.27 & 0.92--1.77 & 0.17 & 0.15     & N\~ao           \\
-			Idade                             & 0.35                                                    & 1.42 & 1.21--1.67 & 0.08 & $<0.005$ & Sim             \\
-			VE/h\textsuperscript{a}           & 0.02                                                    & 1.02 & 0.90--1.16 & 0.06 & 0.77     & N\~ao           \\
-			TVNS (CH$>$10)\textsuperscript{b} & 0.60                                                    & 1.83 & 1.32--2.53 & 0.17 & $<0.005$ & Sim             \\
-			SVE/24h\textsuperscript{c}        & -0.01                                                   & 0.99 & 0.88--1.13 & 0.06 & 0.93     & N\~ao           \\
-			TASVP\textsuperscript{d}          & 0.11                                                    & 1.12 & 0.98--1.28 & 0.07 & 0.11     & N\~ao           \\
-			\midrule
-			Concordance                       & \multicolumn{6}{c}{0.64}                                                                                        \\
-			Partial AIC                       & \multicolumn{6}{c}{2718.25}                                                                                     \\
-			Log-likelihood ratio test         & \multicolumn{6}{c}{53.45 em 6 g.l.; $-\log_2(p)=29.97$}                                                         \\
+			                               & \multicolumn{1}{c}{Predito: sobrevivente} &
+			\multicolumn{1}{c}{Predito: óbito}                                               \\
+			\midrule \midrule
+			Sobrevivente ($n = 462$)       & 325                                       & 137 \\
+			Óbito por \gls{MSC} ($n = 55$) & 38                                        & 17  \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} VE/h: número de extrassístoles ventriculares por hora.\\
-		\textsuperscript{b} TVNS: taquicardia ventricular não sustentada (CH$>$10 batimentos).\\
-		\textsuperscript{c} SVE/24h: número de extrassístoles supraventriculares em 24 horas.\\
-		\textsuperscript{d} TASVP: taquiarritmia supraventricular paroxística.
-	\end{flushleft}
 \end{table}
 
-\FloatBarrier
+Dos 55 pacientes que vieram a óbito por morte súbita cardíaca, 17 foram
+identificados --- sensibilidade de 0,309 --- com 137 falsos positivos entre
+os 462 sobreviventes. O \gls{VPP} resultante, de 0,110, é praticamente igual
+à prevalência de 0,106: a classificação como alto risco não altera de forma
+apreciável a probabilidade estimada de óbito em relação à probabilidade basal
+da coorte.
 
-\begin{table}[htbp]
-	\centering
-	\caption{Modelo de Cox com variáveis arrítmicas na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}
-	\label{tab:cox_arritmia_filtrado}
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lcccccc}
+
+
+% ==============================================================================
+% RESULTADOS — ResNet-18 reduzida sobre o sinal bruto
+% Fonte: classificacao_ResNet18_1D_pequena_n_5.log (validação em 5 partições)
+% ==============================================================================
+
+\section{Rede residual aplicada ao sinal bruto}
+\label{sec:resultados-resnet18-pequena}
+
+A primeira estratégia avaliada consistiu em aplicar uma rede neural
+convolucional residual diretamente ao sinal de \gls{ECG}, sem extração prévia
+de características. Adotou-se uma variante reduzida da arquitetura ResNet-18
+unidimensional, com 32 filtros na camada inicial em lugar dos 64 da
+configuração original, totalizando $1\,029\,985$ parâmetros treináveis. A
+redução de capacidade foi motivada pelo tamanho da amostra: com 33 casos no
+conjunto de treinamento de cada partição, a configuração completa implicaria
+razão superior a $120\,000$ parâmetros por evento.
+
+Cada paciente foi representado por janelas de 24\,000 amostras, equivalentes
+a dois minutos de registro a 200\,Hz, das quais 250 foram amostradas por
+indivíduo no treinamento. O sinal passou por filtro passa-banda de 0,5 a
+40\,Hz e normalização por escala global estimada em cada partição. O
+desbalanceamento entre as classes foi tratado por ponderação da função de
+perda, com peso de aproximadamente 8,4 atribuído à classe positiva.
+
+A avaliação empregou validação cruzada estratificada em cinco partições, com
+divisão realizada no nível do paciente. Em cada partição, 104 pacientes
+compuseram o conjunto de teste e outros 104 foram reservados, a partir do
+conjunto de treinamento, para definição do critério de parada antecipada e do
+limiar de decisão pelo índice de Youden. As probabilidades preditas para as
+janelas de um mesmo indivíduo foram agregadas por média antes do cálculo de
+qualquer métrica.
+
+\subsection{Desempenho}
+\label{subsec:desempenho-resnet18-pequena}
+
+O desempenho obtido encontra-se na \autoref{tab:resnet18-pequena-folds}. A
+\gls{AUC} calculada sobre as predições fora da amostra foi de 0,504, com
+intervalo de confiança de 95\,\% entre 0,420 e 0,588. O intervalo contém o
+valor 0,5, de modo que não é possível afirmar que o modelo discrimine os
+desfechos acima do acaso.
+
+% ---- TABELA 1: desempenho por partição ----
+\begin{table}[h!]
+	\captionsetup{width=13cm}
+	\Caption{\label{tab:resnet18-pequena-folds} Desempenho da ResNet-18
+		reduzida em cada partição da validação cruzada}
+	\IBGEtab{}{
+		\begin{tabular}{crrrrr}
 			\toprule
-			Vari\'avel                        & Coef.                                                   & HR   & IC 95\% HR & EP   & $p$      & Signific\^ancia \\
+			Partição                          & \multicolumn{1}{c}{AUC}            & \multicolumn{1}{c}{AP} &
+			\multicolumn{1}{c}{Sensibilidade} & \multicolumn{1}{c}{Especificidade} &
+			\multicolumn{1}{c}{Épocas}                                                                                            \\
+			\midrule \midrule
+			0                                 & 0,589                              & 0,201                  & 0,364 & 0,742 & 11  \\
+			1                                 & 0,537                              & 0,168                  & 0,636 & 0,462 & 14  \\
+			2                                 & 0,360                              & 0,090                  & 0,455 & 0,337 & 18  \\
+			3                                 & 0,616                              & 0,193                  & 0,909 & 0,250 & --- \\
+			4                                 & 0,478                              & 0,119                  & 0,727 & 0,185 & --- \\
 			\midrule
-			G\^enero                          & 0.30                                                    & 1.36 & 0.96--1.92 & 0.18 & 0.09     & N\~ao           \\
-			Idade                             & 0.39                                                    & 1.48 & 1.25--1.76 & 0.09 & $<0.005$ & Sim             \\
-			VE/h\textsuperscript{a}           & 0.02                                                    & 1.02 & 0.90--1.16 & 0.07 & 0.76     & N\~ao           \\
-			TVNS (CH$>$10)\textsuperscript{b} & 0.56                                                    & 1.75 & 1.25--2.44 & 0.17 & $<0.005$ & Sim             \\
-			SVE/24h\textsuperscript{c}        & -0.02                                                   & 0.98 & 0.86--1.12 & 0.07 & 0.82     & N\~ao           \\
-			TASVP\textsuperscript{d}          & 0.11                                                    & 1.12 & 0.97--1.28 & 0.07 & 0.12     & N\~ao           \\
+			Média                             & 0,516                              & 0,154                  & 0,618 & 0,395 & --- \\
+			Desvio-padrão                     & 0,102                              & 0,048                  & 0,222 & 0,222 & --- \\
 			\midrule
-			Concordance                       & \multicolumn{6}{c}{0.65}                                                                                        \\
-			Partial AIC                       & \multicolumn{6}{c}{2464.70}                                                                                     \\
-			Log-likelihood ratio test         & \multicolumn{6}{c}{52.80 em 6 g.l.; $-\log_2(p)=29.53$}                                                         \\
+			\textit{Out-of-fold}              & 0,504                              & 0,117                  & 0,582 & 0,437 & --- \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} VE/h: número de extrassístoles ventriculares por hora.\\
-		\textsuperscript{b} TVNS: taquicardia ventricular não sustentada (CH$>$10 batimentos).\\
-		\textsuperscript{c} SVE/24h: número de extrassístoles supraventriculares em 24 horas.\\
-		\textsuperscript{d} TASVP: taquiarritmia supraventricular paroxística.
-	\end{flushleft}
 \end{table}
 
-\FloatBarrier
+A \gls{AUC} variou de 0,360 a 0,616 entre as partições, com desvio-padrão de
+0,102. Essa dispersão indica que o resultado depende substancialmente de
+quais pacientes compõem cada conjunto de teste. Duas partições apresentaram
+valores abaixo de 0,5, ou seja, ordenamento pior que o aleatório --- o que
+não constitui evidência de relação inversa, mas de instabilidade da
+estimativa quando calculada sobre 11 eventos.
 
-\subsection{Resultados do modelo de Cox para dados demográficos clínicos}
+A média entre partições, de $0{,}516 \pm 0{,}102$, aproxima-se da estimativa
+agrupada. A pequena discrepância entre as duas decorre de os modelos
+ajustados em cada partição produzirem probabilidades em escalas distintas:
+ao serem reunidas em um único ordenamento, essas escalas não coincidem
+exatamente. A estimativa agrupada é considerada mais confiável por avaliar
+simultaneamente os 55 casos da coorte, enquanto cada partição isolada dispõe
+de apenas 11 eventos.
 
-As variáveis demográficas e clínicas avaliadas foram: peso corporal
-(\textit{Weight}, kg), altura (\textit{Height}, cm), índice de massa corporal
-(IMC, kg/m\textsuperscript{2}) e classe funcional da New York Heart Association
-(NYHA). As variáveis idade e gênero, embora pertençam a este grupo, foram
-excluídas desta listagem específica por já estarem presentes como covariáveis
-de controle em todos os modelos analisados.
+A dispersão nas métricas dependentes de limiar é ainda mais acentuada. A
+sensibilidade variou de 0,364 a 0,909 e a especificidade, de 0,185 a 0,742,
+ambas com desvio-padrão de 0,222 --- valor próximo à própria média. Tal
+comportamento é compatível com o número reduzido de eventos em cada conjunto
+de teste, em que a reclassificação de dois pacientes altera a sensibilidade
+em quase vinte pontos percentuais.
 
+A \gls{AP} agrupada, de 0,117, situa-se marginalmente acima da prevalência de
+0,106, que constitui a linha de base dessa métrica sob classificação
+aleatória.
 
-\begin{table}[htbp]
-	\centering
-	\caption{Modelo de Cox com dados clínicos e antropométricos na coorte completa ($n=992$; 205 eventos).}
-	\label{tab:cox_clinico_completo}
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lcccccc}
+\subsection{Comportamento durante o treinamento}
+\label{subsec:treinamento-resnet18-pequena}
+
+O acompanhamento das curvas de perda revela padrão consistente nas cinco
+partições e esclarece a origem do desempenho observado. A
+\autoref{tab:resnet18-pequena-curvas} apresenta a evolução na partição~0,
+representativa das demais.
+
+% ---- TABELA 2: curvas de treino ----
+\begin{table}[h!]
+	\captionsetup{width=12cm}
+	\Caption{\label{tab:resnet18-pequena-curvas} Evolução das perdas e da
+		\gls{AUC} de validação na partição~0}
+	\IBGEtab{}{
+		\begin{tabular}{crrr}
 			\toprule
-			Vari\'avel                & Coef.                                                   & HR   & IC 95\% HR & EP   & $p$      & Signific\^ancia \\
-			\midrule
-			G\^enero                  & 0.65                                                    & 1.92 & 1.28--2.88 & 0.21 & $<0.005$ & Sim             \\
-			Idade                     & 0.29                                                    & 1.34 & 1.14--1.57 & 0.08 & $<0.005$ & Sim             \\
-			Peso (kg)                 & 0.03                                                    & 1.03 & 0.25--4.26 & 0.72 & 0.97     & N\~ao           \\
-			Altura (cm)               & -0.23                                                   & 0.79 & 0.34--1.83 & 0.43 & 0.59     & N\~ao           \\
-			IMC\textsuperscript{a}    & -0.26                                                   & 0.77 & 0.23--2.58 & 0.62 & 0.67     & N\~ao           \\
-			Classe NYHA               & 0.93                                                    & 2.54 & 1.90--3.39 & 0.15 & $<0.005$ & Sim             \\
-			\midrule
-			Concordance               & \multicolumn{6}{c}{0.67}                                                                                        \\
-			Partial AIC               & \multicolumn{6}{c}{2693.46}                                                                                     \\
-			Log-likelihood ratio test & \multicolumn{6}{c}{78.24 em 6 g.l.; $-\log_2(p)=46.79$}                                                         \\
+			Época                                 & \multicolumn{1}{c}{Perda (treinamento)} &
+			\multicolumn{1}{c}{Perda (validação)} &
+			\multicolumn{1}{c}{AUC (validação)}                                                             \\
+			\midrule \midrule
+			1                                     & 1,200                                   & 1,224 & 0,658 \\
+			2                                     & 0,696                                   & 1,589 & 0,615 \\
+			3                                     & 0,214                                   & 1,927 & 0,522 \\
+			5                                     & 0,080                                   & 2,631 & 0,501 \\
+			8                                     & 0,037                                   & 3,252 & 0,554 \\
+			11                                    & 0,024                                   & 3,678 & 0,537 \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} IMC: índice de massa corporal (kg/m\textsuperscript{2}).
-	\end{flushleft}
 \end{table}
 
-\begin{table}[htbp]
-	\centering
-	\caption{Modelo de Cox com dados clínicos e antropométricos na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}
-	\label{tab:cox_clinico_filtrado}
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lcccccc}
+A perda de treinamento reduziu-se de 1,2 para 0,024 ao longo de onze
+épocas, uma diminuição de aproximadamente cinquenta vezes, enquanto a perda
+de validação triplicou, de 1,224 para 3,678. A razão final entre as duas
+perdas atinge 153. Comportamento equivalente ocorre nas demais partições, com
+razões finais entre 181 e 234.
+
+Trata-se de memorização do conjunto de treinamento. Com 33 casos positivos
+disponíveis e mais de um milhão de parâmetros, a rede dispõe de capacidade
+suficiente para ajustar individualmente cada exemplo, sem que isso implique
+aprendizado de padrões transferíveis a pacientes não observados.
+
+Dois aspectos adicionais merecem registro. O primeiro é que, em todas as
+partições, o melhor valor de \gls{AUC} sobre o conjunto de validação ocorreu
+na primeira ou na segunda época --- 0,658 na época~1 da partição~0 e 0,695 na
+época~2 da partição~1. A informação eventualmente extraível do sinal é,
+portanto, capturada em poucas passagens sobre os dados, e as épocas
+subsequentes apenas deterioram a capacidade de generalização.
+
+O segundo é a alternância entre regimes degenerados. Na partição~2, entre as
+épocas~9 e~16, o classificador atribuiu a classe positiva à totalidade dos
+pacientes em sete das oito épocas, obtendo sensibilidade unitária com
+especificidade entre 0,183 e 0,333; na época~13 e na época~17, inverteu para
+sensibilidade de 0,364 com especificidade próxima de 0,79. Não se observa
+convergência para uma solução intermediária estável, o que indica que o
+modelo não identificou fronteira de decisão informativa.
+
+\subsection{Matriz de confusão}
+\label{subsec:confusao-resnet18-pequena}
+
+A \autoref{tab:resnet18-pequena-confusao} apresenta a matriz de confusão
+agregada, construída a partir das predições fora da amostra e do limiar
+mediano entre as partições.
+
+% ---- TABELA 3: matriz de confusão ----
+\begin{table}[h!]
+	\captionsetup{width=11cm}
+	\Caption{\label{tab:resnet18-pequena-confusao} Matriz de confusão agregada
+		da ResNet-18 reduzida}
+	\IBGEtab{}{
+		\begin{tabular}{lrr}
 			\toprule
-			Vari\'avel                & Coef.                                                   & HR   & IC 95\% HR & EP   & $p$      & Signific\^ancia \\
-			\midrule
-			G\^enero                  & 0.74                                                    & 2.09 & 1.37--3.20 & 0.22 & $<0.005$ & Sim             \\
-			Idade                     & 0.33                                                    & 1.38 & 1.17--1.64 & 0.09 & $<0.005$ & Sim             \\
-			Peso (kg)                 & 0.15                                                    & 1.16 & 0.27--5.05 & 0.75 & 0.85     & N\~ao           \\
-			Altura (cm)               & -0.32                                                   & 0.73 & 0.31--1.73 & 0.44 & 0.47     & N\~ao           \\
-			IMC\textsuperscript{a}    & -0.36                                                   & 0.70 & 0.20--2.45 & 0.64 & 0.58     & N\~ao           \\
-			Classe NYHA               & 0.93                                                    & 2.53 & 1.87--3.41 & 0.15 & $<0.005$ & Sim             \\
-			\midrule
-			Concordance               & \multicolumn{6}{c}{0.68}                                                                                        \\
-			Partial AIC               & \multicolumn{6}{c}{2438.61}                                                                                     \\
-			Log-likelihood ratio test & \multicolumn{6}{c}{78.89 em 6 g.l.; $-\log_2(p)=47.23$}                                                         \\
+			                               & \multicolumn{1}{c}{Predito: sobrevivente} &
+			\multicolumn{1}{c}{Predito: óbito}                                               \\
+			\midrule \midrule
+			Sobrevivente ($n = 462$)       & 202                                       & 260 \\
+			Óbito por \gls{MSC} ($n = 55$) & 23                                        & 32  \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} IMC: índice de massa corporal (kg/m\textsuperscript{2}).
-	\end{flushleft}
 \end{table}
 
-\FloatBarrier
+Dos 55 pacientes que vieram a óbito por morte súbita cardíaca, 32 foram
+identificados pelo modelo, correspondendo a sensibilidade de 0,582. O custo
+associado foram 260 falsos positivos entre os 462 sobreviventes, resultando
+em especificidade de 0,437 e \gls{VPP} de 0,110. Este último valor situa-se
+praticamente no mesmo patamar da prevalência de 0,106, o que significa que a
+classificação como alto risco não eleva de forma apreciável a probabilidade
+estimada de óbito em relação à probabilidade basal da coorte --- resultado
+coerente com o intervalo de confiança da \gls{AUC} incluir o valor
+correspondente ao acaso.
 
-As duas análises apresentaram resultados consistentes. Em ambas as análises, gênero, idade e classe funcional da NYHA mantiveram associação estatisticamente significativa com o desfecho. As variáveis antropométricas peso, altura e índice de massa corporal não apresentaram associação significativa em nenhuma das coortes. A semelhança entre os achados da coorte completa e da amostra filtrada sugere robustez desses resultados mesmo após a restrição aos pacientes com três derivações completas.
+% ==============================================================================
+% RESULTADOS — ResNet-18 em configuração completa
+% Fonte: classificacao_resnet18_v2.log (5 partições)
+%
+% Substitui a versão anterior, executada em três partições. Todas as
+% arquiteturas passam a ser avaliadas sob o mesmo protocolo.
+% ==============================================================================
 
-% ============================================================
-%  Bloco 4 — Antes das tabelas de ECG (eletrocardiograma Holter)
-% ============================================================
+\section{Efeito da capacidade do modelo}
+\label{sec:resultados-resnet18}
 
-\subsection{Resultados do modelo de Cox para dados eletrocardiograma de alta resolução}
+Para verificar se a limitação de desempenho observada na
+\autoref{sec:resultados-resnet18-pequena} decorria da capacidade reduzida do
+modelo, avaliou-se a mesma arquitetura em sua configuração completa, com 64
+filtros na camada inicial em lugar de 32. O número de parâmetros treináveis
+passou de $1\,029\,985$ para $3\,976\,385$, um aumento de aproximadamente
+quatro vezes, elevando a razão para $12\,869$ parâmetros por paciente do
+conjunto de treinamento.
 
-As variáveis derivadas do eletrocardiograma de alta resolução consideradas
-na análise foram: disponibilidade do ECG de alta resolução
-(\textit{High-resolution ECG available}), ritmo do ECG (\textit{ECG rhythm}),
-presença de ondas Q de necrose (\textit{Q-waves}, sim\,=\,1), intervalo PR
-(\textit{PR interval}, ms), duração do complexo QRS (\textit{QRS duration},
-ms), presença de QRS superior a 120\,ms (\textit{QRS\,$>$\,120\,ms}),
-intervalo QT (\textit{QT interval}, ms), QT corrigido (\textit{QT corrected}),
-hipertrofia ventricular esquerda (\textit{Left ventricular hypertrophy}, sim\,=\,1) e distúrbio de condução intraventricular (\textit{Intraventricular conduction disorder}).
+Todos os demais elementos do protocolo foram mantidos: janelas de 24\,000
+amostras, 250 por paciente, filtro passa-banda de 0,5 a 40\,Hz, normalização
+por escala global, ponderação da classe positiva na função de perda e
+agregação das predições por paciente antes do cálculo das métricas. A
+validação cruzada empregou cinco partições, com 309 pacientes no conjunto de
+treinamento, 104 na validação interna e 104 no conjunto de teste de cada uma,
+contendo 11 eventos.
 
-\begin{table}[htbp]
-	\centering
-	\caption{Modelo de Cox com variáveis eletrocardiográficas na coorte completa ($n=992$; 205 eventos).}
-	\label{tab:cox_ecg_completo}
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lcccccc}
+\subsection{Desempenho}
+\label{subsec:desempenho-resnet18}
+
+A \gls{AUC} sobre as predições fora da amostra foi de 0,508, com intervalo de
+confiança de 95\,\% entre 0,431 e 0,588. O intervalo contém o valor 0,5, de
+modo que também nesta configuração não é possível afirmar que o modelo
+discrimine os desfechos acima do acaso. Os resultados por partição constam da
+\autoref{tab:resnet18-folds}.
+
+% ---- TABELA 1: desempenho por partição ----
+\begin{table}[h!]
+	\captionsetup{width=13cm}
+	\Caption{\label{tab:resnet18-folds} Desempenho da ResNet-18 em
+		configuração completa, por partição da validação cruzada}
+	\IBGEtab{}{
+		\begin{tabular}{crrrrr}
 			\toprule
-			Vari\'avel                 & Coef.                                                    & HR   & IC 95\% HR & EP   & $p$      & Signific\^ancia \\
+			Partição                          & \multicolumn{1}{c}{AUC}            & \multicolumn{1}{c}{AP} &
+			\multicolumn{1}{c}{Sensibilidade} & \multicolumn{1}{c}{Especificidade} &
+			\multicolumn{1}{c}{VPP}                                                                                                 \\
+			\midrule \midrule
+			0                                 & 0,547                              & 0,185                  & 0,455 & 0,667 & 0,139 \\
+			1                                 & 0,578                              & 0,138                  & 0,727 & 0,419 & 0,129 \\
+			2                                 & 0,547                              & 0,127                  & 0,545 & 0,457 & 0,107 \\
+			3                                 & 0,375                              & 0,115                  & 0,182 & 0,478 & 0,040 \\
+			4                                 & 0,592                              & 0,161                  & 0,818 & 0,337 & 0,129 \\
 			\midrule
-			G\^enero                   & 0.24                                                     & 1.27 & 0.91--1.77 & 0.17 & 0.16     & N\~ao           \\
-			Idade                      & 0.35                                                     & 1.42 & 1.21--1.67 & 0.08 & $<0.005$ & Sim             \\
-			ECG-AR\textsuperscript{a}  & 0.22                                                     & 1.24 & 0.90--1.71 & 0.16 & 0.19     & N\~ao           \\
-			Ritmo ECG                  & 0.12                                                     & 1.12 & 0.97--1.30 & 0.08 & 0.13     & N\~ao           \\
-			Ondas Q\textsuperscript{b} & 0.71                                                     & 2.03 & 1.49--2.76 & 0.16 & $<0.005$ & Sim             \\
-			Intervalo PR (ms)          & 0.17                                                     & 1.19 & 1.04--1.36 & 0.07 & 0.01     & Sim             \\
-			Dura\c{c}\~ao QRS (ms)     & 0.14                                                     & 1.15 & 0.86--1.52 & 0.14 & 0.35     & N\~ao           \\
-			QRS $>$ 120\,ms            & 0.10                                                     & 1.11 & 0.67--1.84 & 0.26 & 0.68     & N\~ao           \\
-			Intervalo QT (ms)          & -0.28                                                    & 0.75 & 0.63--0.90 & 0.09 & $<0.005$ & Sim             \\
-			QT corrigido               & 0.17                                                     & 1.18 & 0.99--1.41 & 0.09 & 0.07     & N\~ao           \\
-			HVE\textsuperscript{c}     & 0.11                                                     & 1.11 & 0.81--1.52 & 0.16 & 0.50     & N\~ao           \\
-			DCI\textsuperscript{d}     & 0.11                                                     & 1.12 & 0.97--1.29 & 0.07 & 0.13     & N\~ao           \\
+			Média                             & 0,528                              & 0,145                  & 0,545 & 0,472 & 0,109 \\
+			Desvio-padrão                     & 0,088                              & 0,028                  & 0,255 & 0,122 & 0,041 \\
 			\midrule
-			Concordance                & \multicolumn{6}{c}{0.67}                                                                                         \\
-			Partial AIC                & \multicolumn{6}{c}{2707.27}                                                                                      \\
-			Log-likelihood ratio test  & \multicolumn{6}{c}{76.43 em 12 g.l.; $-\log_2(p)=35.56$}                                                         \\
+			\textit{Out-of-fold}              & 0,508                              & 0,121                  & 0,455 & 0,461 & 0,091 \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} ECG-AR: ECG de alta resolução disponível.\\
-		\textsuperscript{b} Ondas Q: presença de ondas Q de necrose (sim\,=\,1).\\
-		\textsuperscript{c} HVE: hipertrofia ventricular esquerda (sim\,=\,1).\\
-		\textsuperscript{d} DCI: distúrbio de condução intraventricular.
-	\end{flushleft}
 \end{table}
 
-\begin{table}[htbp]
-	\centering
-	\caption{Modelo de Cox com variáveis eletrocardiográficas na amostra filtrada com três derivações completas ($n=898$; 189 eventos).}
-	\label{tab:cox_ecg_filtrado}
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lcccccc}
+A \gls{AUC} variou de 0,375 a 0,592 entre as partições, com desvio-padrão de
+0,088. Quatro das cinco partições situaram-se acima de 0,5, enquanto a
+partição~3 apresentou valor substancialmente inferior, acompanhado de
+sensibilidade de 0,182 --- identificação de dois dos onze eventos. Essa
+dispersão evidencia a dependência do resultado em relação à composição de
+cada conjunto de teste, no qual a reclassificação de poucos pacientes altera
+de forma expressiva as métricas calculadas.
+
+A média entre partições, de $0{,}528 \pm 0{,}088$, supera a estimativa
+agrupada de 0,508. A discrepância decorre de os modelos ajustados em cada
+partição produzirem probabilidades em escalas distintas: ao serem reunidas em
+um ordenamento único, essas escalas não coincidem exatamente. A estimativa
+agrupada é considerada mais confiável por avaliar simultaneamente os 55 casos
+da coorte, enquanto cada partição isolada dispõe de apenas 11 eventos.
+
+A \gls{AP} agrupada, de 0,121, situa-se pouco acima da prevalência de 0,106,
+que constitui a linha de base dessa métrica sob classificação aleatória.
+
+\subsection{Comparação com a configuração reduzida}
+\label{subsec:comparacao-capacidade}
+
+A \autoref{tab:comparacao-capacidade} confronta as duas configurações, ambas
+avaliadas em cinco partições sob protocolo idêntico.
+
+% ---- TABELA 2: comparação entre capacidades ----
+\begin{table}[h!]
+	\captionsetup{width=14.5cm}
+	\Caption{\label{tab:comparacao-capacidade} Comparação entre as
+		configurações reduzida e completa da ResNet-18}
+	\IBGEtab{}{
+		\begin{tabular}{lrrrr}
 			\toprule
-			Vari\'avel                 & Coef.                                                    & HR   & IC 95\% HR & EP   & $p$      & Signific\^ancia \\
-			\midrule
-			G\^enero                   & 0.29                                                     & 1.34 & 0.94--1.89 & 0.18 & 0.10     & N\~ao           \\
-			Idade                      & 0.39                                                     & 1.48 & 1.25--1.76 & 0.09 & $<0.005$ & Sim             \\
-			ECG-AR\textsuperscript{a}  & 0.21                                                     & 1.23 & 0.86--1.75 & 0.18 & 0.26     & N\~ao           \\
-			Ritmo ECG                  & 0.14                                                     & 1.15 & 0.99--1.35 & 0.08 & 0.07     & N\~ao           \\
-			Ondas Q\textsuperscript{b} & 0.71                                                     & 2.02 & 1.47--2.80 & 0.16 & $<0.005$ & Sim             \\
-			Intervalo PR (ms)          & 0.17                                                     & 1.18 & 1.03--1.37 & 0.07 & 0.02     & Sim             \\
-			Dura\c{c}\~ao QRS (ms)     & 0.07                                                     & 1.07 & 0.80--1.44 & 0.15 & 0.64     & N\~ao           \\
-			QRS $>$ 120\,ms            & 0.24                                                     & 1.27 & 0.76--2.14 & 0.27 & 0.36     & N\~ao           \\
-			Intervalo QT (ms)          & -0.28                                                    & 0.75 & 0.63--0.91 & 0.09 & $<0.005$ & Sim             \\
-			QT corrigido               & 0.14                                                     & 1.15 & 0.95--1.38 & 0.10 & 0.15     & N\~ao           \\
-			HVE\textsuperscript{c}     & 0.06                                                     & 1.06 & 0.77--1.48 & 0.17 & 0.71     & N\~ao           \\
-			DCI\textsuperscript{d}     & 0.10                                                     & 1.11 & 0.95--1.29 & 0.08 & 0.19     & N\~ao           \\
-			\midrule
-			Concordance                & \multicolumn{6}{c}{0.68}                                                                                         \\
-			Partial AIC                & \multicolumn{6}{c}{2453.52}                                                                                      \\
-			Log-likelihood ratio test  & \multicolumn{6}{c}{75.98 em 12 g.l.; $-\log_2(p)=35.28$}                                                         \\
+			Configuração                     & \multicolumn{1}{c}{Parâmetros} &
+			\multicolumn{1}{c}{Por paciente} &
+			\multicolumn{1}{c}{AUC}          & \multicolumn{1}{c}{IC 95\%}                                     \\
+			\midrule \midrule
+			Reduzida (32 filtros)            & 1\,029\,985                    & 3\,333  & 0,504 & 0,420--0,588 \\
+			Completa (64 filtros)            & 3\,976\,385                    & 12\,869 & 0,508 & 0,431--0,588 \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} ECG-AR: ECG de alta resolução disponível.\\
-		\textsuperscript{b} Ondas Q: presença de ondas Q de necrose (sim\,=\,1).\\
-		\textsuperscript{c} HVE: hipertrofia ventricular esquerda (sim\,=\,1).\\
-		\textsuperscript{d} DCI: distúrbio de condução intraventricular.
-	\end{flushleft}
 \end{table}
 
-\FloatBarrier
+Quadruplicar o número de parâmetros alterou a \gls{AUC} em 0,004 --- variação
+inferior a um centésimo e muito abaixo da amplitude dos intervalos de
+confiança, que se sobrepõem quase integralmente. A capacidade do modelo,
+portanto, não constitui o fator limitante do desempenho neste conjunto de
+dados.
 
-As duas análises apresentaram resultados consistentes. Em ambas as análises, idade, presença de ondas Q, intervalo PR e intervalo QT mantiveram associação estatisticamente significativa com o desfecho. Especificamente, ondas Q e intervalo PR associaram-se a maior risco, enquanto o intervalo QT apresentou associação inversa com o desfecho. As demais variáveis eletrocardiográficas, incluindo disponibilidade de ECG de alta resolução, ritmo no ECG, duração do QRS, QRS maior que 120 ms, QT corrigido, hipertrofia ventricular esquerda e distúrbio de condução intraventricular, não apresentaram associação significativa em nenhuma das coortes.
+\subsection{Comportamento durante o treinamento}
+\label{subsec:treinamento-resnet18}
 
+O ajuste ao conjunto de treinamento foi mais rápido que na configuração
+reduzida, como seria esperado de um modelo com quatro vezes mais parâmetros.
+A \autoref{tab:resnet18-perdas} sintetiza a evolução das perdas.
 
-% ============================================================
-%  Análise de Cox — Univariável, VIF e Multivariável
-%  Inserir no preâmbulo: \usepackage{placeins}
-% ============================================================
-
-% ============================================================
-%  Texto introdutório
-% ============================================================
-
-Foram analisadas 32 variáveis candidatas ao modelo de Cox, abrangendo dados
-demográficos, Holter, eletrocardiográficos e de eventos cardiovasculares.
-A análise foi conduzida em três etapas: (i) regressão de Cox univariável com
-teste log-rank e cálculo do índice de concordância (C-index) para cada
-variável individualmente; (ii) avaliação de multicolinearidade pelo fator de
-inflação da variância (VIF); e (iii) regressão de Cox multivariável com as
-variáveis que apresentaram $p < 0{,}05$ na etapa univariável.
-
-% ============================================================
-%  Tabela 1 — Cox Univariável
-% ============================================================
-
-\begin{table}[htbp]
-	\centering
-	\caption{Análise de Cox univariável — coeficiente, razão de risco,
-		C-index e significância por variável ($n=992$; 205 eventos).}
-	\label{tab:cox_univariavel}
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lcccccc}
+% ---- TABELA 2: perdas ----
+\begin{table}[h!]
+	\captionsetup{width=14cm}
+	\Caption{\label{tab:resnet18-perdas} Perdas de treinamento e validação no
+		início e ao término do ajuste, por partição}
+	\IBGEtab{}{
+		\begin{tabular}{crrrrrr}
 			\toprule
-			Vari\'avel
-			 & Coef. & HR   & IC 95\% HR & $p$ (Cox) & C-index & $p$ (log-rank) \\
-			\midrule
-			\multicolumn{7}{l}{\textit{Significativas ($p < 0{,}05$)}}          \\
-			\addlinespace
-			NYHA class
-			 & 0.96  & 2.61 & 1.96--3.47 & $<0.005$  & 0.595   & $<0.005$       \\
-			Idade
-			 & 0.39  & 1.48 & 1.27--1.73 & $<0.005$  & 0.598   & $<0.005$       \\
-			TVNS (CH$>$10)\textsuperscript{a}
-			 & 0.75  & 2.11 & 1.60--2.78 & $<0.005$  & 0.585   & $<0.005$       \\
-			SDANN (ms)
-			 & -0.30 & 0.74 & 0.64--0.86 & $<0.005$  & 0.431   & $<0.005$       \\
-			SDNN (ms)
-			 & -0.30 & 0.74 & 0.64--0.86 & $<0.005$  & 0.431   & $<0.005$       \\
-			Ondas Q (necrose)\textsuperscript{b}
-			 & 0.52  & 1.68 & 1.27--2.22 & $<0.005$  & 0.559   & $<0.005$       \\
-			Extrasys. em dupla\textsuperscript{c}
-			 & 0.14  & 1.15 & 1.07--1.24 & $<0.005$  & 0.614   & $<0.005$       \\
-			Peso (kg)
-			 & -0.26 & 0.77 & 0.67--0.89 & $<0.005$  & 0.428   & 0.029          \\
-			TASVP\textsuperscript{d}
-			 & 0.22  & 1.25 & 1.10--1.42 & $<0.005$  & 0.556   & $<0.005$       \\
-			Extrassístole ventricular
-			 & 0.28  & 1.33 & 1.13--1.56 & $<0.005$  & 0.558   & ---            \\
-			Duração do QRS (ms)
-			 & 0.20  & 1.22 & 1.08--1.39 & 0.002     & 0.570   & 0.003          \\
-			VE/h\textsuperscript{e}
-			 & 0.14  & 1.15 & 1.05--1.27 & 0.002     & 0.597   & $<0.005$       \\
-			DCI\textsuperscript{f}
-			 & 0.20  & 1.22 & 1.07--1.38 & 0.002     & 0.573   & 0.056          \\
-			QRS $>$ 120\,ms
-			 & 0.41  & 1.51 & 1.15--1.99 & 0.003     & 0.552   & 0.003          \\
-			IMC (kg/m\textsuperscript{2})
-			 & -0.22 & 0.81 & 0.70--0.93 & 0.004     & 0.440   & 0.020          \\
-			Ritmo do Holter
-			 & 0.17  & 1.19 & 1.06--1.34 & 0.004     & 0.553   & 0.001          \\
-			Intervalo PR (ms)
-			 & 0.19  & 1.21 & 1.06--1.37 & 0.004     & 0.555   & 0.532          \\
-			Ritmo do ECG
-			 & 0.16  & 1.18 & 1.04--1.33 & 0.007     & 0.554   & $<0.005$       \\
-			QT corrigido
-			 & 0.14  & 1.15 & 1.01--1.32 & 0.035     & 0.553   & 0.021          \\
-			\midrule
-			\multicolumn{7}{l}{\textit{Não significativas ($p \geq 0{,}05$)}}   \\
-			\addlinespace
-			ECG alta resolu\c{c}\~ao\textsuperscript{g}
-			 & 0.27  & 1.31 & 0.96--1.80 & 0.088     & 0.525   & ---            \\
-			Altura (cm)
-			 & -0.11 & 0.89 & 0.78--1.02 & 0.097     & 0.459   & 0.018          \\
-			G\^enero
-			 & 0.24  & 1.28 & 0.92--1.76 & 0.139     & 0.522   & ---            \\
-			RR m\'inimo (ms)
-			 & 0.10  & 1.11 & 0.97--1.26 & 0.141     & 0.530   & 0.089          \\
-			SVE/24h\textsuperscript{h}
-			 & 0.07  & 1.07 & 0.97--1.19 & 0.181     & 0.564   & $<0.005$       \\
-			pNN50 (\%)
-			 & -0.08 & 0.93 & 0.79--1.08 & 0.326     & 0.489   & 0.223          \\
-			HVE\textsuperscript{i}
-			 & 0.10  & 1.10 & 0.81--1.50 & 0.536     & 0.511   & 0.536          \\
-			Intervalo QT (ms)
-			 & -0.03 & 0.97 & 0.85--1.12 & 0.687     & 0.490   & 0.906          \\
-			Bradicardia
-			 & -0.02 & 0.98 & 0.85--1.13 & 0.774     & 0.499   & 0.920          \\
-			RR m\'aximo (ms)
-			 & -0.02 & 0.98 & 0.85--1.13 & 0.803     & 0.474   & 0.157          \\
-			Amplitude RR (ms)
-			 & -0.01 & 0.99 & 0.86--1.14 & 0.894     & 0.478   & 0.365          \\
-			RR m\'edio (ms)
-			 & -0.01 & 0.99 & 0.87--1.14 & 0.931     & 0.497   & 0.503          \\
-			RMSSD (ms)
-			 & -0.00 & 1.00 & 0.87--1.14 & 0.951     & 0.505   & 0.514          \\
+			Partição                         & \multicolumn{2}{c}{Época 1}   &
+			\multicolumn{2}{c}{Última época} &
+			\multicolumn{1}{c}{Razão}        & \multicolumn{1}{c}{Épocas}                                                               \\
+			\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+			                                 & \multicolumn{1}{c}{Treino}    & \multicolumn{1}{c}{Validação} &
+			\multicolumn{1}{c}{Treino}       & \multicolumn{1}{c}{Validação} &                               &                          \\
+			\midrule \midrule
+			0                                & 0,655                         & 1,583                         & 0,012 & 4,727 & 411 & 11 \\
+			1                                & 0,651                         & 1,528                         & 0,005 & 4,892 & 923 & 20 \\
+			2                                & 0,636                         & 1,605                         & 0,007 & 4,656 & 638 & 18 \\
+			3                                & 0,648                         & 1,539                         & 0,009 & 4,642 & 505 & 13 \\
+			4                                & 0,703                         & 1,525                         & 0,010 & 4,545 & 450 & 11 \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} TVNS: taquicardia ventricular não sustentada (CH$>$10 batimentos).\\
-		\textsuperscript{b} Ondas Q: presença de ondas Q de necrose (sim\,=\,1).\\
-		\textsuperscript{c} Extrasys. em dupla: \textit{Extrasystole couplets}.\\
-		\textsuperscript{d} TASVP: taquiarritmia supraventricular paroxística.\\
-		\textsuperscript{e} VE/h: número de extrassístoles ventriculares por hora.\\
-		\textsuperscript{f} DCI: distúrbio de condução intraventricular.\\
-		\textsuperscript{g} ECG alta resolução: disponibilidade do ECG de alta resolução.\\
-		\textsuperscript{h} SVE/24h: número de extrassístoles supraventriculares em 24 horas.\\
-		\textsuperscript{i} HVE: hipertrofia ventricular esquerda (sim\,=\,1).\\
-		HR: razão de risco (\textit{hazard ratio}); IC 95\%: intervalo de confiança de 95\%;
-		C-index: índice de concordância; ---: valor não disponível.
-	\end{flushleft}
 \end{table}
 
-\FloatBarrier
+A perda de treinamento reduziu-se a valores entre 0,005 e 0,012, enquanto a
+de validação triplicou em todas as partições, atingindo patamares em torno de
+4,6 a 4,9. As razões finais entre as duas perdas situaram-se entre 411 e 923,
+contra valores entre 153 e 234 na configuração reduzida --- confirmando que o
+acréscimo de capacidade acelerou a memorização do conjunto de treinamento sem
+produzir ganho na capacidade de generalização.
 
-% ============================================================
-%  Tabela 2 — VIF (Multicolinearidade)
-% ============================================================
+Observa-se ainda que o melhor valor de \gls{AUC} sobre o conjunto de
+validação ocorreu precocemente: na primeira época nas partições~0 e~4, na
+terceira na partição~3, na sétima na partição~2 e na nona na partição~1. Em
+todos os casos, o modelo selecionado pela parada antecipada corresponde a um
+estágio inicial do ajuste.
 
-\begin{table}[htbp]
-	\centering
-	\caption{Fator de inflação da variância (VIF) — avaliação de
-		multicolinearidade entre as variáveis candidatas.}
-	\label{tab:vif}
-	\resizebox{0.75\textwidth}{!}{%
-		\begin{tabular}{lcc}
+\subsection{Matriz de confusão}
+\label{subsec:confusao-resnet18}
+
+A \autoref{tab:resnet18-confusao} apresenta a matriz de confusão agregada.
+
+% ---- TABELA 3: matriz de confusão ----
+\begin{table}[h!]
+	\captionsetup{width=11cm}
+	\Caption{\label{tab:resnet18-confusao} Matriz de confusão agregada da
+		ResNet-18 em configuração completa}
+	\IBGEtab{}{
+		\begin{tabular}{lrr}
 			\toprule
-			Vari\'avel                            & VIF   & Alerta                                           \\
-			\midrule
-			\multicolumn{3}{l}{\textit{Alta multicolinearidade (VIF $> 10$) — exclu\'idas do modelo}}        \\
-			\addlinespace
-			Peso (kg)                             & 85.15 & Alta                                             \\
-			IMC (kg/m\textsuperscript{2})         & 62.50 & Alta                                             \\
-			SDNN (ms)                             & 32.31 & Alta                                             \\
-			Altura (cm)                           & 32.09 & Alta                                             \\
-			SDANN (ms)                            & 27.95 & Alta                                             \\
-			\midrule
-			\multicolumn{3}{l}{\textit{Multicolinearidade moderada ($5 <$ VIF $\leq 10$) — uso com cautela}} \\
-			\addlinespace
-			RMSSD (ms)                            & 6.77  & Moderada                                         \\
-			RR m\'aximo (ms)                      & 6.37  & Moderada                                         \\
-			pNN50 (\%)                            & 6.23  & Moderada                                         \\
-			Ritmo do Holter                       & 6.11  & Moderada                                         \\
-			Amplitude RR (ms)                     & 6.04  & Moderada                                         \\
-			TASVP\textsuperscript{a}              & 5.54  & Moderada                                         \\
-			Dura\c{c}\~ao do QRS (ms)             & 5.03  & Moderada                                         \\
-			\midrule
-			\multicolumn{3}{l}{\textit{Multicolinearidade aceit\'avel (VIF $\leq 5$)}}                       \\
-			\addlinespace
-			Ritmo do ECG                          & 4.70  & Aceit\'avel                                      \\
-			RR m\'edio (ms)                       & 3.89  & Aceit\'avel                                      \\
-			QRS $>$ 120\,ms                       & 3.77  & Aceit\'avel                                      \\
-			RR m\'inimo (ms)                      & 3.32  & Aceit\'avel                                      \\
-			VE/h\textsuperscript{b}               & 3.05  & Aceit\'avel                                      \\
-			Intervalo QT (ms)                     & 3.01  & Aceit\'avel                                      \\
-			QT corrigido                          & 2.51  & Aceit\'avel                                      \\
-			Extrasys. em dupla\textsuperscript{c} & 2.36  & Aceit\'avel                                      \\
-			TVNS (CH$>$10)\textsuperscript{d}     & 1.78  & Aceit\'avel                                      \\
-			G\^enero                              & 1.66  & Aceit\'avel                                      \\
-			Idade                                 & 1.37  & Aceit\'avel                                      \\
-			Extrasss\'istole ventricular          & 1.29  & Aceit\'avel                                      \\
-			DCI\textsuperscript{e}                & 1.27  & Aceit\'avel                                      \\
-			ECG alta resolu\c{c}\~ao              & 1.24  & Aceit\'avel                                      \\
-			Ondas Q (necrose)                     & 1.17  & Aceit\'avel                                      \\
-			Intervalo PR (ms)                     & 1.13  & Aceit\'avel                                      \\
-			NYHA class                            & 1.10  & Aceit\'avel                                      \\
-			Bradicardia                           & 1.10  & Aceit\'avel                                      \\
-			SVE/24h\textsuperscript{f}            & 1.09  & Aceit\'avel                                      \\
-			HVE\textsuperscript{g}                & 1.07  & Aceit\'avel                                      \\
+			                               & \multicolumn{1}{c}{Predito: sobrevivente} &
+			\multicolumn{1}{c}{Predito: óbito}                                               \\
+			\midrule \midrule
+			Sobrevivente ($n = 462$)       & 213                                       & 249 \\
+			Óbito por \gls{MSC} ($n = 55$) & 30                                        & 25  \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} TASVP: taquiarritmia supraventricular paroxística.\\
-		\textsuperscript{b} VE/h: extrassístoles ventriculares por hora.\\
-		\textsuperscript{c} Extrasys. em dupla: \textit{Extrasystole couplets}.\\
-		\textsuperscript{d} TVNS: taquicardia ventricular não sustentada (CH$>$10).\\
-		\textsuperscript{e} DCI: distúrbio de condução intraventricular.\\
-		\textsuperscript{f} SVE/24h: extrassístoles supraventriculares em 24 horas.\\
-		\textsuperscript{g} HVE: hipertrofia ventricular esquerda.
-	\end{flushleft}
 \end{table}
 
-\FloatBarrier
+Dos 55 óbitos por morte súbita cardíaca, 25 foram identificados ---
+sensibilidade de 0,455 --- com 249 falsos positivos entre os 462
+sobreviventes. O \gls{VPP} resultante, de 0,091, permanece abaixo da
+prevalência de 0,106, indicando que a classificação como alto risco não eleva
+a probabilidade estimada de óbito em relação à probabilidade basal da coorte.
 
-% ============================================================
-%  Tabela 3 — Cox Multivariável
-% ============================================================
 
-\begin{table}[htbp]
-	\centering
-	\caption{Análise de Cox multivariável — variáveis com $p < 0{,}05$
-		na análise univariável ($n=992$; 205 eventos).}
-	\label{tab:cox_multivariavel}
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lcccccc}
+% ==============================================================================
+% RESULTADOS — ResNet-18 reduzida com camada de atenção
+% Fonte: classificacao_resnet18_transformer.log (5 partições)
+% ==============================================================================
+
+\section{Incorporação de mecanismo de atenção}
+\label{sec:resultados-resnet18-transformer}
+
+As arquiteturas convolucionais avaliadas nas seções anteriores processam o
+sinal por meio de filtros que percorrem vizinhanças locais. Relações entre
+instantes temporalmente distantes só são alcançadas indiretamente, pelo
+empilhamento sucessivo de camadas. Para verificar se a modelagem explícita
+dessas relações alteraria o desempenho, acrescentou-se uma camada de
+codificação por atenção entre o corpo convolucional e o agrupamento global.
+
+A arquitetura resultante mantém o corpo da ResNet-18 reduzida --- quatro
+estágios residuais com 32 filtros iniciais, produzindo uma sequência de 750
+instantes com 256 dimensões cada --- e insere um codificador \textit{Transformer}
+de uma camada, com quatro cabeças de atenção e dimensão interna de 512. O
+número de parâmetros treináveis passou de $1\,029\,985$ para $1\,491\,553$, e
+a razão em relação ao conjunto de treinamento situou-se em $4\,827$
+parâmetros por paciente.
+
+Os demais elementos do protocolo foram preservados: janelas de 24\,000
+amostras, 250 por paciente, filtro passa-banda de 0,5 a 40\,Hz, agrupamento
+global combinando média e máximo, taxa de aprendizado de $10^{-4}$,
+regularização de $10^{-2}$ e descarte de 0,6. A validação cruzada empregou
+cinco partições, com 309 pacientes no treinamento, 104 na validação interna e
+104 no conjunto de teste de cada uma, contendo 11 eventos.
+
+\subsection{Desempenho}
+\label{subsec:desempenho-resnet18-transformer}
+
+A \gls{AUC} sobre as predições fora da amostra foi de 0,493, com intervalo de
+confiança de 95\,\% entre 0,419 e 0,577. O intervalo contém o valor 0,5, e o
+resultado não difere do obtido pela arquitetura puramente convolucional. Os
+valores por partição constam da \autoref{tab:resnet-transformer-folds}.
+
+% ---- TABELA 1: desempenho por partição ----
+\begin{table}[h!]
+	\captionsetup{width=13cm}
+	\Caption{\label{tab:resnet-transformer-folds} Desempenho da ResNet-18 com
+		camada de atenção, por partição da validação cruzada}
+	\IBGEtab{}{
+		\begin{tabular}{crrrrr}
 			\toprule
-			Vari\'avel & Coef.                                                         & HR   & IC 95\% HR & EP   & $p$      & Signific\^ancia \\
+			Partição                          & \multicolumn{1}{c}{AUC}            & \multicolumn{1}{c}{AP} &
+			\multicolumn{1}{c}{Sensibilidade} & \multicolumn{1}{c}{Especificidade} &
+			\multicolumn{1}{c}{VPP}                                                                                                 \\
+			\midrule \midrule
+			0                                 & 0,480                              & 0,266                  & 0,182 & 0,699 & 0,067 \\
+			1                                 & 0,550                              & 0,162                  & 0,545 & 0,570 & 0,130 \\
+			2                                 & 0,562                              & 0,122                  & 0,727 & 0,413 & 0,129 \\
+			3                                 & 0,472                              & 0,118                  & 0,273 & 0,826 & 0,158 \\
+			4                                 & 0,496                              & 0,127                  & 0,364 & 0,620 & 0,103 \\
 			\midrule
-			NYHA class
-			           & 0.72                                                          & 2.05 & 1.53--2.76 & 0.15 & $<0.005$ & Sim             \\
-			Idade
-			           & 0.22                                                          & 1.25 & 1.05--1.47 & 0.09 & 0.01     & Sim             \\
-			TVNS (CH$>$10)\textsuperscript{a}
-			           & 0.48                                                          & 1.61 & 1.13--2.30 & 0.18 & 0.01     & Sim             \\
-			Ondas Q (necrose)\textsuperscript{b}
-			           & 0.60                                                          & 1.82 & 1.35--2.47 & 0.15 & $<0.005$ & Sim             \\
-			Extrasys. em dupla\textsuperscript{c}
-			           & 0.16                                                          & 1.17 & 1.02--1.35 & 0.07 & 0.03     & Sim             \\
-			TASVP\textsuperscript{d}
-			           & 0.27                                                          & 1.31 & 1.04--1.64 & 0.12 & 0.02     & Sim             \\
+			Média                             & 0,512                              & 0,159                  & 0,418 & 0,626 & 0,117 \\
+			Desvio-padrão                     & 0,041                              & 0,062                  & 0,219 & 0,153 & 0,035 \\
 			\midrule
-			DCI\textsuperscript{e}
-			           & 0.13                                                          & 1.14 & 0.98--1.31 & 0.07 & 0.08     & N\~ao           \\
-			Intervalo PR (ms)
-			           & 0.13                                                          & 1.13 & 0.99--1.30 & 0.07 & 0.07     & N\~ao           \\
-			SDNN (ms)
-			           & -0.28                                                         & 0.76 & 0.38--1.51 & 0.35 & 0.43     & N\~ao           \\
-			SDANN (ms)
-			           & 0.03                                                          & 1.03 & 0.51--2.08 & 0.36 & 0.93     & N\~ao           \\
-			Peso (kg)
-			           & -0.13                                                         & 0.88 & 0.69--1.12 & 0.12 & 0.28     & N\~ao           \\
-			IMC (kg/m\textsuperscript{2})
-			           & -0.10                                                         & 0.90 & 0.71--1.14 & 0.12 & 0.40     & N\~ao           \\
-			Extrasss\'istole ventricular
-			           & 0.10                                                          & 1.10 & 0.92--1.32 & 0.09 & 0.28     & N\~ao           \\
-			VE/h\textsuperscript{f}
-			           & -0.10                                                         & 0.90 & 0.74--1.10 & 0.10 & 0.32     & N\~ao           \\
-			Dura\c{c}\~ao do QRS (ms)
-			           & 0.11                                                          & 1.11 & 0.83--1.48 & 0.15 & 0.47     & N\~ao           \\
-			QRS $>$ 120\,ms
-			           & 0.04                                                          & 1.04 & 0.63--1.73 & 0.26 & 0.88     & N\~ao           \\
-			Ritmo do Holter
-			           & -0.16                                                         & 0.86 & 0.64--1.14 & 0.15 & 0.29     & N\~ao           \\
-			Ritmo do ECG
-			           & 0.03                                                          & 1.03 & 0.79--1.33 & 0.13 & 0.84     & N\~ao           \\
-			QT corrigido
-			           & -0.02                                                         & 0.98 & 0.83--1.15 & 0.09 & 0.78     & N\~ao           \\
-			\midrule
-			Concordance
-			           & \multicolumn{6}{c}{0.72 \quad (C-index multivariável: 0.718)}                                                         \\
-			Partial AIC
-			           & \multicolumn{6}{c}{2667.02}                                                                                           \\
-			Log-likelihood ratio test
-			           & \multicolumn{6}{c}{130.68 em 19 g.l.; $-\log_2(p)=59.68$}                                                             \\
+			\textit{Out-of-fold}              & 0,493                              & 0,134                  & 0,291 & 0,704 & 0,105 \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} TVNS: taquicardia ventricular não sustentada (CH$>$10 batimentos).\\
-		\textsuperscript{b} Ondas Q: presença de ondas Q de necrose (sim\,=\,1).\\
-		\textsuperscript{c} Extrasys. em dupla: \textit{Extrasystole couplets}.\\
-		\textsuperscript{d} TASVP: taquiarritmia supraventricular paroxística.\\
-		\textsuperscript{e} DCI: distúrbio de condução intraventricular.\\
-		\textsuperscript{f} VE/h: extrassístoles ventriculares por hora.\\
-		HR: razão de risco; IC 95\%: intervalo de confiança de 95\%; EP: erro padrão.
-	\end{flushleft}
 \end{table}
 
-\FloatBarrier
+A dispersão entre partições foi de 0,041, a menor observada entre as
+arquiteturas aplicadas ao sinal bruto. Esse valor reduzido não indica,
+contudo, maior confiabilidade do resultado: as cinco partições concentram-se
+em torno de 0,5, e a baixa variabilidade reflete a consistência com que o
+modelo deixa de discriminar, não a estabilidade de um desempenho útil.
 
-De modo geral, o modelo multivariável apresentou poder discriminatório
-satisfatório (Concordance $= 0{,}72$). As variáveis que mantiveram
-associação estatisticamente significativa após o ajuste multivariável foram:
-classe funcional NYHA, idade, taquicardia ventricular não sustentada
-(CH$>$10), presença de ondas Q de necrose, extrassístoles em dupla e
-taquiarritmia supraventricular paroxística. As demais variáveis, incluindo
-aquelas com alta multicolinearidade (SDNN, SDANN, peso e IMC), perderam
-significância após o ajuste conjunto, o que é esperado em modelos com
-variáveis correlacionadas.
+A \gls{AP} agrupada, de 0,134, situa-se acima da prevalência de 0,106,
+embora a margem seja estreita. A sensibilidade agrupada, de 0,291,
+corresponde à identificação de 16 dos 55 pacientes que vieram a óbito.
 
+\subsection{Comportamento durante o treinamento}
+\label{subsec:treinamento-resnet18-transformer}
 
-% ============================================================
-%  Análise de Cox — Amostra filtrada (n=898, 189 eventos)
-%  Univariável, VIF e Multivariável
-% ============================================================
+O ajuste ao conjunto de treinamento foi o mais acentuado entre todas as
+configurações avaliadas. A \autoref{tab:resnet-transformer-perdas} sintetiza
+a evolução das perdas nas cinco partições.
 
-Apresentam-se a seguir os resultados da mesma análise conduzida para a
-amostra filtrada com pacientes que possuem as três derivações completas
-($n=898$; 189 eventos), com o objetivo de verificar se a restrição imposta
-pela filtragem impacta os resultados obtidos na coorte completa.
-
-% ============================================================
-%  Tabela — Cox Univariável (n=898)
-% ============================================================
-
-\begin{table}[htbp]
-	\centering
-	\caption{Análise de Cox univariável — amostra filtrada com três
-		derivações completas ($n=898$; 189 eventos).}
-	\label{tab:cox_univariavel_filtrado}
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lcccccc}
+% ---- TABELA 2: perdas inicial e final ----
+\begin{table}[h!]
+	\captionsetup{width=13.5cm}
+	\Caption{\label{tab:resnet-transformer-perdas} Perdas de treinamento e
+		validação no início e ao término do ajuste, por partição}
+	\IBGEtab{}{
+		\begin{tabular}{crrrrr}
 			\toprule
-			Vari\'avel
-			 & Coef. & HR   & IC 95\% HR & $p$ (Cox) & C-index & $p$ (log-rank) \\
-			\midrule
-			\multicolumn{7}{l}{\textit{Significativas ($p < 0{,}05$)}}          \\
-			\addlinespace
-			NYHA class
-			 & 0.97  & 2.64 & 1.97--3.55 & $<0.005$  & 0.598   & $<0.005$       \\
-			Idade
-			 & 0.43  & 1.53 & 1.30--1.81 & $<0.005$  & 0.608   & $<0.005$       \\
-			TVNS (CH$>$10)\textsuperscript{a}
-			 & 0.71  & 2.04 & 1.53--2.72 & $<0.005$  & 0.583   & $<0.005$       \\
-			SDNN (ms)
-			 & -0.31 & 0.74 & 0.63--0.86 & $<0.005$  & 0.428   & $<0.005$       \\
-			SDANN (ms)
-			 & -0.31 & 0.73 & 0.63--0.86 & $<0.005$  & 0.429   & $<0.005$       \\
-			Extrasys. em dupla\textsuperscript{b}
-			 & 0.14  & 1.15 & 1.06--1.25 & $<0.005$  & 0.613   & $<0.005$       \\
-			Ondas Q (necrose)\textsuperscript{c}
-			 & 0.51  & 1.66 & 1.24--2.21 & $<0.005$  & 0.557   & $<0.005$       \\
-			Peso (kg)
-			 & -0.26 & 0.77 & 0.66--0.90 & $<0.005$  & 0.427   & 0.030          \\
-			TASVP\textsuperscript{d}
-			 & 0.23  & 1.25 & 1.10--1.43 & $<0.005$  & 0.555   & $<0.005$       \\
-			Extrasss\'istole vent.\textsuperscript{e}
-			 & 0.27  & 1.32 & 1.11--1.56 & 0.001     & 0.558   & ---            \\
-			DCI\textsuperscript{f}
-			 & 0.21  & 1.23 & 1.08--1.41 & 0.002     & 0.575   & 0.042          \\
-			QRS $>$ 120\,ms
-			 & 0.43  & 1.54 & 1.16--2.05 & 0.003     & 0.555   & 0.003          \\
-			Ritmo ECG
-			 & 0.18  & 1.20 & 1.06--1.36 & 0.003     & 0.559   & $<0.005$       \\
-			VE/h\textsuperscript{g}
-			 & 0.14  & 1.15 & 1.05--1.27 & 0.005     & 0.597   & $<0.005$       \\
-			Ritmo Holter
-			 & 0.18  & 1.20 & 1.06--1.35 & 0.005     & 0.554   & 0.001          \\
-			Intervalo PR (ms)
-			 & 0.19  & 1.21 & 1.06--1.39 & 0.006     & 0.554   & 0.718          \\
-			IMC\textsuperscript{h}
-			 & -0.21 & 0.81 & 0.70--0.94 & 0.006     & 0.440   & 0.019          \\
-			Dura\c{c}\~ao QRS (ms)
-			 & 0.19  & 1.21 & 1.06--1.38 & 0.006     & 0.569   & $<0.005$       \\
-			\midrule
-			\multicolumn{7}{l}{\textit{Não significativas ($p \geq 0{,}05$)}}   \\
-			\addlinespace
-			G\^enero
-			 & 0.29  & 1.34 & 0.95--1.88 & 0.092     & 0.527   & ---            \\
-			Altura (cm)
-			 & -0.12 & 0.89 & 0.77--1.02 & 0.092     & 0.460   & 0.038          \\
-			RR m\'in. (ms)
-			 & 0.12  & 1.12 & 0.98--1.29 & 0.101     & 0.532   & 0.120          \\
-			QT corrigido
-			 & 0.11  & 1.12 & 0.97--1.29 & 0.118     & 0.542   & 0.042          \\
-			ECG-AR\textsuperscript{i}
-			 & 0.27  & 1.31 & 0.93--1.85 & 0.129     & 0.522   & ---            \\
-			SVE/24h\textsuperscript{j}
-			 & 0.06  & 1.07 & 0.95--1.19 & 0.254     & 0.564   & 0.003          \\
-			pNN50 (\%)
-			 & -0.08 & 0.93 & 0.79--1.09 & 0.349     & 0.489   & 0.193          \\
-			Intervalo QT (ms)
-			 & -0.05 & 0.95 & 0.82--1.10 & 0.490     & 0.481   & 0.852          \\
-			Amplitude RR (ms)
-			 & -0.04 & 0.96 & 0.83--1.11 & 0.587     & 0.469   & 0.243          \\
-			HVE\textsuperscript{k}
-			 & 0.03  & 1.03 & 0.75--1.43 & 0.837     & 0.505   & 0.837          \\
-			Bradicardia
-			 & -0.01 & 0.99 & 0.85--1.14 & 0.866     & 0.501   & 0.934          \\
-			RR m\'ax. (ms)
-			 & -0.01 & 0.99 & 0.85--1.15 & 0.884     & 0.478   & 0.108          \\
-			RMSSD (ms)
-			 & -0.01 & 0.99 & 0.86--1.14 & 0.920     & 0.505   & 0.438          \\
-			RR m\'ed. (ms)
-			 & 0.00  & 1.00 & 0.87--1.16 & 0.959     & 0.499   & 0.383          \\
+			Partição                         & \multicolumn{2}{c}{Época 1}   &
+			\multicolumn{2}{c}{Última época} &
+			\multicolumn{1}{c}{Razão final}                                                                                           \\
+			\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+			                                 & \multicolumn{1}{c}{Treino}    & \multicolumn{1}{c}{Validação} &
+			\multicolumn{1}{c}{Treino}       & \multicolumn{1}{c}{Validação} &                                                        \\
+			\midrule \midrule
+			0                                & 0,984                         & 2,368                         & 0,007 & 8,592 & 1\,322 \\
+			1                                & 0,949                         & 2,731                         & 0,004 & 8,014 & 2\,226 \\
+			2                                & 0,889                         & 4,065                         & 0,006 & 7,788 & 1\,366 \\
+			3                                & 0,814                         & 4,549                         & 0,005 & 7,818 & 1\,700 \\
+			4                                & 0,910                         & 3,818                         & 0,010 & 7,967 & 781    \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} TVNS: taquicardia ventricular não sustentada (CH$>$10 batimentos).\\
-		\textsuperscript{b} Extrasys. em dupla: extrassístoles em dupla (\textit{Extrasystole couplets}).\\
-		\textsuperscript{c} Ondas Q: presença de ondas Q de necrose (sim\,=\,1).\\
-		\textsuperscript{d} TASVP: taquiarritmia supraventricular paroxística.\\
-		\textsuperscript{e} Extrassístole vent.: extrassístole ventricular.\\
-		\textsuperscript{f} DCI: distúrbio de condução intraventricular.\\
-		\textsuperscript{g} VE/h: extrassístoles ventriculares por hora.\\
-		\textsuperscript{h} IMC: índice de massa corporal (kg/m\textsuperscript{2}).\\
-		\textsuperscript{i} ECG-AR: ECG de alta resolução disponível.\\
-		\textsuperscript{j} SVE/24h: extrassístoles supraventriculares em 24 horas.\\
-		\textsuperscript{k} HVE: hipertrofia ventricular esquerda (sim\,=\,1).\\
-		HR: razão de risco; IC 95\%: intervalo de confiança de 95\%;
-		C-index: índice de concordância; ---: valor não disponível.
-	\end{flushleft}
 \end{table}
 
-\FloatBarrier
+A perda de treinamento reduziu-se a valores entre 0,004 e 0,010, enquanto a
+de validação atingiu patamares entre 7,8 e 8,6 --- razões finais de 781 a
+$2\,226$ entre as duas. Para efeito de comparação, a ResNet-18 reduzida sem
+atenção apresentou razões entre 153 e 234, e a configuração completa, entre
+346 e 400.
 
-% ============================================================
-%  Tabela — VIF (n=898)
-% ============================================================
+O acréscimo da camada de atenção, portanto, acelerou substancialmente a
+memorização do conjunto de treinamento. Com 33 casos positivos disponíveis,
+perdas de treinamento da ordem de $10^{-3}$ indicam que o modelo ajustou
+individualmente cada exemplo. O mecanismo de atenção, que em conjuntos
+extensos permite relacionar segmentos distantes do sinal, aqui dispõe de
+exemplos insuficientes para que tais relações sejam estimadas de forma
+generalizável.
 
-\begin{table}[htbp]
-	\centering
-	\caption{Fator de inflação da variância (VIF) — amostra filtrada com
-		três derivações completas ($n=898$).}
-	\label{tab:vif_filtrado}
-	\resizebox{0.75\textwidth}{!}{%
-		\begin{tabular}{lcc}
+Observa-se ainda que a \gls{AUC} máxima sobre o conjunto de validação ocorreu
+precocemente em todas as partições --- na época~8 da partição~0, na~6 da
+partição~1, na~4 da partição~2 e na~2 da partição~3. A parada antecipada
+interrompeu o ajuste entre a décima terceira e a vigésima época, e o modelo
+selecionado corresponde sempre a um estágio inicial do treinamento.
+
+\subsection{Matriz de confusão}
+\label{subsec:confusao-resnet18-transformer}
+
+A \autoref{tab:resnet-transformer-confusao} apresenta a matriz de confusão
+agregada, construída a partir das predições fora da amostra e do limiar
+mediano entre as partições.
+
+% ---- TABELA 3: matriz de confusão ----
+\begin{table}[h!]
+	\captionsetup{width=11cm}
+	\Caption{\label{tab:resnet-transformer-confusao} Matriz de confusão
+		agregada da ResNet-18 com camada de atenção}
+	\IBGEtab{}{
+		\begin{tabular}{lrr}
 			\toprule
-			Vari\'avel                            & VIF   & Alerta                                           \\
-			\midrule
-			\multicolumn{3}{l}{\textit{Alta multicolinearidade (VIF $> 10$) — exclu\'idas do modelo}}        \\
-			\addlinespace
-			Peso (kg)                             & 82.03 & Alta                                             \\
-			IMC (kg/m\textsuperscript{2})         & 60.05 & Alta                                             \\
-			SDNN (ms)                             & 32.56 & Alta                                             \\
-			Altura (cm)                           & 30.80 & Alta                                             \\
-			SDANN (ms)                            & 28.16 & Alta                                             \\
-			Amplitude RR (ms)                     & 19.56 & Alta                                             \\
-			RR m\'ax. (ms)                        & 17.17 & Alta                                             \\
-			\midrule
-			\multicolumn{3}{l}{\textit{Multicolinearidade moderada ($5 <$ VIF $\leq 10$) — uso com cautela}} \\
-			\addlinespace
-			RMSSD (ms)                            & 6.82  & Moderada                                         \\
-			Ritmo Holter                          & 6.38  & Moderada                                         \\
-			pNN50 (\%)                            & 6.27  & Moderada                                         \\
-			Ritmo ECG                             & 5.65  & Moderada                                         \\
-			TASVP\textsuperscript{a}              & 5.63  & Moderada                                         \\
-			Dura\c{c}\~ao QRS (ms)                & 5.08  & Moderada                                         \\
-			\midrule
-			\multicolumn{3}{l}{\textit{Multicolinearidade aceit\'avel (VIF $\leq 5$)}}                       \\
-			\addlinespace
-			RR m\'in. (ms)                        & 4.93  & Aceit\'avel                                      \\
-			RR m\'ed. (ms)                        & 4.01  & Aceit\'avel                                      \\
-			QRS $>$ 120\,ms                       & 3.75  & Aceit\'avel                                      \\
-			Intervalo QT (ms)                     & 3.16  & Aceit\'avel                                      \\
-			VE/h\textsuperscript{b}               & 3.03  & Aceit\'avel                                      \\
-			QT corrigido                          & 2.64  & Aceit\'avel                                      \\
-			Extrasys. em dupla\textsuperscript{c} & 2.36  & Aceit\'avel                                      \\
-			TVNS (CH$>$10)\textsuperscript{d}     & 1.76  & Aceit\'avel                                      \\
-			G\^enero                              & 1.66  & Aceit\'avel                                      \\
-			Idade                                 & 1.40  & Aceit\'avel                                      \\
-			DCI\textsuperscript{e}                & 1.30  & Aceit\'avel                                      \\
-			Extrasss\'istole vent.                & 1.26  & Aceit\'avel                                      \\
-			Ondas Q (necrose)                     & 1.19  & Aceit\'avel                                      \\
-			Intervalo PR (ms)                     & 1.14  & Aceit\'avel                                      \\
-			ECG-AR\textsuperscript{f}             & 1.11  & Aceit\'avel                                      \\
-			NYHA class                            & 1.11  & Aceit\'avel                                      \\
-			Bradicardia                           & 1.10  & Aceit\'avel                                      \\
-			SVE/24h\textsuperscript{g}            & 1.09  & Aceit\'avel                                      \\
-			HVE\textsuperscript{h}                & 1.08  & Aceit\'avel                                      \\
+			                               & \multicolumn{1}{c}{Predito: sobrevivente} &
+			\multicolumn{1}{c}{Predito: óbito}                                               \\
+			\midrule \midrule
+			Sobrevivente ($n = 462$)       & 325                                       & 137 \\
+			Óbito por \gls{MSC} ($n = 55$) & 39                                        & 16  \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} TASVP: taquiarritmia supraventricular paroxística.\\
-		\textsuperscript{b} VE/h: extrassístoles ventriculares por hora.\\
-		\textsuperscript{c} Extrasys. em dupla: \textit{Extrasystole couplets}.\\
-		\textsuperscript{d} TVNS: taquicardia ventricular não sustentada (CH$>$10).\\
-		\textsuperscript{e} DCI: distúrbio de condução intraventricular.\\
-		\textsuperscript{f} ECG-AR: ECG de alta resolução disponível.\\
-		\textsuperscript{g} SVE/24h: extrassístoles supraventriculares em 24 horas.\\
-		\textsuperscript{h} HVE: hipertrofia ventricular esquerda.
-	\end{flushleft}
 \end{table}
 
-\FloatBarrier
+O limiar resultante produziu comportamento mais conservador que o das
+configurações anteriores: apenas 153 pacientes foram classificados como alto
+risco, contra 292 na ResNet-18 reduzida. Dos 55 óbitos, 16 foram
+identificados --- sensibilidade de 0,291 --- com 137 falsos positivos entre
+os 462 sobreviventes. O \gls{VPP} de 0,105 permanece equivalente à
+prevalência de 0,106, o que significa que a classificação como alto risco não
+altera a probabilidade estimada de óbito em relação à probabilidade basal da
+coorte.
 
-% ============================================================
-%  Tabela — Cox Multivariável (n=898)
-% ============================================================
 
-\begin{table}[htbp]
-	\centering
-	\caption{Análise de Cox multivariável — amostra filtrada com três
-		derivações completas ($n=898$; 189 eventos).}
-	\label{tab:cox_multivariavel_filtrado}
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lcccccc}
+% ==============================================================================
+% RESULTADOS — ResNet-34
+% Fonte: classificacao_resnet34_v2.log (5 partições)
+%
+% Seção mais enxuta que as anteriores: o protocolo já foi descrito na seção
+% de configuração experimental, e a comparação com a ResNet-18 completa é o
+% que interessa aqui.
+% ==============================================================================
+
+\section{Efeito da profundidade do modelo}
+\label{sec:resultados-resnet34}
+
+A \autoref{sec:resultados-resnet18} demonstrou que ampliar a largura da rede
+--- de 32 para 64 filtros --- não alterou o desempenho. Resta verificar se o
+mesmo se aplica à profundidade.
+
+A ResNet-34 preserva integralmente a largura da ResNet-18 completa: as
+mesmas 64 unidades na camada inicial e a mesma progressão até 512 na última.
+O que difere é o número de blocos residuais empilhados em cada estágio,
+que passa de dois em todos eles para três, quatro, seis e três ---
+dobrando o total de 8 para 16 blocos, ou de 17 para 33 camadas
+convolucionais. O número de parâmetros treináveis sobe para $7\,350\,721$,
+correspondendo a $23\,789$ por paciente do conjunto de treinamento.
+
+Como a largura é idêntica, os tensores intermediários mantêm exatamente as
+mesmas dimensões da configuração anterior. Os blocos adicionais não alteram
+a forma da representação; apenas a refinam por meio de transformações
+sucessivas.
+
+Todos os demais elementos seguem o protocolo da
+\autoref{sec:configuracao-experimental}, com validação cruzada em cinco
+partições de 309 pacientes no treinamento, 104 na validação interna e 104 no
+conjunto de teste.
+
+\subsection{Desempenho}
+\label{subsec:desempenho-resnet34}
+
+A \gls{AUC} sobre as predições fora da amostra foi de 0,514, com intervalo
+de confiança de 95\,\% entre 0,429 e 0,601. Os resultados por partição
+constam da \autoref{tab:resnet34-folds}.
+
+% ---- TABELA 1: desempenho por partição ----
+\begin{table}[h!]
+	\captionsetup{width=13cm}
+	\Caption{\label{tab:resnet34-folds} Desempenho da ResNet-34 por partição
+		da validação cruzada}
+	\IBGEtab{}{
+		\begin{tabular}{crrrrr}
 			\toprule
-			Vari\'avel & Coef.                                                         & HR   & IC 95\% HR & EP   & $p$      & Signific\^ancia \\
+			Partição                          & \multicolumn{1}{c}{AUC}            & \multicolumn{1}{c}{AP} &
+			\multicolumn{1}{c}{Sensibilidade} & \multicolumn{1}{c}{Especificidade} &
+			\multicolumn{1}{c}{VPP}                                                                                                 \\
+			\midrule \midrule
+			0                                 & 0,534                              & 0,186                  & 0,545 & 0,484 & 0,111 \\
+			1                                 & 0,493                              & 0,130                  & 0,727 & 0,312 & 0,111 \\
+			2                                 & 0,546                              & 0,132                  & 0,273 & 0,707 & 0,100 \\
+			3                                 & 0,526                              & 0,153                  & 0,455 & 0,522 & 0,102 \\
+			4                                 & 0,601                              & 0,155                  & 0,727 & 0,370 & 0,121 \\
 			\midrule
-			NYHA class
-			           & 0.72                                                          & 2.05 & 1.51--2.79 & 0.16 & $<0.005$ & Sim             \\
-			Idade
-			           & 0.25                                                          & 1.28 & 1.08--1.53 & 0.09 & $<0.005$ & Sim             \\
-			TVNS (CH$>$10)\textsuperscript{a}
-			           & 0.42                                                          & 1.53 & 1.06--2.21 & 0.19 & 0.02     & Sim             \\
-			Ondas Q (necrose)\textsuperscript{b}
-			           & 0.61                                                          & 1.84 & 1.34--2.52 & 0.16 & $<0.005$ & Sim             \\
-			Extrasys. em dupla\textsuperscript{c}
-			           & 0.16                                                          & 1.18 & 1.01--1.36 & 0.07 & 0.03     & Sim             \\
+			Média                             & 0,540                              & 0,151                  & 0,545 & 0,479 & 0,109 \\
+			Desvio-padrão                     & 0,039                              & 0,022                  & 0,201 & 0,159 & 0,008 \\
 			\midrule
-			TASVP\textsuperscript{d}
-			           & 0.22                                                          & 1.25 & 0.99--1.58 & 0.12 & 0.06     & N\~ao           \\
-			Intervalo PR (ms)
-			           & 0.13                                                          & 1.14 & 0.99--1.32 & 0.07 & 0.07     & N\~ao           \\
-			DCI\textsuperscript{e}
-			           & 0.11                                                          & 1.12 & 0.96--1.30 & 0.08 & 0.15     & N\~ao           \\
-			SDNN (ms)
-			           & -0.29                                                         & 0.75 & 0.37--1.53 & 0.37 & 0.43     & N\~ao           \\
-			SDANN (ms)
-			           & 0.03                                                          & 1.03 & 0.50--2.14 & 0.37 & 0.93     & N\~ao           \\
-			Peso (kg)
-			           & -0.13                                                         & 0.88 & 0.69--1.13 & 0.13 & 0.33     & N\~ao           \\
-			IMC (kg/m\textsuperscript{2})
-			           & -0.10                                                         & 0.91 & 0.71--1.16 & 0.12 & 0.44     & N\~ao           \\
-			Extrasss\'istole vent.
-			           & 0.09                                                          & 1.09 & 0.91--1.31 & 0.09 & 0.35     & N\~ao           \\
-			VE/h\textsuperscript{f}
-			           & -0.10                                                         & 0.91 & 0.74--1.12 & 0.11 & 0.36     & N\~ao           \\
-			Ritmo Holter
-			           & -0.20                                                         & 0.82 & 0.59--1.15 & 0.17 & 0.25     & N\~ao           \\
-			QRS $>$ 120\,ms
-			           & 0.20                                                          & 1.22 & 0.72--2.07 & 0.27 & 0.46     & N\~ao           \\
-			Ritmo ECG
-			           & 0.13                                                          & 1.14 & 0.84--1.56 & 0.16 & 0.40     & N\~ao           \\
-			Dura\c{c}\~ao QRS (ms)
-			           & -0.00                                                         & 1.00 & 0.76--1.31 & 0.14 & 0.99     & N\~ao           \\
-			\midrule
-			Concordance
-			           & \multicolumn{6}{c}{0.72 \quad (C-index multivariável: 0.718)}                                                         \\
-			Partial AIC
-			           & \multicolumn{6}{c}{2418.97}                                                                                           \\
-			Log-likelihood ratio test
-			           & \multicolumn{6}{c}{122.53 em 18 g.l.; $-\log_2(p)=55.99$}                                                             \\
+			\textit{Out-of-fold}              & 0,514                              & 0,122                  & 0,509 & 0,517 & 0,112 \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		\textsuperscript{a} TVNS: taquicardia ventricular não sustentada (CH$>$10 batimentos).\\
-		\textsuperscript{b} Ondas Q: presença de ondas Q de necrose (sim\,=\,1).\\
-		\textsuperscript{c} Extrasys. em dupla: \textit{Extrasystole couplets}.\\
-		\textsuperscript{d} TASVP: taquiarritmia supraventricular paroxística.\\
-		\textsuperscript{e} DCI: distúrbio de condução intraventricular.\\
-		\textsuperscript{f} VE/h: extrassístoles ventriculares por hora.\\
-		HR: razão de risco; IC 95\%: intervalo de confiança de 95\%; EP: erro padrão.
-	\end{flushleft}
 \end{table}
 
-\FloatBarrier
+O desvio-padrão entre partições, de 0,039, é o menor observado entre as
+arquiteturas residuais, e todas as cinco partições situaram-se entre 0,493 e
+0,601. Essa concentração não indica desempenho útil, mas consistência com
+que o modelo deixa de discriminar: as cinco estimativas agrupam-se em torno
+de 0,5, e o intervalo de confiança da estimativa agrupada contém esse valor.
 
-Os resultados da amostra filtrada ($n=898$) foram amplamente consistentes com
-os da coorte completa ($n=992$). Na análise univariável, 18 variáveis
-apresentaram associação significativa ($p < 0{,}05$), em comparação com 19 na
-coorte completa — a única diferença foi a ausência de significância para o QT
-corrigido na amostra filtrada. O padrão de multicolinearidade foi semelhante,
-com dois grupos adicionais de alta colinearidade (amplitude RR e RR máximo,
-com VIF $>$ 10) identificados na amostra filtrada. No modelo multivariável,
-as mesmas variáveis principais mantiveram significância: NYHA class, idade,
-TVNS (CH$>$10), ondas Q de necrose e extrassístoles em dupla. O C-index
-multivariável permaneceu idêntico (0{,}718), confirmando a robustez dos
-resultados após a filtragem.
+A \gls{AP} agrupada, de 0,122, supera marginalmente a prevalência de 0,106.
 
+\subsection{Comparação entre largura e profundidade}
+\label{subsec:comparacao-profundidade}
 
-\FloatBarrier
-% ============================================================
-%  Tabela — Dados usando pycox como modelos Deep Learning para sobrevivência
-% ============================================================
+A \autoref{tab:comparacao-profundidade} reúne as três configurações da
+família residual com blocos básicos, avaliadas sob protocolo idêntico.
 
-
-\section{Modelos de Aprendizado Profundo para Sobrevivência}
-
-Aqui são apresentados os resultados dos modelos de sobrevivência profunda treinados com os mesmos conjuntos de covariáveis utilizados na análise de Cox, tanto para a coorte completa ($n=992$) quanto para a amostra filtrada ($n=898$). Os modelos avaliados foram: LogisticHazard, PMF e DeepHitSingle, utilizando a implementação disponível na biblioteca \texttt{pycox}.
-
-\subsection{Sobre LogisticHazard}
-
-\subsection{Sobre PMF}
-
-\subsection{Sobre DeepHitSingle}
-
-
-
-A Tabela~\ref{tab:modelos_dl_sobrevivencia} resume o desempenho dos modelos de sobrevivência profunda segundo o tipo de colunas utilizado, a filtragem dos pacientes com ECG, e as principais métricas de discriminação e calibração. Em todos os experimentos, foram utilizados \textit{batch size} de 256 e \textit{dropout} de 0,5.
-
-\begin{table}[htbp]
-	\centering
-	\caption{Desempenho dos modelos de sobrevivência profunda segundo o
-		conjunto de covariáveis e a disponibilidade de ECG dos pacientes.}
-	\label{tab:modelos_dl_sobrevivencia}
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{llccccccc}
+% ---- TABELA 2: três configurações ----
+\begin{table}[h!]
+	\captionsetup{width=15cm}
+	\Caption{\label{tab:comparacao-profundidade} Comparação entre as
+		configurações da família ResNet com blocos básicos}
+	\IBGEtab{}{
+		\begin{tabular}{lrrrrr}
 			\toprule
-			Modelo
-			               & Covari\'aveis\textsuperscript{a}
-			               & Coorte\textsuperscript{b}
-			               & C-index
-			               & Brier
-			               & NBLL
-			               & Loss (treino)
-			               & Loss (val.)
-			               & \'Epoca                                                                                                              \\
-			\midrule
-			\multicolumn{9}{l}{\textit{Holter (H)}}                                                                                               \\
-			LogisticHazard & H                                & C992 & 0,5300          & 0,1782          & 0,5790          & 1,1192 & 1,0597 & 28 \\
-			PMF            & H                                & C992 & 0,6062          & 0,1740          & 0,5631          & 0,9059 & 1,1039 & 46 \\
-			DeepHitSingle  & H                                & C992 & 0,6239          & 0,1784          & 0,5633          & 0,3410 & 0,3653 & 59 \\
-			LogisticHazard & H                                & C898 & 0,6257          & 0,1756          & 0,5618          & 1,5659 & 1,0911 & 34 \\
-			PMF            & H                                & C898 & 0,6848          & 0,1670          & 0,5260          & 0,9912 & 1,0724 & 41 \\
-			DeepHitSingle  & H                                & C898 & \textbf{0,7234} & 0,1661          & 0,5265          & 0,3352 & 0,3428 & 99 \\
-			\midrule
-			\multicolumn{9}{l}{\textit{Eletrocardiogramas Holter (EH)}}                                                                           \\
-			LogisticHazard & EH                               & C992 & 0,6089          & 0,1732          & 0,5706          & 1,0588 & 1,0645 & 50 \\
-			PMF            & EH                               & C992 & 0,6086          & 0,1676          & 0,5579          & 0,9864 & 1,0542 & 49 \\
-			DeepHitSingle  & EH                               & C992 & 0,5721          & 0,1775          & 0,5686          & 0,3353 & 0,3463 & 69 \\
-			LogisticHazard & EH                               & C898 & 0,5699          & 0,1797          & 0,5759          & 0,9176 & 1,1579 & 29 \\
-			PMF            & EH                               & C898 & 0,6145          & 0,1709          & 0,5400          & 1,0422 & 1,1741 & 39 \\
-			DeepHitSingle  & EH                               & C898 & 0,5896          & 0,1930          & 0,5958          & 0,3483 & 0,3810 & 69 \\
-			\midrule
-			\multicolumn{9}{l}{\textit{Eventos e Condições Cardiovasculares (EC)}}                                                                \\
-			LogisticHazard & EC                               & C992 & 0,5656          & 0,1771          & 0,5667          & 1,1943 & 1,1249 & 27 \\
-			PMF            & EC                               & C992 & 0,5897          & 0,1767          & 0,5760          & 1,0138 & 1,0853 & 41 \\
-			DeepHitSingle  & EC                               & C992 & 0,5812          & 0,2896          & 0,8420          & 0,6048 & 0,4321 & 30 \\
-			LogisticHazard & EC                               & C898 & 0,6412          & 0,1682          & 0,5448          & 1,0169 & 1,2437 & 28 \\
-			PMF            & EC                               & C898 & \textbf{0,7151} & \textbf{0,1664} & \textbf{0,5137} & 1,0058 & 1,2551 & 33 \\
-			DeepHitSingle  & EC                               & C898 & 0,7000          & 0,2567          & 0,7409          & 0,4386 & 0,6774 & 34 \\
-			\midrule
-			\multicolumn{9}{l}{\textit{Conjunto de Covari\'aveis Progn\'osticas Selecionadas (CPS)\textsuperscript{c}}}                           \\
-			LogisticHazard & CPS                              & C992 & 0,6464          & 0,1672          & 0,5553          & 1,0285 & 1,0508 & 69 \\
-			PMF            & CPS                              & C992 & 0,5840          & 0,1720          & 0,5726          & 0,9828 & 1,0793 & 36 \\
-			DeepHitSingle  & CPS                              & C992 & 0,6175          & 0,1726          & 0,5573          & 0,3625 & 0,3573 & 67 \\
-			LogisticHazard & CPS                              & C898 & 0,6753          & 0,1666          & 0,5304          & 1,1640 & 1,1131 & 50 \\
-			PMF            & CPS                              & C898 & \textbf{0,6965} & \textbf{0,1599} & \textbf{0,5133} & 1,0212 & 1,0743 & 48 \\
-			DeepHitSingle  & CPS                              & C898 & 0,6776          & 0,2268          & 0,6701          & 0,4485 & 0,4122 & 49 \\
+			Configuração                   & \multicolumn{1}{c}{Blocos}       &
+			\multicolumn{1}{c}{Parâmetros} & \multicolumn{1}{c}{Por paciente} &
+			\multicolumn{1}{c}{AUC}        & \multicolumn{1}{c}{IC 95\%}                                                     \\
+			\midrule \midrule
+			ResNet-18 reduzida             & 8                                & 1\,029\,985 & 3\,333  & 0,504 & 0,420--0,588 \\
+			ResNet-18 completa             & 8                                & 3\,976\,385 & 12\,869 & 0,508 & 0,431--0,588 \\
+			ResNet-34                      & 16                               & 7\,350\,721 & 23\,789 & 0,514 & 0,429--0,601 \\
 			\bottomrule
-		\end{tabular}%
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
 	}
-	\begin{flushleft}
-		\footnotesize
-		Em todos os experimentos: \textit{batch size} = 256; \textit{dropout} = 0,5.
-		Valores em negrito indicam o melhor desempenho dentro de cada grupo de covariáveis.
-		Loss (val.): \textit{loss} de validação.\\
-		\textsuperscript{a} Grupos de covariáveis:
-		H = Holter;
-		EH = Eletrocardiogramas Holter;
-		EC = Eventos e Condições Cardiovasculares;
-		CPS = Conjunto de Covariáveis Prognósticas Selecionadas.\\
-		\textsuperscript{b} Coorte:
-		C992 = coorte completa ($n=992$; 205 eventos);
-		C898 = amostra com três derivações de ECG completas ($n=898$; 189 eventos).\\
-		\textsuperscript{c} O conjunto CPS é composto por variáveis com associação
-		estatisticamente significativa nas análises de Cox: dados demográficos
-		(idade, gênero e classe NYHA); eventos cardiovasculares
-			[taquicardia ventricular não sustentada (CH$>$10) e taquiarritmia
-				supraventricular paroxística]; e achado eletrocardiográfico
-		[ondas Q de necrose (\textit{Q-waves}, sim\,=\,1)].
-	\end{flushleft}
 \end{table}
 
-\FloatBarrier
+As três configurações percorrem uma faixa de capacidade de sete vezes, de
+$1{,}03$ a $7{,}35$ milhões de parâmetros, combinando aumento de largura e de
+profundidade. A \gls{AUC} varia de 0,504 a 0,514 --- amplitude de 0,010,
+inferior a um décimo da largura dos intervalos de confiança, que se sobrepõem
+quase integralmente.
+
+Nem a largura nem a profundidade, portanto, constituem o fator limitante.
+Esse resultado restringe o espaço de explicações possíveis para o desempenho
+observado: se o modelo dispusesse de capacidade insuficiente para
+representar os padrões relevantes, o acréscimo de parâmetros teria produzido
+ganho mensurável em alguma das direções testadas.
+
+\subsection{Comportamento durante o treinamento}
+\label{subsec:treinamento-resnet34}
+
+As razões finais entre as perdas de validação e de treinamento situaram-se
+entre 283 e 476, valores intermediários entre os da ResNet-18 completa (411
+a 923) e os da configuração reduzida (153 a 234). A perda de treinamento
+atingiu valores entre 0,0099 e 0,0166 ao término do ajuste, enquanto a de
+validação permaneceu em torno de 4,5 a 4,7 em todas as partições.
+
+A parada antecipada interrompeu o treinamento entre a décima segunda e a
+vigésima época. O melhor valor de \gls{AUC} sobre o conjunto de validação
+foi atingido precocemente --- na segunda época nas partições~0 e~4, na
+quarta nas partições~2 e~3 e na nona na partição~1.
+
+Registre-se a magnitude desses valores de validação: 0,721 na partição~2 e
+0,676 na partição~1, ante 0,546 e 0,493 obtidos nos respectivos conjuntos de
+teste. A discrepância, de até 0,18, ilustra a limitação de selecionar modelos
+com base em onze eventos: o pico observado reflete, em boa medida, a
+composição particular do conjunto de validação, e não se reproduz em dados
+não observados.
+
+\subsection{Matriz de confusão}
+\label{subsec:confusao-resnet34}
+
+% ---- TABELA 3: matriz de confusão ----
+\begin{table}[h!]
+	\captionsetup{width=11cm}
+	\Caption{\label{tab:resnet34-confusao} Matriz de confusão agregada da
+		ResNet-34}
+	\IBGEtab{}{
+		\begin{tabular}{lrr}
+			\toprule
+			                               & \multicolumn{1}{c}{Predito: sobrevivente} &
+			\multicolumn{1}{c}{Predito: óbito}                                               \\
+			\midrule \midrule
+			Sobrevivente ($n = 462$)       & 239                                       & 223 \\
+			Óbito por \gls{MSC} ($n = 55$) & 27                                        & 28  \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+Dos 55 óbitos por morte súbita cardíaca, 28 foram identificados ---
+sensibilidade de 0,509 --- com 223 falsos positivos entre os 462
+sobreviventes. O \gls{VPP} resultante, de 0,112, é praticamente igual à
+prevalência de 0,106: a classificação como alto risco eleva a probabilidade
+estimada de óbito em menos de um ponto percentual em relação à probabilidade
+basal da coorte.
 
 
-De forma geral, os melhores desempenhos foram observados com filtragem de pacientes com ECG (``Com''). Entre os modelos baseados apenas em colunas do Holter, o melhor C-index foi obtido pelo \textit{DeepHitSingle} com filtragem (0,7234). No conjunto \textit{eventos\_condicoes\_cardiovasculares}, o melhor desempenho foi alcançado pelo \textit{PMF} com filtragem (C-index 0,7151; Brier score 0,1664; NBLL 0,5137). Para o conjunto de \textit{Covariáveis selecionadas}, o melhor C-index também ocorreu com o \textit{PMF} com filtragem (0,6965), enquanto o menor Brier score foi 0,1599 no mesmo cenário.
+% ==============================================================================
+% RESULTADOS — ECG de repouso de alta resolução com arquitetura CNN-LSTM
+% Fonte: cnnlstm_res.log (5 partições)
+%
+% ⚠️ A coorte desta seção (367 pacientes, 41 eventos) difere da utilizada nas
+%    demais (517 pacientes, 55 eventos). O texto registra a limitação que
+%    isso impõe à comparação.
+% ==============================================================================
 
-% \end{document}
+\section{Eletrocardiograma de repouso de alta resolução}
+\label{sec:resultados-cnnlstm-repouso}
 
-\FloatBarrier
+As seções anteriores avaliaram arquiteturas distintas sobre a mesma
+modalidade de exame. Esta seção altera a modalidade: em lugar do registro
+ambulatorial de 24\,horas, emprega-se o eletrocardiograma de repouso de alta
+resolução, disponível para parte da coorte e adquirido sob condições
+controladas.
 
-\section{MoCo (Momentum Contrast)}
-\label{sec:moco-momentum-contrast}
+A mudança responde a uma hipótese específica. O registro de 24\,horas
+contempla o paciente em sono, repouso, esforço e estresse, além de artefatos
+de movimento e de deslocamento de eletrodos. Essa variabilidade é alheia ao
+desfecho e pode dificultar a identificação de padrões morfológicos. O exame
+de repouso, por sua vez, é adquirido com o paciente deitado e imóvel, em
+ambiente controlado, e a 1\,000\,Hz --- cinco vezes a frequência de
+amostragem do Holter.
 
+\subsection{Dados e arquitetura}
+\label{subsec:cnnlstm-dados}
+
+O exame de repouso tem duração aproximada de 20\,minutos e está disponível
+para 380 dos 517 pacientes da coorte. A arquitetura adotada processa o exame
+integral, e não janelas amostradas: cada paciente corresponde a um único
+tensor de $1\,136\,000$ amostras por derivação, descartados 30\,segundos em
+cada extremidade. Treze registros mais curtos que esse comprimento foram
+excluídos, restando 367 pacientes e 41 eventos --- prevalência de 11,2\,\%.
+
+A arquitetura foi adaptada de \citeonline{zvuloni2025deephhf}, que a
+empregou na predição de risco de insuficiência cardíaca a partir de Holter.
+Três blocos convolucionais com passo e dilatação reduzem o sinal em
+aproximadamente 50\,000 vezes, convertendo $1\,136\,000$ amostras em 21
+posições temporais; sobre essa sequência opera uma rede recorrente de memória
+longa e curta com duas camadas e 128 unidades ocultas, cujo último estado
+alimenta o classificador. A compressão agressiva é o que viabiliza o
+processamento do exame integral: arquiteturas convencionais, com redução de
+fator quatro por bloco, não comportariam entrada desse comprimento.
+
+O modelo possui $321\,825$ parâmetros treináveis, dos quais cerca de 72\,\%
+pertencem à camada recorrente. A validação cruzada empregou cinco partições,
+com 219 ou 220 pacientes no treinamento, 74 na validação interna e 73 ou 74
+no conjunto de teste.
+
+\subsection{Desempenho}
+\label{subsec:cnnlstm-desempenho}
+
+A \gls{AUC} sobre as predições fora da amostra foi de 0,514, com intervalo de
+confiança de 95\,\% entre 0,425 e 0,610. O intervalo contém o valor 0,5. Os
+resultados por partição constam da \autoref{tab:cnnlstm-folds}.
+
+% ---- TABELA 1: desempenho por partição ----
+\begin{table}[h!]
+	\captionsetup{width=13cm}
+	\Caption{\label{tab:cnnlstm-folds} Desempenho da arquitetura CNN-LSTM
+		sobre o exame de repouso, por partição}
+	\IBGEtab{}{
+		\begin{tabular}{crrrrr}
+			\toprule
+			Partição                          & \multicolumn{1}{c}{AUC}            & \multicolumn{1}{c}{AP} &
+			\multicolumn{1}{c}{Sensibilidade} & \multicolumn{1}{c}{Especificidade} &
+			\multicolumn{1}{c}{VPP}                                                                                                 \\
+			\midrule \midrule
+			0                                 & 0,549                              & 0,164                  & 0,444 & 0,723 & 0,160 \\
+			1                                 & 0,648                              & 0,185                  & 0,625 & 0,606 & 0,156 \\
+			2                                 & 0,616                              & 0,160                  & 0,375 & 0,708 & 0,125 \\
+			3                                 & 0,564                              & 0,158                  & 0,125 & 0,923 & 0,167 \\
+			4                                 & 0,555                              & 0,145                  & 0,750 & 0,246 & 0,107 \\
+			\midrule
+			Média                             & 0,586                              & 0,162                  & 0,464 & 0,641 & 0,151 \\
+			Desvio-padrão                     & 0,044                              & 0,015                  & 0,240 & 0,249 & 0,029 \\
+			\midrule
+			\textit{Out-of-fold}              & 0,514                              & 0,124                  & 0,537 & 0,451 & 0,110 \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+Chama atenção a discrepância entre as duas estimativas de \gls{AUC}: a média
+entre partições, de $0{,}586 \pm 0{,}044$, supera em 0,072 a estimativa
+agrupada de 0,514. Trata-se da maior diferença observada entre todos os
+experimentos realizados.
+
+A explicação reside na calibração. Cada partição ajusta um modelo
+independente, e as probabilidades produzidas situam-se em escalas distintas.
+Dentro de uma partição, o ordenamento relativo dos pacientes é razoável ---
+donde os valores entre 0,549 e 0,648. Ao reunir as predições das cinco
+partições em um ordenamento único, as escalas não coincidem, e um paciente de
+baixo risco segundo um modelo pode receber probabilidade superior à de um
+paciente de alto risco segundo outro. A estimativa agrupada, embora inferior,
+é a que reflete o desempenho esperado em aplicação, na qual um único modelo
+ordenaria todos os pacientes.
+
+A \gls{AP} agrupada, de 0,124, supera marginalmente a prevalência de 0,112.
+
+\subsection{Comparação entre modalidades}
+\label{subsec:cnnlstm-comparacao}
+
+A \autoref{tab:comparacao-modalidades} confronta os resultados obtidos nas
+duas modalidades de exame.
+
+% ---- TABELA 2: comparação entre modalidades ----
+\begin{table}[h!]
+	\captionsetup{width=15cm}
+	\Caption{\label{tab:comparacao-modalidades} Comparação entre as
+		modalidades de exame avaliadas}
+	\IBGEtab{}{
+		\begin{tabular}{llrrr}
+			\toprule
+			Modalidade              & Arquitetura                 & \multicolumn{1}{c}{$n$ / eventos} &
+			\multicolumn{1}{c}{AUC} & \multicolumn{1}{c}{IC 95\%}                                                            \\
+			\midrule \midrule
+			Holter 24\,h            & CNN                         & 517 / 55                          & 0,498 & 0,411--0,586 \\
+			Holter 24\,h            & ResNet-18 reduzida          & 517 / 55                          & 0,504 & 0,420--0,588 \\
+			Holter 24\,h            & ResNet-18 completa          & 517 / 55                          & 0,508 & 0,431--0,588 \\
+			Holter 24\,h            & ResNet-18 com atenção       & 517 / 55                          & 0,493 & 0,419--0,577 \\
+			Repouso 20\,min         & CNN-LSTM                    & 367 / 41                          & 0,514 & 0,425--0,610 \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+O valor obtido sobre o exame de repouso é o mais elevado da tabela, embora a
+diferença em relação às demais modalidades seja de 0,006 a 0,021 --- inferior
+a um décimo da amplitude dos intervalos de confiança, que se sobrepõem
+integralmente. Não há, portanto, evidência de superioridade de uma
+modalidade sobre a outra.
+
+Duas ressalvas restringem ainda mais a comparação. A primeira é que as
+coortes diferem: 367 pacientes com 41 eventos no exame de repouso, contra 517
+com 55 no Holter. Parte de qualquer diferença observada pode decorrer da
+composição da amostra, e não da modalidade. A comparação rigorosa exigiria
+avaliar ambas as modalidades sobre o mesmo subconjunto de pacientes.
+
+A segunda é que a arquitetura também difere. O exame de repouso foi avaliado
+com a CNN-LSTM, enquanto o Holter o foi com arquiteturas convolucionais e
+residuais. O experimento altera simultaneamente duas variáveis, o que impede
+atribuir eventual diferença a qualquer uma delas isoladamente.
+
+\subsection{Matriz de confusão}
+\label{subsec:cnnlstm-confusao}
+
+% ---- TABELA 3: matriz de confusão ----
+\begin{table}[h!]
+	\captionsetup{width=11cm}
+	\Caption{\label{tab:cnnlstm-confusao} Matriz de confusão agregada da
+		arquitetura CNN-LSTM sobre o exame de repouso}
+	\IBGEtab{}{
+		\begin{tabular}{lrr}
+			\toprule
+			                               & \multicolumn{1}{c}{Predito: sobrevivente} &
+			\multicolumn{1}{c}{Predito: óbito}                                               \\
+			\midrule \midrule
+			Sobrevivente ($n = 326$)       & 147                                       & 179 \\
+			Óbito por \gls{MSC} ($n = 41$) & 19                                        & 22  \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+Dos 41 óbitos por morte súbita cardíaca, 22 foram identificados ---
+sensibilidade de 0,537 --- com 179 falsos positivos entre os 326
+sobreviventes. O \gls{VPP} de 0,110 permanece praticamente igual à
+prevalência de 0,112.
+
+\subsection{Síntese}
+\label{subsec:cnnlstm-sintese}
+
+A hipótese que motivou o experimento --- de que a menor presença de
+artefatos no exame de repouso favoreceria a identificação de padrões
+morfológicos --- não se confirmou. O desempenho permaneceu na mesma faixa
+observada com o Holter, com intervalo de confiança compatível com o acaso.
+
+O resultado acrescenta elemento relevante ao conjunto de evidências: a
+limitação observada não decorre da qualidade do sinal nem da presença de
+artefatos de movimento, uma vez que persiste em registros adquiridos sob
+condições controladas e com frequência de amostragem cinco vezes superior.
+
+
+
+
+
+% ==============================================================================
+% RESULTADOS — ECG de repouso de alta resolução com arquitetura CNN-LSTM
+% Fonte: cnnlstm_res.log (5 partições)
+%
+% ⚠️ A coorte desta seção (367 pacientes, 41 eventos) difere da utilizada nas
+%    demais (517 pacientes, 55 eventos). O texto registra a limitação que
+%    isso impõe à comparação.
+% ==============================================================================
+
+\section{Eletrocardiograma de repouso de alta resolução}
+\label{sec:resultados-cnnlstm-repouso}
+
+As seções anteriores avaliaram arquiteturas distintas sobre a mesma
+modalidade de exame. Esta seção altera a modalidade: em lugar do registro
+ambulatorial de 24\,horas, emprega-se o eletrocardiograma de repouso de alta
+resolução, disponível para parte da coorte e adquirido sob condições
+controladas.
+
+A mudança responde a uma hipótese específica. O registro de 24\,horas
+contempla o paciente em sono, repouso, esforço e estresse, além de artefatos
+de movimento e de deslocamento de eletrodos. Essa variabilidade é alheia ao
+desfecho e pode dificultar a identificação de padrões morfológicos. O exame
+de repouso, por sua vez, é adquirido com o paciente deitado e imóvel, em
+ambiente controlado, e a 1\,000\,Hz --- cinco vezes a frequência de
+amostragem do Holter.
+
+\subsection{Dados e arquitetura}
+\label{subsec:cnnlstm-dados}
+
+O exame de repouso tem duração aproximada de 20\,minutos e está disponível
+para 380 dos 517 pacientes da coorte. A arquitetura adotada processa o exame
+integral, e não janelas amostradas: cada paciente corresponde a um único
+tensor de $1\,136\,000$ amostras por derivação, descartados 30\,segundos em
+cada extremidade. Treze registros mais curtos que esse comprimento foram
+excluídos, restando 367 pacientes e 41 eventos --- prevalência de 11,2\,\%.
+
+A arquitetura foi adaptada de \citeonline{freire2025scd}, que a propôs para
+estratificação de risco de morte súbita cardíaca por análise de
+sobrevivência. Três blocos convolucionais com passo e dilatação reduzem o sinal em
+aproximadamente 50\,000 vezes, convertendo $1\,136\,000$ amostras em 21
+posições temporais; sobre essa sequência opera uma rede recorrente de memória
+longa e curta com duas camadas e 128 unidades ocultas, cujo último estado
+alimenta o classificador. A compressão agressiva é o que viabiliza o
+processamento do exame integral: arquiteturas convencionais, com redução de
+fator quatro por bloco, não comportariam entrada desse comprimento.
+
+O modelo possui $321\,825$ parâmetros treináveis, dos quais cerca de 72\,\%
+pertencem à camada recorrente. Em relação à implementação original, três
+adaptações foram necessárias: a saída passou a fornecer um valor escalar por
+paciente, compatível com a função de perda de entropia cruzada binária; a
+camada densa destinada a variáveis tabulares, presente na versão original
+ainda quando não utilizada, foi suprimida; e acrescentou-se verificação do
+comprimento mínimo da entrada, uma vez que a compressão de aproximadamente
+50\,000 vezes inviabiliza sinais mais curtos que o previsto. A validação cruzada empregou cinco partições,
+com 219 ou 220 pacientes no treinamento, 74 na validação interna e 73 ou 74
+no conjunto de teste.
+
+\subsection{Desempenho}
+\label{subsec:cnnlstm-desempenho}
+
+A \gls{AUC} sobre as predições fora da amostra foi de 0,514, com intervalo de
+confiança de 95\,\% entre 0,425 e 0,610. O intervalo contém o valor 0,5. Os
+resultados por partição constam da \autoref{tab:cnnlstm-folds}.
+
+% ---- TABELA 1: desempenho por partição ----
+\begin{table}[h!]
+	\captionsetup{width=13cm}
+	\Caption{\label{tab:cnnlstm-folds} Desempenho da arquitetura CNN-LSTM
+		sobre o exame de repouso, por partição}
+	\IBGEtab{}{
+		\begin{tabular}{crrrrr}
+			\toprule
+			Partição                          & \multicolumn{1}{c}{AUC}            & \multicolumn{1}{c}{AP} &
+			\multicolumn{1}{c}{Sensibilidade} & \multicolumn{1}{c}{Especificidade} &
+			\multicolumn{1}{c}{VPP}                                                                                                 \\
+			\midrule \midrule
+			0                                 & 0,549                              & 0,164                  & 0,444 & 0,723 & 0,160 \\
+			1                                 & 0,648                              & 0,185                  & 0,625 & 0,606 & 0,156 \\
+			2                                 & 0,616                              & 0,160                  & 0,375 & 0,708 & 0,125 \\
+			3                                 & 0,564                              & 0,158                  & 0,125 & 0,923 & 0,167 \\
+			4                                 & 0,555                              & 0,145                  & 0,750 & 0,246 & 0,107 \\
+			\midrule
+			Média                             & 0,586                              & 0,162                  & 0,464 & 0,641 & 0,151 \\
+			Desvio-padrão                     & 0,044                              & 0,015                  & 0,240 & 0,249 & 0,029 \\
+			\midrule
+			\textit{Out-of-fold}              & 0,514                              & 0,124                  & 0,537 & 0,451 & 0,110 \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+Chama atenção a discrepância entre as duas estimativas de \gls{AUC}: a média
+entre partições, de $0{,}586 \pm 0{,}044$, supera em 0,072 a estimativa
+agrupada de 0,514. Trata-se da maior diferença observada entre todos os
+experimentos realizados.
+
+A explicação reside na calibração. Cada partição ajusta um modelo
+independente, e as probabilidades produzidas situam-se em escalas distintas.
+Dentro de uma partição, o ordenamento relativo dos pacientes é razoável ---
+donde os valores entre 0,549 e 0,648. Ao reunir as predições das cinco
+partições em um ordenamento único, as escalas não coincidem, e um paciente de
+baixo risco segundo um modelo pode receber probabilidade superior à de um
+paciente de alto risco segundo outro. A estimativa agrupada, embora inferior,
+é a que reflete o desempenho esperado em aplicação, na qual um único modelo
+ordenaria todos os pacientes.
+
+A \gls{AP} agrupada, de 0,124, supera marginalmente a prevalência de 0,112.
+
+\subsection{Comparação entre modalidades}
+\label{subsec:cnnlstm-comparacao}
+
+A \autoref{tab:comparacao-modalidades} confronta os resultados obtidos nas
+duas modalidades de exame.
+
+% ---- TABELA 2: comparação entre modalidades ----
+\begin{table}[h!]
+	\captionsetup{width=15cm}
+	\Caption{\label{tab:comparacao-modalidades} Comparação entre as
+		modalidades de exame avaliadas}
+	\IBGEtab{}{
+		\begin{tabular}{llrrr}
+			\toprule
+			Modalidade              & Arquitetura                 & \multicolumn{1}{c}{$n$ / eventos} &
+			\multicolumn{1}{c}{AUC} & \multicolumn{1}{c}{IC 95\%}                                                            \\
+			\midrule \midrule
+			Holter 24\,h            & CNN                         & 517 / 55                          & 0,498 & 0,411--0,586 \\
+			Holter 24\,h            & ResNet-18 reduzida          & 517 / 55                          & 0,504 & 0,420--0,588 \\
+			Holter 24\,h            & ResNet-18 completa          & 517 / 55                          & 0,508 & 0,431--0,588 \\
+			Holter 24\,h            & ResNet-18 com atenção       & 517 / 55                          & 0,493 & 0,419--0,577 \\
+			Repouso 20\,min         & CNN-LSTM                    & 367 / 41                          & 0,514 & 0,425--0,610 \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+O valor obtido sobre o exame de repouso é o mais elevado da tabela, embora a
+diferença em relação às demais modalidades seja de 0,006 a 0,021 --- inferior
+a um décimo da amplitude dos intervalos de confiança, que se sobrepõem
+integralmente. Não há, portanto, evidência de superioridade de uma
+modalidade sobre a outra.
+
+Duas ressalvas restringem ainda mais a comparação. A primeira é que as
+coortes diferem: 367 pacientes com 41 eventos no exame de repouso, contra 517
+com 55 no Holter. Parte de qualquer diferença observada pode decorrer da
+composição da amostra, e não da modalidade. A comparação rigorosa exigiria
+avaliar ambas as modalidades sobre o mesmo subconjunto de pacientes.
+
+A segunda é que a arquitetura também difere. O exame de repouso foi avaliado
+com a CNN-LSTM, enquanto o Holter o foi com arquiteturas convolucionais e
+residuais. O experimento altera simultaneamente duas variáveis, o que impede
+atribuir eventual diferença a qualquer uma delas isoladamente.
+
+\subsection{Matriz de confusão}
+\label{subsec:cnnlstm-confusao}
+
+% ---- TABELA 3: matriz de confusão ----
+\begin{table}[h!]
+	\captionsetup{width=11cm}
+	\Caption{\label{tab:cnnlstm-confusao} Matriz de confusão agregada da
+		arquitetura CNN-LSTM sobre o exame de repouso}
+	\IBGEtab{}{
+		\begin{tabular}{lrr}
+			\toprule
+			                               & \multicolumn{1}{c}{Predito: sobrevivente} &
+			\multicolumn{1}{c}{Predito: óbito}                                               \\
+			\midrule \midrule
+			Sobrevivente ($n = 326$)       & 147                                       & 179 \\
+			Óbito por \gls{MSC} ($n = 41$) & 19                                        & 22  \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+Dos 41 óbitos por morte súbita cardíaca, 22 foram identificados ---
+sensibilidade de 0,537 --- com 179 falsos positivos entre os 326
+sobreviventes. O \gls{VPP} de 0,110 permanece praticamente igual à
+prevalência de 0,112.
+
+\subsection{Síntese}
+\label{subsec:cnnlstm-sintese}
+
+A hipótese que motivou o experimento --- de que a menor presença de
+artefatos no exame de repouso favoreceria a identificação de padrões
+morfológicos --- não se confirmou. O desempenho permaneceu na mesma faixa
+observada com o Holter, com intervalo de confiança compatível com o acaso.
+
+O resultado acrescenta elemento relevante ao conjunto de evidências: a
+limitação observada não decorre da qualidade do sinal nem da presença de
+artefatos de movimento, uma vez que persiste em registros adquiridos sob
+condições controladas e com frequência de amostragem cinco vezes superior.
+
+
+
+% ==============================================================================
+% RESULTADOS — Arquitetura DeepHHF (dois experimentos)
+% Fontes: classificacao_deephhf.log (estágio 1, janelas de 2 min)
+%         DeepHHF_2estagios_16h.log (protocolo completo, 16 h comprimidas)
+% ==============================================================================
+
+\section{Protocolo de treinamento em dois estágios}
+\label{sec:resultados-deephhf}
+
+Os experimentos descritos até aqui compartilham uma característica: o
+modelo é ajustado em etapa única, recebendo como unidade de treinamento a
+janela de sinal com o rótulo do paciente a que pertence. Essa formulação
+implica que o extrator de características dispõe, efetivamente, de tantos
+exemplos quantos são os pacientes --- 309 a 351, conforme a partição.
+
+A arquitetura proposta por \citeonline{zvuloni2025deephhf} adota formulação
+distinta, em dois estágios. No primeiro, o extrator é treinado para
+classificar segmentos de 30\,segundos isoladamente, cada segmento herdando o
+rótulo de seu paciente. No segundo, os pesos do extrator são congelados e
+um codificador por atenção é ajustado sobre a sequência completa de
+segmentos de cada indivíduo.
+
+A vantagem pretendida é quantitativa: no primeiro estágio, o extrator
+observa centenas de milhares de segmentos em lugar de algumas centenas de
+pacientes. O rótulo atribuído a cada segmento constitui supervisão fraca
+--- um paciente que veio a óbito tem todos os seus segmentos rotulados como
+positivos, inclusive aqueles em que o traçado não apresenta alteração ---,
+mas a tarefa é suficiente para que o extrator aprenda representações
+morfológicas. O segundo estágio, por dispor de poucos exemplos, estima
+número reduzido de parâmetros.
+
+O trabalho original emprega essa arquitetura na predição de risco de
+insuficiência cardíaca a partir de uma coorte de $47\,729$ pacientes, com
+\gls{AUC} de 0,80. A avaliação conduzida aqui investiga se o mesmo
+protocolo produz ganho em coorte duas ordens de grandeza menor.
+
+\subsection{Primeiro estágio isolado}
+\label{subsec:deephhf-estagio1}
+
+Em um primeiro experimento, avaliou-se exclusivamente o extrator, sem o
+codificador por atenção. A entrada corresponde às mesmas janelas de dois
+minutos empregadas nas arquiteturas anteriores, subdivididas internamente em
+quatro segmentos de 30\,segundos cujas predições são promediadas.
+
+Este experimento adota integralmente o pipeline de dados descrito na
+\autoref{sec:configuracao-experimental}: as janelas são amostradas do
+registro original a cada época, filtradas individualmente e divididas pela
+escala global estimada no conjunto de treinamento de cada partição. A única
+alteração em relação às arquiteturas anteriores é o modelo.
+
+O modelo possui $269\,569$ parâmetros treináveis --- 872 por paciente do
+conjunto de treinamento, a menor razão entre todas as arquiteturas
+avaliadas. O extrator baseia-se em blocos residuais seguidos de convoluções
+com passo progressivo, reduzindo o sinal em 384 vezes antes do
+classificador.
+
+A \gls{AUC} sobre as predições fora da amostra foi de 0,486, com intervalo
+de confiança de 95\,\% entre 0,403 e 0,573. Os resultados por partição
+constam da \autoref{tab:deephhf-e1-folds}.
+
+% ---- TABELA 1: estágio 1 por partição ----
+\begin{table}[h!]
+	\captionsetup{width=13cm}
+	\Caption{\label{tab:deephhf-e1-folds} Desempenho do extrator isolado,
+		por partição da validação cruzada}
+	\IBGEtab{}{
+		\begin{tabular}{crrrrr}
+			\toprule
+			Partição                          & \multicolumn{1}{c}{AUC}            & \multicolumn{1}{c}{AP} &
+			\multicolumn{1}{c}{Sensibilidade} & \multicolumn{1}{c}{Especificidade} &
+			\multicolumn{1}{c}{VPP}                                                                                                 \\
+			\midrule \midrule
+			0                                 & 0,526                              & 0,194                  & 0,545 & 0,398 & 0,097 \\
+			1                                 & 0,599                              & 0,292                  & 0,727 & 0,226 & 0,100 \\
+			2                                 & 0,675                              & 0,250                  & 0,091 & 0,957 & 0,200 \\
+			3                                 & 0,262                              & 0,075                  & 0,000 & 0,957 & 0,000 \\
+			4                                 & 0,473                              & 0,160                  & 0,273 & 0,565 & 0,070 \\
+			\midrule
+			Média                             & 0,507                              & 0,194                  & 0,327 & 0,620 & 0,093 \\
+			Desvio-padrão                     & 0,157                              & 0,085                  & 0,306 & 0,330 & 0,072 \\
+			\midrule
+			\textit{Out-of-fold}              & 0,486                              & 0,134                  & 0,218 & 0,788 & 0,109 \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+A dispersão entre partições foi de 0,157, a maior observada entre as
+arquiteturas aplicadas ao Holter. Os valores variam de 0,262 na partição~3
+a 0,675 na partição~2 --- amplitude de 0,41. A partição~3 apresentou
+sensibilidade nula, com nenhum dos onze eventos identificado.
+
+Essa variabilidade, associada à menor razão entre parâmetros e pacientes de
+todo o conjunto de experimentos, sugere que a limitação não decorre de
+excesso de capacidade. Com 872 parâmetros por paciente, o modelo dispõe de
+margem reduzida para memorização; ainda assim, o desempenho permanece
+compatível com o acaso e instável entre partições.
+
+\subsection{Protocolo completo sobre o registro comprimido}
+\label{subsec:deephhf-2estagios}
+
+O segundo experimento implementa o protocolo integral, aproximando-se da
+formulação original. Em lugar de janelas de dois minutos, cada paciente é
+representado por 480 segmentos de 30\,segundos extraídos a intervalos de
+dois minutos ao longo de 16\,horas de registro --- representação comprimida
+que permite ao modelo observar o dia inteiro sem carregar os 17 milhões de
+amostras do registro completo.
+
+Este experimento emprega pipeline de dados distinto. Os segmentos foram
+extraídos uma única vez, antes do treinamento, e armazenados em disco em
+precisão reduzida --- cerca de 8,9\,GB para os 517 pacientes. Essa decisão
+decorre do custo de leitura: a extração dos 480 segmentos a cada época
+implicaria 248\,mil acessos ao disco por época, o que inviabilizaria o
+treinamento. Em consequência, a filtragem passa-banda é aplicada uma única
+vez, sobre o sinal comprimido, e a normalização é realizada por registro em
+lugar de escala global por partição.
+
+A janela de 16\,horas foi centralizada em cada registro, descartando-se o
+excedente de forma simétrica nas extremidades. O corte em 16\,horas, em
+lugar das 24\,horas do trabalho original, decorre da distribuição de
+durações na coorte: 126 dos 517 registros apresentam menos de 22\,horas, e o
+preenchimento com zeros geraria segmentos silenciosos em proporção
+substancial desses pacientes. Com 16\,horas úteis, a totalidade dos 55
+eventos é preservada.
+
+O treinamento seguiu as duas etapas. No primeiro estágio, cada partição
+processou cerca de $158\,000$ segmentos ao longo de três épocas, com a perda
+reduzindo-se de 1,545 para 1,293. Os 91 tensores do extrator foram então
+transferidos ao modelo completo e congelados, restando $173\,953$ parâmetros
+treináveis no codificador por atenção e no classificador, contra $67\,072$
+congelados.
+
+% ---- TABELA 2: dois estágios por partição ----
+\begin{table}[h!]
+	\captionsetup{width=11cm}
+	\Caption{\label{tab:deephhf-e2-folds} Desempenho do protocolo em dois
+		estágios, por partição}
+	\IBGEtab{}{
+		\begin{tabular}{cr}
+			\toprule
+			Partição             & \multicolumn{1}{c}{AUC} \\
+			\midrule \midrule
+			0                    & 0,610                   \\
+			1                    & 0,637                   \\
+			2                    & 0,602                   \\
+			3                    & 0,421                   \\
+			4                    & 0,365                   \\
+			\midrule
+			Média                & 0,527                   \\
+			Desvio-padrão        & 0,125                   \\
+			\midrule
+			\textit{Out-of-fold} & 0,525                   \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+A \gls{AUC} agrupada foi de 0,525, com intervalo de confiança de 95\,\%
+entre 0,442 e 0,602 --- novamente contendo o valor 0,5. A sensibilidade
+resultante foi de 0,546 e a especificidade, de 0,470, com \gls{VPP} de
+0,109 ante prevalência de 0,106.
+
+A \autoref{tab:deephhf-e2-folds} evidencia a divisão das partições em dois
+grupos. As três primeiras apresentaram valores entre 0,602 e 0,637,
+superiores aos obtidos por qualquer outra arquitetura sobre o Holter; as
+duas últimas, 0,421 e 0,365, situaram-se bem abaixo do acaso. O
+desvio-padrão de 0,125 é o segundo maior do conjunto de experimentos. Não há
+relação aparente entre a composição das partições e essa separação, e a
+interpretação mais parcimoniosa atribui o padrão à instabilidade esperada
+quando a estimativa é calculada sobre onze eventos.
+
+\subsection{Síntese}
+\label{subsec:deephhf-sintese}
+
+A \autoref{tab:deephhf-comparacao} reúne os dois experimentos.
+
+% ---- TABELA 3: comparação ----
+\begin{table}[h!]
+	\captionsetup{width=15cm}
+	\Caption{\label{tab:deephhf-comparacao} Comparação entre as duas
+		formulações da arquitetura DeepHHF}
+	\IBGEtab{}{
+		\begin{tabular}{lrrrr}
+			\toprule
+			Formulação                     & \multicolumn{1}{c}{Entrada} &
+			\multicolumn{1}{c}{Treináveis} &
+			\multicolumn{1}{c}{AUC}        & \multicolumn{1}{c}{IC 95\%}                                   \\
+			\midrule \midrule
+			Extrator isolado               & janela de 2\,min            & 269\,569 & 0,486 & 0,403--0,573 \\
+			Dois estágios                  & 16\,h comprimidas           & 173\,953 & 0,525 & 0,442--0,602 \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+O protocolo em dois estágios superou o extrator isolado em 0,039, diferença
+inferior a um quarto da amplitude dos intervalos de confiança, que se
+sobrepõem amplamente. O ganho, portanto, não é demonstrável.
+
+Cabe ressalva quanto à comparação: além do protocolo de treinamento, os dois
+experimentos diferem na representação da entrada --- janelas de dois minutos
+amostradas a cada época contra 16\,horas comprimidas e fixas --- e no
+pré-processamento, conforme descrito. Eventual diferença de desempenho não
+poderia ser atribuída isoladamente ao número de estágios.
+
+O experimento é relevante por eliminar uma explicação alternativa para os
+resultados anteriores. O pré-treinamento do extrator sobre $158\,000$
+segmentos --- quinhentas vezes o número de pacientes disponíveis --- não
+alterou o desempenho de forma apreciável. A limitação observada não decorre,
+portanto, do número de exemplos apresentados ao extrator durante o
+treinamento, mas do número de pacientes distintos e, sobretudo, de eventos
+na coorte.
+
+
+
+
+
+
+
+
+
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+
+\section{Resultados do Experimento A}
+\label{sec:resultados-do-experimento-a}
+
+Procure deixar as figuras dos resultados o maior possível preenchendo a largura do texto do documento que possui $16~cm$.
 
 \begin{figure}[h!]
 	\captionsetup{width=16cm}
-	\Caption{\label{fig:distribuicao_loss} Gráfico de tensão considerando a impedância humana}
+	\Caption{\label{fig:tensaoimpedanciahumana} Gráfico de tensão considerando a impedância humana}
 	%\centering
 	\UFCfig{}{
-		\fbox{\includegraphics[width=16cm]{figuras/moco/distribuicao_loss}}
+		\fbox{\includegraphics[width=16cm]{figuras/tensaoimpedanciahumana}}
 	}{
 		\Fonte{elaborado pelo autor (2016).}
 	}
 \end{figure}
 
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+
 \begin{figure}[h!]
 	\captionsetup{width=16cm}
-	\Caption{\label{fig:loss_detalhada} Gráfico de tensão considerando a impedância humana}
-	%\centering
-	\UFCfig{}{
-		\fbox{\includegraphics[width=16cm]{figuras/moco/loss_detalhada}}
+	\Caption{\label{fig-grafico-1}Produção anual das dissertações de mestrado e teses de doutorado entre os anos de 1990 e 2008}
+	\IBGEtab{}{
+		\fbox{\includegraphics[width=16cm]{figuras/figura-3}}
 	}{
 		\Fonte{elaborado pelo autor (2016).}
 	}
 \end{figure}
 
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-\begin{figure}[h!]
-	\captionsetup{width=16cm}
-	\Caption{\label{fig:loss_geral} Gráfico de tensão considerando a impedância humana}
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+
+\section{Resultados do Experimento B}
+\label{sec:resultados-do-experimento-b}
+
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto ..
+
+\begin{table}[h!]
 	%\centering
-	\UFCfig{}{
-		\fbox{\includegraphics[width=16cm]{figuras/moco/loss_geral}}
+	\captionsetup{width=11.3cm}%ATENÇÃO: Ajuste a largura do título
+	\Caption{\label{tab:notas} Notas dos participantes nas avaliações A, B e C}
+	\IBGEtab{}{
+		\begin{tabular}{crrr}
+			\toprule
+			Identificação dos participantes & Avaliação A & Avaliação B & Avaliação C \\
+			\midrule \midrule
+			Participante 1                  & 7           & 9           & 10          \\
+			Participante 2                  & 8           & 2           & 1           \\
+			Participante 3                  & 5           & 10          & 6           \\
+			Participante 4                  & 3           & 1           & 4           \\
+			Participante 5                  & 2           & 4           & 1           \\
+			Participante 6                  & 0           & 7           & 2           \\
+			\bottomrule
+		\end{tabular}
 	}{
 		\Fonte{elaborado pelo autor (2016).}
 	}
-\end{figure}
+\end{table}
 
+Texto texto Referenciando a \autoref{tab:notas}  texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-\begin{figure}[h!]
-	\captionsetup{width=16cm}
-	\Caption{\label{fig:lr_loss} Gráfico de tensão considerando a impedância humana}
-	%\centering
-	\UFCfig{}{
-		\fbox{\includegraphics[width=16cm]{figuras/moco/lr_loss}}
-	}{
-		\Fonte{elaborado pelo autor (2016).}
-	}
-\end{figure}
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-\begin{figure}[h!]
-	\captionsetup{width=16cm}
-	\Caption{\label{fig:melhores_epocas} Gráfico de tensão considerando a impedância humana}
-	%\centering
-	\UFCfig{}{
-		\fbox{\includegraphics[width=16cm]{figuras/moco/melhores_epocas}}
-	}{
-		\Fonte{elaborado pelo autor (2016).}
-	}
-\end{figure}
-
-
-
-% \section{Resultados do Experimento A}
-% \label{sec:resultados-do-experimento-a}
-
-% Procure deixar as figuras dos resultados o maior possível preenchendo a largura do texto do documento que possui $16~cm$.
-
-% \begin{figure}[h!]
-% 	\captionsetup{width=16cm}
-% 	\Caption{\label{fig:tensaoimpedanciahumana} Gráfico de tensão considerando a impedância humana}
-% 	%\centering
-% 	\UFCfig{}{
-% 		\fbox{\includegraphics[width=16cm]{figuras/tensaoimpedanciahumana}}
-% 	}{
-% 		\Fonte{elaborado pelo autor (2016).}
-% 	}
-% \end{figure}
-
-
-% \begin{figure}[h!]
-% 	\captionsetup{width=16cm}
-% 	\Caption{\label{fig-grafico-1}Produção anual das dissertações de mestrado e teses de doutorado entre os anos de 1990 e 2008}
-% 	\IBGEtab{}{
-% 		\fbox{\includegraphics[width=16cm]{figuras/figura-3}}
-% 	}{
-% 		\Fonte{elaborado pelo autor (2016).}
-% 	}
-% \end{figure}
-
-% \section{Resultados do Experimento B}
-% \label{sec:resultados-do-experimento-b}
-
-
-% \begin{table}[h!]
-% 	%\centering
-% 	\captionsetup{width=11.3cm}%ATENÇÃO: Ajuste a largura do título
-% 	\Caption{\label{tab:notas} Notas dos participantes nas avaliações A, B e C}
-% 	\IBGEtab{}{
-% 		\begin{tabular}{crrr}
-% 			\toprule
-% 			Identificação dos participantes & Avaliação A & Avaliação B & Avaliação C \\
-% 			\midrule \midrule
-% 			Participante 1                  & 7           & 9           & 10          \\
-% 			Participante 2                  & 8           & 2           & 1           \\
-% 			Participante 3                  & 5           & 10          & 6           \\
-% 			Participante 4                  & 3           & 1           & 4           \\
-% 			Participante 5                  & 2           & 4           & 1           \\
-% 			Participante 6                  & 0           & 7           & 2           \\
-% 			\bottomrule
-% 		\end{tabular}
-% 	}{
-% 		\Fonte{elaborado pelo autor (2016).}
-% 	}
-% \end{table}
+Texto texto  Referenciando a \autoref{tab:notas}  texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.

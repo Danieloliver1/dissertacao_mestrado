@@ -1,961 +1,199 @@
 \chapter{Metodologia}
 \label{chap:metodologia}
 
-\section{Modelos de Análise de Sobrevivência}
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-A abordagem proposta neste trabalho integra sinais de ECG Holter de 24 horas com
-variáveis clínicas estruturadas em um modelo híbrido para a estimativa do tempo até
-o evento. O pipeline é composto por três componentes principais: um encoder
-convolucional profundo para extração de características dos sinais eletrocardiográficos,
-uma rede de projeção para as variáveis clínicas e um cabeçote de predição baseado
-em modelos de tempo discreto.
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-\subsection{Justificativa da Versão do MoCo Adotada}
+\section{Exemplo de alíneas}\label{sec:exemplo-de-algoritmos-e-figuras}
 
-Embora a literatura sobre \textit{Momentum Contrast} apresente evoluções
-sucessivas do método --- MoCo v1 \cite{he2020momentum}, MoCo v2
-\cite{chen2020mocov2} e MoCo v3 \cite{chen2021mocov3} ---, este trabalho adota
-a formulação da segunda versão, que combina a fila dinâmica de amostras
-negativas (\textit{queue}) e o encoder de momentum do MoCo v1 com o cabeçote
-de projeção não linear e as augmentações mais fortes introduzidas no MoCo v2.
-A escolha se justifica pela natureza do problema de instabilidade que o MoCo
-v3 se propõe a resolver: Chen, Xie e He (2021) demonstram que os colapsos e
-oscilações de perda observados no treinamento contrastivo de larga escala
-decorrem, majoritariamente, da camada de projeção linear de \textit{patches}
-característica de \textit{Vision Transformers} (ViT), que o MoCo v3 corrige
-congelando essa camada com pesos aleatórios fixos. Uma vez que o encoder
-utilizado neste trabalho é uma ResNet-18 1D --- e não um ViT ---, essa fonte
-específica de instabilidade não se aplica, tornando desnecessária a principal
-motivação para a adoção do v3.
+    Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-Adicionalmente, o MoCo v3 substitui a fila de negativos por \textit{batches}
-de tamanho elevado (da ordem de milhares de amostras) para garantir contraste
-suficiente apenas com os negativos do próprio lote. Dado o tamanho reduzido do
-conjunto de dados disponível (aproximadamente 870 pacientes) e as limitações
-de memória de GPU associadas ao processamento de sinais de ECG de alta
-resolução temporal (24.000 amostras por segmento), a manutenção da fila de
-negativos ($K_{queue} = 8192$) foi preferida à sua remoção, uma vez que ela permite
-manter um número expressivo de comparações negativas por passo de treinamento
-mesmo com \textit{batch sizes} moderados ($256$), o que seria inviável na
-formulação estritamente definida pelo v3.
+    %\begin{algorithm}[h!]
+    %	\SetSpacedAlgorithm
+    %	\caption{\label{exemplo-de-algoritmo}Como escrever algoritmos no \LaTeX2e}
+    %	\Entrada{o proprio texto}
+    %	\Saida{como escrever algoritmos com  Latex:}% \LaTeX2e }
+    %	\Inicio{
+    %		inicialização;
+    %		\Repita{fim do texto}{
+    %			leia o atual;
+    %			\Se{entendeu}{
+    %				vá para o proximo\;
+    %				próximo se torna o atual;}
+    %			\Senao{volte ao início da seção;}
+    %		}
+    %	}	
+    %\end{algorithm}
 
-\subsection{Pré-treinamento Auto-supervisionado: MoCo}
+    Texto texto texto texto texto texto texto texto texto texto texto.
 
-Dado o tamanho reduzido do conjunto de dados disponível --- aproximadamente
-870 pacientes --- aliado ao severo desbalanceamento entre as classes, uma vez
-que a maioria dos pacientes é censurada e apenas uma parcela reduzida apresentou
-o evento de interesse (morte súbita cardíaca), o treinamento supervisionado
-direto da ResNet-18 1D a partir de pesos aleatórios tende a produzir
-representações de baixa qualidade. Nesse cenário, o modelo supervisionado é
-exposto a poucos exemplos positivos, dificultando o aprendizado de padrões
-morfológicos discriminativos no ECG. Para contornar essa dupla limitação ---
-escassez de dados e desbalanceamento ---,  foi adotada uma estratégia de
-pré-treinamento auto-supervisionado baseada no \textit{Momentum Contrast}
-(MoCo v2) \cite{he2020momentum, chen2020mocov2}, antes do treinamento
-supervisionado para análise de sobrevivência.
+    %\begin{algorithm}[H]
+    %	\Entrada{o proprio texto}
+    %	\Saida{como escrever algoritmos com \LaTeX2e }
+    %	\Inicio{
+    %		inicialização\;
+    %		\Repita{fim do texto}{
+    %			leia o atual\;
+    %			\Se{entendeu}{
+    %				vá para o próximo\;
+    %				próximo se torna o atual\;}
+    %			\Senao{volte ao início da seção\;}
+    %		}
+    %	}
+    %	\caption{Exemplo de Algoritmo Versao 02}
+    %\end{algorithm}
 
-O MoCo foi originalmente proposto para o aprendizado de representações visuais
-a partir de imagens \cite{he2020momentum}, onde duas versões augmentadas de uma
-mesma imagem --- obtidas por recortes aleatórios, distorção de cor e
-\textit{flipping} horizontal --- formam um par positivo, e imagens distintas
-formam pares negativos. O encoder aprende a aproximar as representações do par
-positivo no espaço de \textit{embedding} e a afastar as dos pares negativos,
-sem necessidade de rótulos supervisionados. Essa abordagem permite explorar a
-totalidade dos dados disponíveis para o aprendizado de representações, inclusive
-os pacientes censurados, que são descartados ou subaproveitados em estratégias
-supervisionadas.
+    %\begin{algorithm}
+    %	\begin{algorithmic}
+    %	\Entrada{o proprio texto}
+    %	\Saida{como escrever algoritmos com \LaTeX2e }	
+    %	\end{algorithmic}
+    %\end{algorithm}
 
-A adaptação para sinais de ECG Holter substitui as augmentações visuais por
-perturbações no domínio temporal, aplicadas diretamente na GPU pelo módulo
-\texttt{GPU\_ECG\_Augmenter} com probabilidade de 80\%. A cada iteração, duas
-versões augmentadas do mesmo segmento de ECG de 24.000 amostras --- equivalentes
-a aproximadamente 2 minuto de sinal a 200\,Hz, com 3 derivações --- são geradas
-e tratadas como par positivo. O encoder, instanciado pela ResNet-18 1D, aprende
-representações invariantes às perturbações aplicadas, capturando características
-morfológicas estruturais do sinal independentemente de qualquer rótulo de evento
-ou censura. Dessa forma, todos os 870 pacientes contribuem igualmente para o
-pré-treinamento, mitigando o efeito do desbalanceamento antes mesmo do
-treinamento supervisionado.
+    Exemplo de alíneas com números:
 
-Os pesos do encoder obtidos ao final do pré-treinamento são utilizados para
-inicializar o encoder do modelo híbrido de análise de sobrevivência, substituindo
-a inicialização aleatória e fornecendo uma base de representação mais rica para
-o treinamento supervisionado subsequente.
+    \begin{alineascomnumero}
+	    \item Texto texto texto texto texto texto texto texto texto texto texto texto .
+	    \item Texto texto texto texto texto texto texto texto texto texto texto texto .
+	    \item Texto texto texto texto texto texto texto texto texto texto texto texto .
+	    \item Texto texto texto texto texto texto texto texto texto texto texto texto .
+	    \item Texto texto texto texto texto texto texto texto texto texto texto texto .
+	    \item Texto texto texto texto texto texto texto texto texto texto texto texto .
+    \end{alineascomnumero}
 
-\subsubsection{Aprendizado Contrastivo como Busca em Dicionário}
+    Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-O MoCo formula o aprendizado de representações como um problema de busca em
-dicionário \cite{he2020momentum}. Dado um sinal de consulta (\textit{query}) $q$
-e um conjunto de chaves (\textit{keys}) $\{k_0, k_1, k_2, \ldots\}$, o
-objetivo é treinar um encoder de forma que $q$ seja similar à sua chave
-positiva correspondente $k^+$ e dissimilar a todas as demais chaves negativas.
-A função de perda contrastiva utilizada é a InfoNCE \cite{he2020momentum}:
+    Ou então figuras podem ser incorporadas de arquivos externos, como é o caso da \autoref{fig-grafico-1}. Se a figura que ser incluída se tratar de um diagrama, um gráfico ou uma ilustração que você mesmo produza, priorize o uso de imagens vetoriais no formato PDF. Com isso, o tamanho do arquivo final do trabalho será menor, e as imagens terão uma apresentação melhor, principalmente quando impressas, uma vez que imagens vetorias são perfeitamente escaláveis para qualquer dimensão. Nesse caso, se for utilizar o Microsoft Excel para produzir gráficos, ou o Microsoft Word para produzir ilustrações, exporte-os como PDF e os incorpore ao documento conforme o exemplo abaixo. No entanto, para manter a coerência no uso de software livre (já que você está usando LaTeX e abnTeX),  teste a ferramenta InkScape\index{InkScape}. ao CorelDraw\index{CorelDraw} ou ao Adobe Illustrator\index{Adobe! Illustrator}.  De todo modo, caso não seja possível  utilizar arquivos de imagens como PDF, utilize qualquer outro formato, como JPEG, GIF, BMP, etc.  Nesse caso, você pode tentar aprimorar as imagens incorporadas com o software livre \index{Gimp}Gimp. Ele é uma alternativa livre ao Adobe Photoshop\index{Adobe! Photoshop}.
 
+\section{Usando Fórmulas Matemáticas}
+
+Para escrever um símbolo matemático no texto, escreva símbolo entre cifrões, por exemplo, $\alpha$, $\beta$ e $\gamma$ são símbolo do alfabeto grego. Se você quiser inserir equações enumeradas, siga a estrutura de
 \begin{equation}
-	\mathcal{L}_q = -\log \frac{\exp(q \cdot k^+ / \tau)}
-	{\sum_{i=0}^{K_{queue}} \exp(q \cdot k_i / \tau)}
-	\label{eq:infonce}
+    \label{eq:indices}
+	k_{n+1} = n^2 + k_n^2 - k_{n-1}.
 \end{equation}
+Observe a pontuação, pois a equação faz parte da frase e do parágrafo. Como a equação faz parte da frase, não se utiliza o \textit{label} numérico \ref{eq:indices}. 
 
-\noindent onde $\tau$ é um hiperparâmetro de temperatura e $K_{queue}$ é o número
-total de chaves no dicionário. Intuitivamente, essa perda corresponde ao
-logaritmo negativo de um classificador \textit{softmax} de $(K_{queue}+1)$ classes,
-cujo objetivo é identificar $k^+$ dentre todas as chaves disponíveis.
+Quando for citar a Equação \ref{eq:indices} novamente no texto, utiliza-se o \textit{label} numérico. Repare que a palavra ``Equação'' foi escrita com ``E'' maiúsculo. 
 
-No contexto deste trabalho, uma \textit{query} e uma chave formam um par
-positivo quando são versões augmentadas do mesmo segmento de ECG, e um par
-negativo caso contrário. O encoder aprende, portanto, a produzir
-representações invariantes às augmentações aplicadas, capturando apenas as
-características morfológicas estruturais do sinal.
-
-\subsubsection{Dicionário Dinâmico com Fila e Encoder com Momento}
-
-A principal contribuição do MoCo é manter o dicionário como uma \textbf{fila}
-de amostras codificadas \cite{he2020momentum}, desacoplando o tamanho do
-dicionário do tamanho do mini-\textit{batch}. A cada iteração, o mini-batch
-atual é inserido na fila e o mini-batch mais antigo é removido. Isso permite
-que o dicionário seja muito maior do que o que a memória da GPU comportaria
-em uma abordagem ponta a ponta (\textit{end-to-end}).
-
-Para garantir a consistência das representações armazenadas na fila, o encoder
-das chaves $f_k$ não é atualizado por retropropagação, mas sim por uma
-\textbf{atualização com momento} (\textit{momentum update}) a partir do
-encoder de consulta $f_q$ \cite{he2020momentum}:
-
+Um exemplo de equações com frações é dado por
 \begin{equation}
-	\theta_k \leftarrow m\,\theta_k + (1 - m)\,\theta_q
-	\label{eq:momentum}
-\end{equation}
-
-\noindent onde $m \in [0, 1)$ é o coeficiente de momento. Somente $\theta_q$
-é atualizado por retropropagação; $\theta_k$ evolui lentamente, garantindo
-que as chaves armazenadas na fila sejam consistentes entre si, mesmo que
-tenham sido geradas em iterações diferentes. Neste trabalho, o valor
-$m = 0{,}999$ foi adotado, conforme recomendado em \cite{he2020momentum}.
-
-\subsubsection{Melhorias do MoCo v2}
-
-Com base nas melhorias propostas em \cite{chen2020mocov2}, duas modificações
-foram incorporadas ao MoCo original. A primeira consiste na adição de uma
-cabeça de projeção MLP (\textit{projection head}) entre o encoder e o espaço
-de representação contrastiva, composta por uma camada linear, ativação ReLU e
-uma segunda camada linear, mapeando a saída do encoder para um espaço de
-$d = 256$ dimensões. A segunda consiste no uso de augmentações de dados mais
-agressivas durante o pré-treinamento. Essas modificações melhoram
-substancialmente a qualidade das representações aprendidas sem exigir
-\textit{batches} de grande porte \cite{chen2020mocov2}.
-
-\subsubsection{Adaptação para Sinais de ECG}
-
-A adaptação do MoCo para sinais de ECG Holter envolve duas mudanças
-principais em relação à formulação original voltada para imagens. Primeiro,
-o encoder $f_q$ e o encoder $f_k$ são instâncias da ResNet-18 1D descrita
-na Seção anterior, operando sobre janelas de sinal de 24.000 amostras
-(correspondentes a aproximadamente 2 minuto de ECG a 200 Hz) com 3 derivações
-de entrada. Segundo, as augmentações de dados são adaptadas para o domínio
-temporal, sendo aplicadas diretamente na GPU por meio do módulo
-\texttt{GPU\_ECG\_Augmenter} com probabilidade de 80\%, gerando duas
-``visões'' distintas do mesmo segmento de sinal.
-
-Para cada mini-\textit{batch}, as augmentações são aplicadas duas vezes
-sobre o mesmo sinal de entrada, gerando os pares $(x^q, x^k)$. As
-representações são obtidas por $q = f_q(x^q)$ e $k = f_k(x^k)$, e a perda
-InfoNCE é minimizada conforme a Equação~\ref{eq:infonce}.
-
-\subsubsection{Configuração do Treinamento}
-
-O pré-treinamento foi conduzido com as seguintes configurações: tamanho do
-dicionário $K_{\text{queue}} = 8{.}192$, dimensão do espaço de projeção $d_z = 256$,
-coeficiente de momento $m = 0{,}999$, temperatura $\tau = 0{,}07$, tamanho
-do mini-\textit{batch} de 256 amostras e taxa de aprendizado inicial de
-$0{,}001$ com otimizador SGD (momento $= 0{,}9$, \textit{weight decay}
-$= 5 \times 10^{-4}$). O agendador \textit{ReduceLROnPlateau} foi utilizado
-para reduzir a taxa de aprendizado por um fator de 0,5 quando a perda não
-apresentasse melhora por 30 épocas consecutivas. O treinamento foi
-interrompido antecipadamente (\textit{early stopping}) após 50 épocas sem
-melhora na perda média, com um máximo de 500 épocas. Os pesos do encoder
-$f_q$ obtidos ao final do pré-treinamento são utilizados para inicializar
-o encoder do modelo híbrido de análise de sobrevivência, substituindo a
-inicialização aleatória.
-
-\subsubsection{Escolha do Mecanismo de Aprendizado Contrastivo}
-
-O aprendizado contrastivo pode ser instanciado por diferentes mecanismos
-que diferem na forma como as chaves negativas são mantidas e como o encoder
-de chaves é atualizado \cite{he2020momentum}. Três abordagens principais são
-comparadas na literatura: (i) o mecanismo \textit{end-to-end}, no qual
-as chaves negativas provêm do mesmo mini-\textit{batch} e são atualizadas
-por retropropagação; (ii) o \textit{memory bank}, no qual as representações
-de todas as amostras do conjunto de dados são armazenadas em memória e
-amostradas aleatoriamente a cada iteração; e (iii) o MoCo, que mantém um
-dicionário dinâmico como fila e atualiza o encoder de chaves por momento
-\cite{he2020momentum}.
-
-A comparação experimental conduzida em \cite{he2020momentum} demonstra que o
-MoCo supera os demais mecanismos sob o protocolo de classificação linear
-no ImageNet, independentemente do tamanho do dicionário. O mecanismo
-\textit{end-to-end} é limitado pelo tamanho do mini-\textit{batch} --- e
-portanto pelo tamanho do dicionário de negativos disponível ---, enquanto
-o \textit{memory bank} sofre de inconsistência das representações, pois as
-chaves armazenadas foram codificadas por diferentes versões do encoder ao
-longo do treinamento. O MoCo resolve ambos os problemas simultaneamente:
-o dicionário como fila permite um número grande de negativos sem depender
-do tamanho do batch, e a atualização com momento garante a consistência
-das chaves armazenadas \cite{he2020momentum}.
-
-Adicionalmente, \cite{chen2020mocov2} demonstra que duas modificações
-simples ao MoCo original --- a substituição da cabeça de projeção linear
-por uma MLP e o uso de augmentações mais agressivas --- produzem ganhos
-substanciais de desempenho sem exigir \textit{batches} de grande porte,
-superando inclusive o SimCLR com \textit{batches} de até 8.192 amostras.
-A combinação MoCo + MLP head + augmentação forte, denominada MoCo v2,
-foi adotada neste trabalho por representar a configuração de melhor
-desempenho relatada nos artigos originais, mantendo o requisito de
-viabilidade computacional em uma única GPU.
-
-Os hiperparâmetros foram definidos seguindo as recomendações de
-\cite{he2020momentum} e \cite{chen2020mocov2}: temperatura $\tau = 0{,}07$,
-coeficiente de momento $m = 0{,}999$ e dimensão do espaço de projeção
-$d_z = 256$. O tamanho do dicionário foi fixado em $K_{\text{queue}} = 8{.}192$, valor
-que garante um conjunto rico de amostras negativas sem exceder a memória
-disponível na GPU utilizada.
-
-%------------- justificativa dos experimentos -----------------------
-
-\section{Processo Iterativo de Desenvolvimento do MoCo: Variações Experimentais}
-\label{sec:processo-iterativo-moco}
-
-Ao longo do processo experimental, o framework \textit{Momentum Contrast} (MoCo) foi submetido a sucessivas iterações de adaptação e refinamento visando otimizar seu desempenho em cenários de dados escassos e desbalanceados. Esse processo iterativo não representa uma evolução metodológica disruptiva, mas sim um refinamento gradual dos componentes arquiteturais e das parametrizações, motivado por hipóteses específicas sobre a capacidade expressiva do modelo e a qualidade das representações aprendidas.
-
-As variações implementadas focalizaram-se primordialmente em três eixos: (i) a arquitetura do encoder base, explorando diferentes implementações de ResNet-18 1D, incluindo versão manual, implementação via biblioteca \texttt{tsai} e versões com mecanismos de atenção e Transformer; (ii) os hiperparâmetros do contraste, incluindo tamanho da fila de negativos ($K_{\text{queue}}$), dimensionalidade do \textit{embedding} ($d_z$) e temperatura da função \textit{softmax} ($\tau$); e (iii) as estratégias de augmentação de dados e configurações de treinamento, como agressividade das transformações, tamanho da janela temporal e critérios de parada.
-
-Cada versão foi avaliada segundo métricas de convergência, estabilidade numérica e qualidade das representações, com as descobertas de versões anteriores informando decisões de design em versões subsequentes. Essa abordagem permite identificar quais modificações geram melhorias genuínas e quais constituem artefatos de ajuste de hiperescala, fornecendo fundamentação empírica para a seleção final do modelo. A Tabela~\ref{tab:moco_versions} sintetiza os principais hiperparâmetros e características arquiteturais de cada versão, facilitando a comparação sistemática.
-
-
-\begin{table}[htbp]
-	\centering
-	\caption{Síntese comparativa dos hiperparâmetros e características arquiteturais das cinco variações experimentais do MoCo.}
-	\label{tab:moco_versions}
-	\scriptsize
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{llllll}
-			\toprule
-			\textbf{Parâmetro}                          & \textbf{Versão 1}         & \textbf{Versão 2}           & \textbf{Versão 3}          & \textbf{Versão 4}         & \textbf{Versão 5}          \\
-			\midrule
-			Arquitetura base                            & ResNet-18 1D manual       & XResNet1d18 (\texttt{tsai}) & ResNet-18 1D manual        & ResNet-18 1D manual       & ResNet-18 1D + Transformer \\
-			Dimensão do \textit{embedding} ($d_z$)      & 128                       & 128                         & 256                        & 128                       & 256                        \\
-			Tamanho da fila ($K_{\text{queue}}$)        & 4.096                     & 4.096                       & 8.192                      & 4.096                     & 8.192                      \\
-			Coeficiente de \textit{momentum} ($m$)      & 0,999                     & 0,999                       & 0,999                      & 0,999                     & 0,999                      \\
-			Temperatura ($\tau$)                        & 0,07                      & 0,07                        & 0,07                       & 0,07                      & 0,07                       \\
-			\textit{Batch size}                         & 256                       & 256                         & 256                        & 256                       & 256                        \\
-			\textit{Window size} (amostras)             & 12.000                    & 12.000                      & 24.000                     & 12.000                    & 24.000                     \\
-			Tempo equivalente                           & $\sim$1 min               & $\sim$1 min                 & $\sim$2 min                & $\sim$1 min               & $\sim$2 min                \\
-			Probabilidade de augmentação                & 80\%                      & 80\%                        & 70\%                       & 80\%                      & 80\%                       \\
-			\textit{Weight decay}                       & $1 \times 10^{-4}$        & $1 \times 10^{-4}$          & $5 \times 10^{-4}$         & $1 \times 10^{-4}$        & $5 \times 10^{-4}$         \\
-			Épocas máximas                              & 200                       & 200                         & 500                        & 300                       & 500                        \\
-			\textit{Early stopping} (\textit{patience}) & --                        & --                          & 50                         & --                        & 50                         \\
-			Amostras por paciente                       & 100                       & 100                         & 100                        & 100                       & 100                        \\
-			Mecanismo de atenção                        & Não                       & Não                         & Não                        & Não                       & Sim (Transformer)          \\
-			LR scheduler                                & \textit{Cosine Annealing} & \textit{Cosine Annealing}   & \texttt{ReduceLROnPlateau} & \textit{Cosine Annealing} & \texttt{ReduceLROnPlateau} \\
-			\bottomrule
-		\end{tabular}%
-	}
-\end{table}
-
-\subsection{Versões 1 e 2: Adaptação Base e Otimização Algorítmica}
-\label{subsec:moco-versoes-1-2}
-
-O ponto de partida consistiu na implementação direta da formulação do MoCo v2, transpondo os mecanismos de contraste visual para o domínio temporal de sinais de ECG Holter. A Versão 1 utilizou uma ResNet-18 1D manual como encoder base, configurada conforme a Tabela~\ref{tab:moco_versions}: fila de negativos de tamanho $K_{\text{queue}} = 4096$, dimensão de \textit{embedding} $d_z = 128$, coeficiente de \textit{momentum} $m = 0{,}999$ e temperatura $\tau = 0{,}07$, conforme recomendações originais.
-
-Os segmentos de ECG foram processados em janelas de 12.000 amostras, aproximadamente 1 minuto a 200 Hz com três derivações, com \textit{batch size} de 256 amostras e treinamento de 200 épocas. As augmentações foram aplicadas diretamente em GPU mediante perturbações no domínio temporal: escalonamento aleatório de $0{,}8$ a $1{,}2\times$, ruído gaussiano com variância 0,05 e mascaramento temporal de 10\% da janela, com probabilidade de 80\%. Essa configuração serviu como \textit{baseline}, validando a viabilidade da abordagem contrastiva para ECG e estabelecendo a arquitetura fundamental.
-
-A Versão 2 substituiu a implementação manual pela arquitetura XResNet1d18 disponibilizada pela biblioteca \texttt{tsai}, incorporando otimizações algorítmicas mediante refinamentos em inicialização de pesos, normalização de camadas e composição de blocos residuais. Embora mantendo os mesmos hiperparâmetros da Versão 1, essas melhorias de implementação reduziram a complexidade computacional e estabilizaram o treinamento. Contudo, as curvas de perda e as representações aprendidas não exibiram divergências significativas em relação à Versão 1, indicando que o modelo havia convergido próximo a um ponto de equilíbrio local. Essa observação empiricamente validada motivou a exploração de estratégias mais agressivas nas versões subsequentes.
-
-\subsection{Versão 3: Regime Rigoroso com Fila Expandida}
-\label{subsec:moco-versao-3}
-
-Motivada pela hipótese de que o tamanho reduzido da fila de negativos ($K_{\text{queue}} = 4096$) comprometia a qualidade do contraste em datasets limitados, a Versão 3 adotou uma configuração rigorosa com expansão sistemática dos hiperparâmetros. A dimensão do \textit{embedding} foi dobrada para $d_z = 256$, ampliando o espaço de representação e permitindo capturar estruturas mais complexas dos padrões morfológicos do ECG.
-
-Concomitantemente, a fila de negativos foi expandida para $K_{\text{queue}} = 8192$, dobrando o número de comparações negativas por iteração e reduzindo o risco de colapso da representação. Essa expansão foi viabilizada pela retomada de um encoder ResNet-18 1D manual em vez da biblioteca \texttt{tsai}, proporcionando controle fino sobre a alocação de memória e evitando abstrações que pudessem limitar otimizações em GPU.
-
-O tamanho da janela de ECG foi aumentado para 24.000 amostras, aproximadamente 2 minutos, fornecendo mais contexto temporal e capturando variações fisiológicas de maior escala, incluindo ciclos completos de variabilidade da frequência cardíaca. A agressividade de augmentação foi levemente reduzida para 70\% de probabilidade, evitando degradação excessiva que pudesse prejudicar o aprendizado de padrões sutis, enquanto o \textit{weight decay} foi aumentado para $5 \times 10^{-4}$, fornecendo regularização mais forte. O número de épocas foi elevado para 500 com estratégia de parada antecipada (\textit{patience} = 50), permitindo exploração mais profunda do espaço de parâmetros com proteção contra \textit{overfitting}. Essa configuração produziu representações de maior qualidade, validando experimentalmente a hipótese de que datasets escassos beneficiam-se de dicionários de negativos maiores e janelas temporais mais extensas.
-
-\subsection{Versão 4: Regime Ultra-Conservador como Controle Ablativo}
-\label{subsec:moco-versao-4}
-
-A Versão 4 representou uma reversão estratégica, retornando aos hiperparâmetros da Versão 1 ($d_z = 128$, $K_{\text{queue}} = 4096$, \textit{window size} = 12.000 amostras e \textit{weight decay} = $10^{-4}$), com extensão moderada do treinamento para 300 épocas. Essa configuração foi proposta como controle ablativo, testando a hipótese nula de que as expansões da Versão 3 ofereciam ganho real ou se consistiam meramente em artefatos de ajuste de escala sem impacto substantivo na aprendizagem de representações.
-
-O objetivo específico era isolar o efeito de mudanças individuais de hiperparâmetros, como dimensão de \textit{embedding}, tamanho da fila e tamanho da janela, por meio de uma configuração regredida, permitindo posterior análise comparativa entre as curvas de treinamento. Embora mais eficiente computacionalmente, com redução aproximada de 40\% no uso de memória em relação à Versão 3, a Versão 4 confirmou empiricamente que a Versão 3 representava um avanço genuíno, não apenas um artefato de \textit{scaling}, validando que a expansão de hiperparâmetros correspondia a ganhos reais na qualidade do contraste.
-
-\subsection{Versão 5: Integração de Atenção Temporal e Transformer}
-\label{subsec:moco-versao-5}
-
-Considerando que sinais de ECG contêm dependências de longo prazo estruturadas, por exemplo variações cíclicas no intervalo RR, mudanças de ritmo cardíaco ao longo de 24 horas e correlações entre diferentes derivações, a Versão 5 incorporou mecanismos explícitos de atenção ao encoder contrastivo, representando o primeiro desvio significativo da arquitetura ResNet pura.
-
-Conforme a Tabela~\ref{tab:moco_versions}, a arquitetura compõe-se de três componentes sequenciais: (1) uma ResNet-18 1D que extrai características locais em múltiplas escalas temporais, produzindo um tensor de dimensão $[\text{batch}, 512, \text{seq\_len}]$; (2) um encoder Transformer com 8 cabeçotes de atenção (\texttt{nhead = 8}), dimensão \textit{feedforward} de 1.024 dimensões e \textit{dropout} de 0,3, operando sobre a sequência temporal para aprender dependências globais entre regiões distantes do sinal; e (3) um cabeçote de projeção MLP que mapeia as representações aprendidas para o espaço contrastivo de $d_z = 256$ dimensões.
-
-O módulo \texttt{GPU\_ECG\_Augmenter}, integrado à pipeline de treinamento, aplica as mesmas perturbações calibradas com probabilidade de 80\% diretamente em GPU, reduzindo o overhead de transferência de dados CPU--GPU. A configuração de treinamento mantém os hiperparâmetros expandidos da Versão 3: fila $K_{\text{queue}} = 8192$, \textit{embedding} $d_z = 256$, \textit{window size} = 24.000 e \textit{weight decay} = $5 \times 10^{-4}$, preservando os ganhos comprovados enquanto adiciona a capacidade expressiva do Transformer. Essa arquitetura híbrida permite que o modelo aprenda não apenas características morfológicas locais, extraídas pela ResNet, mas também padrões temporais estruturados de variação, aprendidos pelo Transformer, potencialmente capturando fenômenos fisiológicos como variabilidade da frequência cardíaca, mudanças progressivas de ritmo ao longo de 24 horas e correlações entre derivações.
-
-\subsection{Justificativa da Seleção Final: Versão 5}
-\label{subsec:justificativa-versao-5}
-
-A escolha da Versão 5 como modelo de pré-treinamento definitivo fundamenta-se em três critérios convergentes. Primeiro, a incorporação de mecanismos de atenção Transformer permite capturar dependências temporais de longo prazo inerentes a registros Holter de 24 horas, indo além das características locais extraíveis por convoluções puras; a comparação com a Versão 4 demonstra que esse ganho arquitetural não estava disponível em modelos puramente convolucionais.
-
-Segundo, a configuração parametrizada segundo os aprendizados das Versões 3 e 4, com fila expandida $K_{\text{queue}} = 8192$, \textit{embedding} de alta dimensão $d_z = 256$ e janelas maiores de 24.000 amostras, fornece sinal contrastivo suficiente mesmo em cenários de dados limitados, com aproximadamente 870 pacientes, mitigando o risco de colapso de representação. Terceiro, a execução de augmentações em GPU elimina gargalos de entrada e saída e de transferência de dados, permitindo treinamento mais eficiente e escalável.
-
-Os pesos aprendidos pelo \texttt{encoder\_q}, composto por ResNet e Transformer, na Versão 5 são posteriormente utilizados para inicializar o \textit{backbone} do modelo híbrido de análise de sobrevivência, substituindo pesos aleatórios e fornecendo uma base de representação rica para o aprendizado supervisionado subsequente. Essa estratégia progressiva de otimização e integração de componentes arquiteturais, sintetizada na Tabela~\ref{tab:moco_versions}, garante que o pré-treinamento auto-supervisionado capture tanto estruturas morfológicas quanto dinâmicas fisiológicas relevantes para a predição de eventos cardíacos adversos.
-
-
-%---------------colocar os fluxos do moco
-
-\subsection{Pré-treinamento Contrastivo com MoCo}
-
-A Figura~\ref{fig:moco_fluxo} resume o treinamento contrastivo do encoder por Momentum Contrast (MoCo). O mesmo sinal gera duas visões aumentadas: uma alimenta o codificador query, atualizado por gradiente, e a outra alimenta o codificador key, atualizado por média móvel dos pesos. A perda InfoNCE aproxima pares positivos e afasta a query de chaves negativas armazenadas em uma fila dinâmica.
-
-\begin{figure}[htbp]
-	\centering
-	\resizebox{0.88\textwidth}{!}{%
-		\begin{tikzpicture}[
-			node distance=0.9cm and 1.1cm,
-			block/.style={draw, rounded corners, align=center, minimum height=1.0cm, minimum width=2.8cm, fill=blue!7},
-			aug/.style={draw, rounded corners, align=center, minimum height=0.9cm, minimum width=2.8cm, fill=green!10},
-			enc/.style={draw, rounded corners, align=center, minimum height=1.1cm, minimum width=3.1cm, fill=orange!12},
-			queue/.style={draw, cylinder, shape border rotate=90, aspect=0.25, align=center, minimum height=1.1cm, minimum width=2.8cm, fill=purple!10},
-			loss/.style={draw, diamond, aspect=2.2, align=center, minimum height=1.5cm, fill=red!10},
-			arrow/.style={-{Latex[length=2.5mm]}, thick}
-			]
-			\node[block] (signal) {Sinal original\\ECG/Holter};
-			\node[aug, below left=of signal] (augq) {Aumentação 1\\ruído/corte/jitter};
-			\node[aug, below right=of signal] (augk) {Aumentação 2\\visão positiva};
-			\node[enc, below=of augq] (query) {Codificador Query\\ResNet-1D $\theta_q$\\atualizado por gradiente};
-			\node[enc, below=of augk] (keyenc) {Codificador Key\\ResNet-1D $\theta_k$\\média móvel};
-			\node[queue, right=of keyenc] (queuebank) {Fila de chaves\\negativas};
-			\node[loss, below right=1.0cm and -0.1cm of query] (infonce) {InfoNCE\\aproxima positivo\\afasta negativos};
-
-			\draw[arrow] (signal) -- (augq);
-			\draw[arrow] (signal) -- (augk);
-			\draw[arrow] (augq) -- (query);
-			\draw[arrow] (augk) -- (keyenc);
-			\draw[arrow] (query) -- node[left] {query} (infonce);
-			\draw[arrow] (keyenc) -- node[right] {key positiva} (infonce);
-			\draw[arrow] (keyenc) -- (queuebank);
-			\draw[arrow] (queuebank) -- node[below] {negativas} (infonce);
-			\draw[arrow, dashed] (query.east) -- node[above] {atualização momentum} (keyenc.west);
-		\end{tikzpicture}%
-	}\caption{Esquema de pré-treinamento MoCo para aprendizado auto-supervisionado de representações do ECG/Holter. O codificador query recebe gradientes diretamente; o codificador key é atualizado por média móvel e alimenta uma fila de exemplos negativos.}
-	\label{fig:moco_fluxo}
-\end{figure}
-
-%-------------------------------------
-
-
-%--------fluxo do resnet---------------------
-
-\subsection{Arquitetura Proposta dos Modelos Profundos}
-
-Esta seção descreve, em formato de fluxograma, os principais componentes computacionais utilizados no pipeline de modelagem profunda para análise de sobrevivência. Os diagramas foram estruturados a partir de modelos implementados manualmente em PyTorch, contemplando o extrator convolucional ResNet-1D, o pré-treinamento contrastivo MoCo, as formulações de tempo discreto e a arquitetura híbrida final com fusão entre ECG e covariáveis clínicas.
-
-\subsection{Encoder ResNet-1D para Sinais de ECG}
-
-A Figura~\ref{fig:resnet1d_fluxo} apresenta o fluxo do encoder ResNet-1D utilizado para extrair representações temporais dos sinais de ECG/Holter com três derivações. A rede preserva a dimensão temporal até a saída do encoder, produzindo um mapa de características tridimensional.
-
-\begin{figure}[htbp]
-	\centering
-	\resizebox{0.88\textwidth}{!}{%
-		\begin{tikzpicture}[
-			node distance=0.9cm and 0.95cm,
-			block/.style={draw, rounded corners, align=center, minimum height=1.0cm, minimum width=2.5cm, fill=blue!7},
-			conv/.style={draw, rounded corners, align=center, minimum height=1.0cm, minimum width=2.9cm, fill=green!9},
-			res/.style={draw, rounded corners, align=center, minimum height=1.2cm, minimum width=3.0cm, fill=orange!12},
-			output/.style={draw, rounded corners, align=center, minimum height=1.0cm, minimum width=3.5cm, fill=purple!10},
-			arrow/.style={-{Latex[length=2.5mm]}, thick}
-			]
-			\node[block] (input) {Entrada\\Sinal ECG/Holter\\3 derivações XYZ\\$[B,3,N]$};
-			\node[conv, right=of input] (stem) {Stem convolucional\\Conv1D $7\times1$, stride 2\\BatchNorm + ReLU\\MaxPool1D};
-			\node[res, right=of stem] (l1) {Layer 1\\2 BasicBlock1D\\64 filtros};
-			\node[res, right=of l1] (l2) {Layer 2\\2 BasicBlock1D\\128 filtros\\stride 2};
-			\node[res, below=of l2] (l3) {Layer 3\\2 BasicBlock1D\\256 filtros\\stride 2};
-			\node[res, left=of l3] (l4) {Layer 4\\2 BasicBlock1D\\512 filtros\\stride 2};
-			\node[output, left=of l4] (out) {Saída do encoder\\Mapa de features\\$[B,512,L_{red}]$};
-
-			\draw[arrow] (input) -- (stem);
-			\draw[arrow] (stem) -- (l1);
-			\draw[arrow] (l1) -- (l2);
-			\draw[arrow] (l2) -- (l3);
-			\draw[arrow] (l3) -- (l4);
-			\draw[arrow] (l4) -- (out);
-
-			\draw[arrow, dashed, bend left=35] (l1.north) to node[above, align=center] {conexões\\residuais} (l2.north);
-			\draw[arrow, dashed] (l3.south) .. controls ++(0,-1.1) and ++(0,-1.1) .. node[below, align=center] {atalho\\identidade/projeção} (l4.south);
-		\end{tikzpicture}%
-	}
-	\caption{Fluxo do encoder ResNet-1D utilizado para extração de características convolucionais temporais dos sinais de ECG/Holter. Cada BasicBlock1D contém duas convoluções 1D com normalização em lote e conexão residual.}
-	\label{fig:resnet1d_fluxo}
-\end{figure}
-
-
-%----------------------------------
-
-
-\subsection{Arquitetura do Encoder: ResNet-18 1D}
-
-A extração de características dos sinais de ECG é realizada por uma versão
-unidimensional da ResNet-18 \cite{he2016deep}, utilizada exclusivamente como
-\textit{encoder}. O termo \textit{encoder} reflete o fato de que apenas o
-corpo da rede é empregado --- ou seja, somente as camadas convolucionais
-responsáveis pela extração de representações ---  sem a camada de
-classificação final. Essa abordagem é recorrente na literatura quando se
-deseja obter um vetor de características compacto para uso em tarefas
-subsequentes, como a análise de sobrevivência proposta neste trabalho.
-
-
-\subsubsection{Da ResNet-18 2D para a ResNet-18 1D}
-
-A ResNet-18 original foi proposta para o processamento de imagens
-bidimensionais \cite{he2016deep}, operando sobre tensores de entrada com
-dimensões $[C, H, W]$, onde $C$ é o número de canais, $H$ a altura e $W$
-a largura da imagem. A arquitetura é composta por 18 camadas com parâmetros
-treináveis: uma convolução inicial com kernel $7{\times}7$, quatro grupos
-de blocos residuais com 2 blocos cada, e uma camada totalmente conectada
-(\textit{fully connected}) para classificação \cite{he2016deep}.
-
-A adaptação para sinais unidimensionais consiste em substituir todas as
-operações bidimensionais pelas suas equivalentes 1D, tornando a rede
-adequada ao processamento de séries temporais. A entrada passa a ter
-dimensões $[C, L]$, onde $C$ é o número de derivações do ECG --- 3 neste
-trabalho --- e $L$ é o comprimento temporal do sinal. Todas as convoluções
-2D são substituídas por convoluções 1D, e o \textit{batch normalization}
-e o \textit{max pooling} são igualmente adaptados para operar sobre a
-dimensão temporal. Essa estratégia é amplamente consolidada na literatura
-de sinais biomédicos, com aplicações em ECG de derivação única
-\cite{hannun2019cardiologist} e em ECG de 12 derivações
-\cite{ribeiro2020automatic}.
-
-
-\subsubsection{Estrutura das 17 Camadas do Encoder}
-
-A ResNet-18 é composta originalmente por 17 camadas convolucionais e uma
-camada totalmente conectada de classificação, totalizando 18 camadas com
-parâmetros treináveis \cite{he2016deep}. Neste trabalho, a camada
-totalmente conectada foi removida, e o encoder resultante --- com
-\textbf{17 camadas convolucionais} --- é utilizado exclusivamente como
-extrator de características, produzindo um vetor de 512 dimensões por
-amostra ao final do processamento.
-
-A arquitetura do encoder é organizada da seguinte forma:
-
-\begin{enumerate}
-	\item \textbf{Camada inicial} (\texttt{conv1}): convolução 1D com 64
-	      filtros e kernel de tamanho 7, com \textit{stride} 2, seguida de
-	      normalização em lote (\textit{batch normalization}) e ativação ReLU.
-	      Uma camada de \textit{max pooling} com kernel 3 e \textit{stride} 2
-	      reduz adicionalmente a resolução temporal, resultando em uma
-	      representação inicial com 64 canais. Essa camada corresponde a
-	      \textbf{1 camada convolucional}.
-
-	\item \textbf{Grupo 1} (\texttt{layer1}, \texttt{conv2\_x}): dois
-	      blocos residuais com 64 filtros e \textit{stride} 1, mantendo a
-	      resolução temporal. Cada bloco contém 2 convoluções, totalizando
-	      \textbf{4 camadas convolucionais}.
-
-	\item \textbf{Grupo 2} (\texttt{layer2}, \texttt{conv3\_x}): dois
-	      blocos residuais com 128 filtros e \textit{stride} 2, reduzindo a
-	      resolução temporal à metade e dobrando a profundidade de representação.
-	      Totalizando \textbf{4 camadas convolucionais}.
-
-	\item \textbf{Grupo 3} (\texttt{layer3}, \texttt{conv4\_x}): dois
-	      blocos residuais com 256 filtros e \textit{stride} 2, com nova redução
-	      temporal e aprofundamento da representação. Totalizando \textbf{4
-		      camadas convolucionais}.
-
-	\item \textbf{Grupo 4} (\texttt{layer4}, \texttt{conv5\_x}): dois
-	      blocos residuais com 512 filtros e \textit{stride} 2, produzindo a
-	      representação de maior abstração semântica. Totalizando \textbf{4
-		      camadas convolucionais}.
-\end{enumerate}
-
-Somando todas as contribuições: $1 + 4 + 4 + 4 + 4 = 17$ camadas
-convolucionais, confirmando a estrutura do encoder utilizado.
-
-Cada bloco residual (\texttt{BasicBlock1d}) é composto por duas convoluções
-1D de kernel 3, cada uma seguida de normalização em lote e ativação ReLU,
-com uma conexão de atalho (\textit{skip connection}) que soma a entrada do
-bloco à sua saída. Quando há incompatibilidade de dimensões entre entrada e
-saída --- o que ocorre nos grupos 2, 3 e 4 devido ao \textit{stride} 2 ---
-uma projeção por convolução $1{\times}1$ é aplicada na conexão de atalho
-para alinhar as dimensões. Ao final do encoder, um \textit{Global Average
-	Pooling} reduz a dimensão temporal, produzindo um vetor fixo de 512
-dimensões por amostra, independentemente do comprimento da série de entrada.
-
-\subsubsection{Justificativa da Escolha da ResNet-18}
-
-A escolha da ResNet-18 como backbone é motivada por dois fatores principais.
-Primeiro, o conjunto de dados disponível é composto por aproximadamente 870
-pacientes, um volume moderado para o treinamento de redes convolucionais
-profundas. Arquiteturas mais profundas, como ResNet-34 ou ResNet-50, tendem
-a demandar volumes maiores de dados para generalizar adequadamente,
-tornando a ResNet-18 uma escolha mais equilibrada à escala do problema.
-Segundo, a adaptação unidimensional da ResNet-18 é amplamente empregada
-na literatura de sinais biomédicos \cite{hannun2019cardiologist, ribeiro2020automatic}, demonstrando capacidade suficiente para a extração
-de padrões morfológicos relevantes em sinais de ECG com múltiplas
-derivações.
-
-Ao final do encoder, um \textit{Global Average Pooling} reduz a representação
-temporal para um vetor fixo de 512 dimensões por amostra, independentemente do
-comprimento da série de entrada.
-
-
-\subsection{Arquitetura Híbrida Final}
-
-A Figura~\ref{fig:arquitetura_hibrida_fluxo} descreve a arquitetura final usada para combinar sinais ECG/Holter e covariáveis clínicas. O treinamento foi organizado em duas etapas. Primeiro, o encoder ResNet-1D foi pré-treinado de forma auto-supervisionada pelo método MoCo, utilizando apenas o objetivo contrastivo para aprender representações do sinal. Em seguida, os pesos aprendidos nessa etapa foram transferidos para o ramo de ECG da arquitetura híbrida. Na etapa supervisionada, a ResNet-1D inicializada com os pesos do MoCo passou a atuar como extrator de características, sendo treinada em conjunto com a rede de covariáveis clínicas, o módulo de fusão e os cabeçotes de sobrevivência em tempo discreto. O mapa temporal extraído do ECG é agregado por média global no eixo temporal e reduzido por um gargalo denso; em paralelo, as covariáveis clínicas passam por uma rede densa própria. Por fim, os vetores de ECG e de covariáveis são concatenados e enviados ao cabeçote de risco em tempo discreto.
-
-\begin{figure}[htbp]
-	\centering
-	\resizebox{0.52\textwidth}{!}{%
-		\begin{tikzpicture}[
-			node distance=0.38cm and 0.7cm,
-			input/.style={draw, rounded corners, align=center, minimum height=0.68cm, minimum width=2.45cm, fill=blue!7, font=\scriptsize},
-			proc/.style={draw, rounded corners, align=center, minimum height=0.68cm, minimum width=2.65cm, fill=green!10, font=\scriptsize},
-			bottleneck/.style={draw, rounded corners, align=center, minimum height=0.68cm, minimum width=2.7cm, fill=orange!12, font=\scriptsize},
-			fusion/.style={draw, rounded corners, align=center, minimum height=0.68cm, minimum width=2.6cm, fill=purple!10, font=\scriptsize},
-			output/.style={draw, rounded corners, align=center, minimum height=0.68cm, minimum width=2.65cm, fill=red!10, font=\scriptsize},
-			arrow/.style={-{Latex[length=1.8mm]}, thick}
-			]
-			\node[input] (ecg) {Sinal ECG/Holter\\3 derivações XYZ};
-			\node[proc, below=of ecg] (resnet) {ResNet-1D\\encoder MoCo};
-			\node[proc, below=of resnet] (gap) {Agregação temporal\\média em $dim=2$};
-			\node[bottleneck, below=of gap] (ecgb) {Gargalo ECG\\512--64--16};
-			\node[fusion, below=of ecgb] (concat) {Concatenação\\ECG 16 + clínica 16};
-			\node[proc, below=of concat] (head) {Head de risco\\32--32--20};
-			\node[output, below=of head] (out) {Logits brutos\\20 bins temporais};
-
-			\node[input, right=of resnet] (clin) {Covariáveis clínicas\\6 features};
-			\node[bottleneck, below=of clin] (clinnet) {ClinicalNet\\6--32--16};
-
-			\draw[arrow] (ecg) -- (resnet);
-			\draw[arrow] (resnet) -- (gap);
-			\draw[arrow] (gap) -- (ecgb);
-			\draw[arrow] (ecgb) -- (concat);
-			\draw[arrow] (clin) -- (clinnet);
-			\draw[arrow] (clinnet) |- (concat);
-			\draw[arrow] (concat) -- (head);
-			\draw[arrow] (head) -- (out);
-		\end{tikzpicture}%
-	}
-	\caption{Arquitetura híbrida final: extração de características do sinal por ResNet-1D/MoCo, compressão do ECG em gargalo de 16 dimensões, processamento clínico em paralelo, fusão balanceada e predição de logits para modelos de sobrevivência em tempo discreto.}
-	\label{fig:arquitetura_hibrida_fluxo}
-\end{figure}
-
-
-%------------------------------------------------------------
-
-
-\subsection{Módulo de Projeção e Fusão Híbrida}
-
-Para equilibrar a contribuição dos sinais de ECG e das variáveis clínicas na
-decisão final, ambas as modalidades são projetadas em espaços de mesma dimensão
-antes da fusão. O vetor de 512 features extraídas pelo encoder é comprimido por
-um \textit{bottleneck} com as camadas Linear(512, 64) $\to$ BatchNorm $\to$ ReLU
-$\to$ Dropout $\to$ Linear(64, 16), resultando em um vetor de 16 dimensões.
-
-As variáveis clínicas, compostas por 6 preditores numéricos, são processadas por
-uma rede densa com as camadas Linear(6, 32) $\to$ BatchNorm $\to$ ReLU $\to$
-Dropout $\to$ Linear(32, 16), produzindo igualmente um vetor de 16 dimensões.
-
-Os dois vetores são então concatenados, formando uma representação híbrida de 32
-dimensões que integra informação morfológica do ECG com o contexto clínico do
-paciente.
-
-\subsection{Cabeçote de Análise de Sobrevivência}
-
-O vetor fundido de 32 dimensões é processado por um cabeçote de predição composto
-pelas camadas Linear(32, 32) $\to$ BatchNorm $\to$ ReLU $\to$ Dropout $\to$
-Linear(32, $K$), onde $K$ corresponde ao número de intervalos de tempo discretos
-definidos pela transformação \textit{LabTrans}. A saída é um vetor de logits, cuja
-interpretação varia conforme o modelo de sobrevivência selecionado, conforme
-descrito nas subseções seguintes.
-
-
-\subsection{Risco Logístico (Logistic-Hazard)}
-
-O método \textit{Logistic-Hazard} parametriza diretamente os riscos discretos
-$h(t_k \mid \mathbf{x})$ para cada intervalo de tempo $k$, otimizando a
-verossimilhança de sobrevivência \cite{kvamme2019continuous, efron1988logistic}.
-A função de risco discreta é obtida aplicando-se a função sigmoide sobre os
-logits produzidos pelo cabeçote de predição, e a função de sobrevivência é
-estimada pelo produto acumulado dos complementos dos riscos em cada intervalo.
-Este método também é referenciado na literatura como Regressão Logística Parcial
-\cite{biganzoli1998feedforward} e Nnet-sobrevivência (\textit{Nnet-survival})
-\cite{gensheimer2019scalable}.
-
-\subsection{Função de Massa de Probabilidade (PMF)}
-
-O método PMF parametriza a função de massa de probabilidade do tempo até o evento,
-otimizando diretamente a verossimilhança de sobrevivência \cite{kvamme2019continuous}.
-A distribuição de probabilidade sobre os intervalos de tempo é obtida aplicando-se
-a função \textit{softmax} sobre os logits da rede, e a função de sobrevivência é
-estimada pela soma acumulada reversa dessa distribuição. Este método constitui a
-base de abordagens como o DeepHit e o MTLR (\textit{Multi-Task Logistic Regression}).
-
-\subsection{DeepHit}
-
-O DeepHit é uma extensão do método PMF que incorpora, além da verossimilhança
-de sobrevivência, um termo de perda por classificação baseado em \textit{ranking},
-capaz de lidar com riscos concorrentes \cite{lee2018deephit}. A função de perda
-total é definida como $\mathcal{L} = \mathcal{L}_1 + \alpha \cdot \mathcal{L}_2$,
-onde $\mathcal{L}_1$ corresponde à log-verossimilhança negativa e $\mathcal{L}_2$
-é um termo de \textit{ranking} que penaliza inversões na ordenação do risco entre
-pares de pacientes com diferentes tempos de evento.
-
-
-\subsection{Formulações de Sobrevivência em Tempo Discreto}
-
-A Figura~\ref{fig:tempo_discreto_fluxo} apresenta as três formulações de tempo discreto usadas no cabeçote de sobrevivência. A rede híbrida retorna logits brutos para os intervalos temporais; em seguida, cada modelo aplica uma transformação probabilística e uma função de perda específica.
-
-\begin{figure}[htbp]
-	\centering
-	\resizebox{0.88\textwidth}{!}{%
-		\begin{tikzpicture}[
-			node distance=0.9cm and 1.0cm,
-			input/.style={draw, rounded corners, align=center, minimum height=1cm, minimum width=3.2cm, fill=blue!7},
-			branch/.style={draw, rounded corners, align=center, minimum height=1cm, minimum width=3.4cm, fill=green!10},
-			loss/.style={draw, rounded corners, align=center, minimum height=1cm, minimum width=4.3cm, fill=orange!12},
-			arrow/.style={-{Latex[length=2.5mm]}, thick}
-			]
-			\node[input] (logits) {Logits brutos\\$[B, K]$\\$K=20$ bins};
-			\node[branch, right=of logits] (lh) {LogisticHazard\\Sigmoid por bin\\$h_k=P(T=k|T\geq k)$};
-			\node[loss, right=of lh] (lhloss) {Loss por hazard discreto\\evento: $h_k$\\censura: $S(t)$};
-
-			\node[branch, below=of lh] (pmf) {PMF\\Softmax com bin extra\\$p_k=P(T=k)$};
-			\node[loss, right=of pmf] (pmfloss) {Loss de verossimilhança\\evento: $p_k$\\censura: $\sum_{j>k}p_j$};
-
-			\node[branch, below=of pmf] (dh) {DeepHitSingle\\Softmax/PMF\\CDF para risco};
-			\node[loss, right=of dh] (dhloss) {Loss total\\$L=L_1+\alpha L_2$\\PMF + ranking};
-
-			\draw[arrow] (logits) -- (lh);
-			\draw[arrow] (logits) |- (pmf);
-			\draw[arrow] (logits) |- (dh);
-			\draw[arrow] (lh) -- (lhloss);
-			\draw[arrow] (pmf) -- (pmfloss);
-			\draw[arrow] (dh) -- (dhloss);
-		\end{tikzpicture}%
-	}
-	\caption{Transformação dos logits brutos nos três modelos de sobrevivência em tempo discreto: LogisticHazard, PMF e DeepHitSingle.}
-	\label{fig:tempo_discreto_fluxo}
-\end{figure}
-
-\subsection{Discretização do Tempo: Transformação LabTrans}
-
-A análise de sobrevivência em tempo discreto requer que o tempo contínuo até o
-evento seja mapeado em um conjunto finito de $K$ intervalos. Para isso, foi
-implementada a transformação \texttt{DiscreteTimeTransform}, inspirada na
-\textit{LabTrans} da biblioteca PyCox \cite{kvamme2019continuous}.
-
-Dado um conjunto de tempos de sobrevivência $\{t_i\}$ e indicadores de evento
-$\{d_i\}$, os pontos de corte $\mathbf{c} = (c_0, c_1, \ldots, c_K)$ são
-determinados pelos quantis da distribuição dos tempos de evento observados
-(i.e., $d_i = 1$), com $c_0 = 0$ e $c_K$ fixado acima do maior tempo
-observado no conjunto. O índice de intervalo de cada observação é então
-obtido por digitalização (\textit{digitize}), sendo clipado ao intervalo
-$[0, K-1]$ para evitar extrapolações. O número de intervalos $K$ é um
-hiperparâmetro do modelo, definido como \texttt{num\_durations}.
-
-\subsection{Função de Perda por Tipo de Paciente}
-
-Em dados de sobrevivência, as observações são heterogêneas: parte dos pacientes
-apresentou o evento de interesse (\textit{uncensored}), enquanto os demais foram
-censurados, ou seja, perderam o acompanhamento antes do desfecho. Cada modelo de
-perda trata essas duas populações de forma distinta.
-
-Para o \textit{Logistic-Hazard}, pacientes com evento contribuem com a
-log-verossimilhança negativa do risco no instante $t_i$ ponderada pela
-sobrevivência acumulada até $t_i - 1$. Pacientes censurados contribuem apenas
-com a probabilidade de sobreviver até o instante de censura
-\cite{kvamme2019continuous}. Formalmente:
-%
-\begin{equation}
-	\mathcal{L}_{\text{LH}} = -\frac{1}{N} \sum_{i=1}^{N}
-	\left[ d_i \left( \log h_{k_i} + \log S(t_{k_i} - 1) \right)
-		+ (1 - d_i) \log S(t_i) \right]
-\end{equation}
-%
-onde $h_k = \sigma(\phi_k)$ é o risco discreto no intervalo $k$, obtido
-pela função sigmoide sobre o logit $\phi_k$, e $S(t_k) = \prod_{j \leq k}(1 - h_j)$
-é a função de sobrevivência estimada.
-
-Para os métodos PMF e DeepHit, a distribuição de probabilidade sobre os intervalos
-é obtida via \textit{softmax} sobre os logits, com um logit auxiliar nulo
-concatenado ao final para representar sobrevivência além do horizonte de observação
-\cite{kvamme2019continuous}. Pacientes com evento contribuem com $-\log f(t_i)$,
-onde $f(t_k)$ é a probabilidade de evento no intervalo $k$, e pacientes censurados
-contribuem com $-\log S(t_i^+)$, a probabilidade de sobreviver além do instante
-de censura.
-
-O DeepHit acrescenta um segundo termo de perda baseado em \textit{ranking}
-\cite{lee2018deephit}:
-%
-\begin{equation}
-	\mathcal{L}_{\text{DH}} = \mathcal{L}_1 + \alpha \cdot \mathcal{L}_2
-\end{equation}
-%
-onde $\mathcal{L}_2$ penaliza pares de pacientes $(i, j)$ em que $t_i < t_j$
-e $d_i = 1$, mas o modelo atribui risco cumulativo menor ao paciente $i$
-do que ao paciente $j$ no tempo $t_i$. A penalidade é suavizada por uma função exponencial com parâmetro $\sigma_{DH}$:
-\begin{equation}
-	\mathcal{L}_2 = \sum_{i: d_i=1} \sum_{j} \mathbf{1}[t_i < t_j]
-	\cdot \exp\!\left( -\frac{F(t_i \mid \mathbf{x}_i) - F(t_i \mid \mathbf{x}_j)}{\sigma_{DH}} \right)
-\end{equation}
-
-\subsection{Treinamento: Acumulação de Gradiente e Precisão Mista}
-
-O treinamento do modelo foi realizado com duas técnicas complementares para
-viabilizar o uso de \textit{batches} efetivos maiores sem aumentar o consumo
-de memória da GPU: acumulação de gradiente (\textit{gradient accumulation}) e
-precisão mista automática (\textit{Automatic Mixed Precision} --- AMP)
-\cite{micikevicius2018mixed}.
-
-Na acumulação de gradiente, os gradientes são acumulados ao longo de
-\texttt{accumulation\_steps} iterações antes de cada atualização dos pesos.
-A função de perda de cada mini-\textit{batch} é dividida por
-\texttt{accumulation\_steps} antes da retropropagação, de modo que a
-magnitude dos gradientes acumulados seja equivalente à de um \textit{batch}
-de tamanho \texttt{batch\_size} $\times$ \texttt{accumulation\_steps}. A
-atualização dos pesos e o zeragem dos gradientes são realizadas apenas ao
-final de cada ciclo de acumulação. Ao término do laço de treinamento, um
-passo final é executado caso restem gradientes não aplicados.
-
-A precisão mista é implementada com o \texttt{GradScaler} do PyTorch, que
-escala dinamicamente a função de perda para evitar \textit{underflow} numérico
-durante as operações em meia-precisão (\texttt{float16}), revertendo para
-precisão simples (\texttt{float32}) nas etapas críticas de atualização. As
-operações de \textit{forward} e cálculo da perda são executadas dentro de um
-contexto \texttt{autocast}, enquanto a retropropagação e a atualização dos
-pesos utilizam o escalonamento do \texttt{GradScaler}.
-
-\subsection{Avaliação: C-Index e Agregação de Janelas}
-
-A métrica principal de avaliação é o índice de concordância (\textit{C-index}),
-que mede a capacidade discriminativa do modelo em ordenar corretamente pares de
-pacientes pelo risco predito \cite{harrell1982evaluating}. O \textit{C-index}
-varia entre 0,5 (aleatoriedade) e 1,0 (discriminação perfeita), sendo calculado
-sobre os escores de risco derivados da função de sobrevivência estimada no último
-intervalo de tempo.
-
-Como os sinais de ECG Holter de 24 horas são segmentados em janelas para o
-treinamento, cada paciente pode gerar múltiplas predições de risco. Para obter
-um escore único por paciente na avaliação, foi implementada uma estratégia de
-agregação com três variantes:
-
-\begin{itemize}
-	\item \textbf{Máximo} (\textit{max}): considera o maior escore de risco
-	      entre todas as janelas do paciente, privilegiando a detecção de episódios
-	      de alto risco isolados;
-
-	\item \textbf{Média} (\textit{mean}): utiliza a média dos escores de risco,
-	      representando o risco global ao longo do registro;
-
-	\item \textbf{Percentil 90} (\textit{p90}): considera o percentil 90 da
-	      distribuição de escores, oferecendo um compromisso entre a sensibilidade
-	      a picos e a robustez a ruídos.
-\end{itemize}
-
-% O escore agregado de cada paciente é então utilizado para o cálculo do
-% \textit{C-index} com a biblioteca \textit{lifelines}, tendo como referência
-% o tempo de sobrevivência e o indicador de evento de cada indivíduo.
-
-
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-% \section{Exemplo de alíneas}\label{sec:exemplo-de-algoritmos-e-figuras}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+	\label{eq:fracao}
+		\begin{aligned}
+			x = a_0 + \cfrac{1}{a_1
+				+ \cfrac{1}{a_2
+					+ \cfrac{1}{a_3 + \cfrac{1}{a_4} } } }.
+		\end{aligned}
+	\end{equation}
+
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
+	\begin{equation}
+		\begin{aligned}
+			k_{n+1} = n^2 + k_n^2 - k_{n-1}.
+		\end{aligned}
+	\end{equation}
+	
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
+	\begin{equation}
+	\label{eq:trigo}
+		\begin{aligned}
+			\cos (2\theta) = \cos^2 \theta - \sin^2 \theta
+		\end{aligned}.
+	\end{equation}
+	
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
+	\begin{equation}
+	\label{eq:matriz}
+		\begin{aligned}
+			A_{m,n} =
+			\begin{pmatrix}
+			a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+			a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+			\vdots  & \vdots  & \ddots & \vdots  \\
+			a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+			\end{pmatrix}
+		\end{aligned}.
+	\end{equation}
+
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
+	\begin{equation}
+	\label{eq:sistema}
+		\begin{aligned}
+			f(n) = \left\{ 
+			\begin{array}{l l}
+			n/2 & \quad \text{if $n$ is even}\\
+			-(n+1)/2 & \quad \text{if $n$ is odd}
+			\end{array} \right.
+		\end{aligned}.
+	\end{equation}
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
+
+%\section{Usando Algoritmos}
 
 %\begin{algorithm}[h!]
 %	\SetSpacedAlgorithm
-%	\caption{\label{exemplo-de-algoritmo}Como escrever algoritmos no \LaTeX2e}
-%	\Entrada{o proprio texto}
-%	\Saida{como escrever algoritmos com  Latex:}% \LaTeX2e }
+%	\caption{\label{alg:algoritmo_de_colonica_de_formigas}Algoritmo de Otimização por Colônia de Formiga}
+%	\Entrada{Entrada do Algoritmo}
+%	\Saida{Saida do Algoritmo}
 %	\Inicio{
-%		inicialização;
-%		\Repita{fim do texto}{
-%			leia o atual;
-%			\Se{entendeu}{
-%				vá para o proximo\;
-%				próximo se torna o atual;}
-%			\Senao{volte ao início da seção;}
-%		}
-%	}	
+%		Atribua os valores dos parâmetros\;
+%		Inicialize as trilhas de feromônios\;
+%		\Enqto{não atingir o critério de parada}{
+%			\Para{cada formiga}{
+%				Construa as Soluções\;
+%			}
+%			Aplique Busca Local (Opcional)\;
+%			Atualize o Feromônio\;
+%		}	
+%	}		
 %\end{algorithm}
 
-% Texto texto texto texto texto texto texto texto texto texto texto.
+\section{Usando Código-fonte}
 
-%\begin{algorithm}[H]
-%	\Entrada{o proprio texto}
-%	\Saida{como escrever algoritmos com \LaTeX2e }
-%	\Inicio{
-%		inicialização\;
-%		\Repita{fim do texto}{
-%			leia o atual\;
-%			\Se{entendeu}{
-%				vá para o próximo\;
-%				próximo se torna o atual\;}
-%			\Senao{volte ao início da seção\;}
-%		}
-%	}
-%	\caption{Exemplo de Algoritmo Versao 02}
-%\end{algorithm}
+Um exemplo de código-fonte, ou código de programação encontra-se no Apendice \ref{ap:A}
 
-%\begin{algorithm}
-%	\begin{algorithmic}
-%	\Entrada{o proprio texto}
-%	\Saida{como escrever algoritmos com \LaTeX2e }	
-%	\end{algorithmic}
-%\end{algorithm}
+ 
+\section{Usando Teoremas, Proposições, etc}
 
-% Exemplo de alíneas com números:
+ Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-% \begin{alineascomnumero}
-% 	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
-% 	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
-% 	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
-% 	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
-% 	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
-% 	\item Texto texto texto texto texto texto texto texto texto texto texto texto .
-% \end{alineascomnumero}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-% Ou então figuras podem ser incorporadas de arquivos externos, como é o caso da \autoref{fig-grafico-1}. Se a figura que ser incluída se tratar de um diagrama, um gráfico ou uma ilustração que você mesmo produza, priorize o uso de imagens vetoriais no formato PDF. Com isso, o tamanho do arquivo final do trabalho será menor, e as imagens terão uma apresentação melhor, principalmente quando impressas, uma vez que imagens vetorias são perfeitamente escaláveis para qualquer dimensão. Nesse caso, se for utilizar o Microsoft Excel para produzir gráficos, ou o Microsoft Word para produzir ilustrações, exporte-os como PDF e os incorpore ao documento conforme o exemplo abaixo. No entanto, para manter a coerência no uso de software livre (já que você está usando LaTeX e abnTeX),  teste a ferramenta InkScape\index{InkScape}. ao CorelDraw\index{CorelDraw} ou ao Adobe Illustrator\index{Adobe! Illustrator}.  De todo modo, caso não seja possível  utilizar arquivos de imagens como PDF, utilize qualquer outro formato, como JPEG, GIF, BMP, etc.  Nesse caso, você pode tentar aprimorar as imagens incorporadas com o software livre \index{Gimp}Gimp. Ele é uma alternativa livre ao Adobe Photoshop\index{Adobe! Photoshop}.
-
-% \section{Usando Fórmulas Matemáticas}
-
-% Para escrever um símbolo matemático no texto, escreva símbolo entre cifrões, por exemplo, $\alpha$, $\beta$ e $\gamma$ são símbolo do alfabeto grego. Se você quiser inserir equações enumeradas, siga a estrutura de
-% \begin{equation}
-% 	\label{eq:indices}
-% 	k_{n+1} = n^2 + k_n^2 - k_{n-1}.
-% \end{equation}
-% Observe a pontuação, pois a equação faz parte da frase e do parágrafo. Como a equação faz parte da frase, não se utiliza o \textit{label} numérico \ref{eq:indices}.
-
-% Quando for citar a Equação \ref{eq:indices} novamente no texto, utiliza-se o \textit{label} numérico. Repare que a palavra ``Equação'' foi escrita com ``E'' maiúsculo.
-
-% Um exemplo de equações com frações é dado por
-% \begin{equation}
-% 	\label{eq:fracao}
-% 	\begin{aligned}
-% 		x = a_0 + \cfrac{1}{a_1
-% 			+ \cfrac{1}{a_2
-% 				+ \cfrac{1}{a_3 + \cfrac{1}{a_4} } } }.
-% 	\end{aligned}
-% \end{equation}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-% \begin{equation}
-% 	\begin{aligned}
-% 		k_{n+1} = n^2 + k_n^2 - k_{n-1}.
-% 	\end{aligned}
-% \end{equation}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-% \begin{equation}
-% 	\label{eq:trigo}
-% 	\begin{aligned}
-% 		\cos (2\theta) = \cos^2 \theta - \sin^2 \theta
-% 	\end{aligned}.
-% \end{equation}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-% \begin{equation}
-% 	\label{eq:matriz}
-% 	\begin{aligned}
-% 		A_{m,n} =
-% 		\begin{pmatrix}
-% 			a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
-% 			a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
-% 			\vdots  & \vdots  & \ddots & \vdots  \\
-% 			a_{m,1} & a_{m,2} & \cdots & a_{m,n}
-% 		\end{pmatrix}
-% 	\end{aligned}.
-% \end{equation}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-% \begin{equation}
-% 	\label{eq:sistema}
-% 	\begin{aligned}
-% 		f(n) = \left\{
-% 		\begin{array}{l l}
-% 			n/2      & \quad \text{if $n$ is even} \\
-% 			-(n+1)/2 & \quad \text{if $n$ is odd}
-% 		\end{array} \right.
-% 	\end{aligned}.
-% \end{equation}
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-
-% %\section{Usando Algoritmos}
-
-% %\begin{algorithm}[h!]
-% %	\SetSpacedAlgorithm
-% %	\caption{\label{alg:algoritmo_de_colonica_de_formigas}Algoritmo de Otimização por Colônia de Formiga}
-% %	\Entrada{Entrada do Algoritmo}
-% %	\Saida{Saida do Algoritmo}
-% %	\Inicio{
-% %		Atribua os valores dos parâmetros\;
-% %		Inicialize as trilhas de feromônios\;
-% %		\Enqto{não atingir o critério de parada}{
-% %			\Para{cada formiga}{
-% %				Construa as Soluções\;
-% %			}
-% %			Aplique Busca Local (Opcional)\;
-% %			Atualize o Feromônio\;
-% %		}	
-% %	}		
-% %\end{algorithm}
-
-% \section{Usando Código-fonte}
-
-% Um exemplo de código-fonte, ou código de programação encontra-se no Apendice \ref{ap:A}
+\begin{teo}[Pitágoras]
+	Em todo triângulo retângulo o quadrado do comprimento da
+	hipotenusa é igual a soma dos quadrados dos comprimentos dos catetos. Usando o Apêndice \ref{ap:C}
+\end{teo}
 
 
-% \section{Usando Teoremas, Proposições, etc}
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+\begin{teo}[Fermat]
+	Não existem inteiros $n > 2$, e $x, y, z$ tais que $x^n + y^n = z$
+\end{teo}
 
-% \begin{teo}[Pitágoras]
-% 	Em todo triângulo retângulo o quadrado do comprimento da
-% 	hipotenusa é igual a soma dos quadrados dos comprimentos dos catetos. Usando o Apêndice \ref{ap:C}
-% \end{teo}
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
+\begin{prop}
+	Para demonstrar o Teorema de Pitágoras...
+\end{prop}
 
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-% \begin{teo}[Fermat]
-% 	Não existem inteiros $n > 2$, e $x, y, z$ tais que $x^n + y^n = z$
-% \end{teo}
+\begin{exem}
+	Este é um exemplo do uso do ambiente exem definido acima.
+\end{exem}
 
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-% \begin{prop}
-% 	Para demonstrar o Teorema de Pitágoras...
-% \end{prop}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-% \begin{exem}
-% 	Este é um exemplo do uso do ambiente exem definido acima.
-% \end{exem}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
 
-% \begin{xdefinicao}
-% 	Definimos o produto de ...
-% \end{xdefinicao}
+\begin{xdefinicao}
+	Definimos o produto de ...
+\end{xdefinicao}
 
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-% \section{Usando Questões}
+\section{Usando Questões} 
 
-% Um exemplo de questionário encontra-se no Apêndice \ref{ap:B}.
+Um exemplo de questionário encontra-se no Apêndice \ref{ap:B}.
 
-% %Movido para o Apêndice
+%Movido para o Apêndice
 

@@ -1,8 +1,36 @@
-% In this on the radio waves: popular culture, peasants and the Basic Education Movement we analyze the participation of peasants of the Brazilian northeastern region in the Basic Education Movement. The focus of this thesis is to demonstrate how the labors involved with broadcast schools have elaborated actions for maintaining and spreading the schools in their communities, in order to achieve the necessary means to improve their way of life. Peasants of the Basic Education Movement have been coadjuvant of the modernizing catholic proposition of the early 1960s, by means of quite peculiar political and cultural representations. Some of these representations were: a meaning for the school, a role for the union and for the political participation, precepts of the land use rights and labor rights, and the multiple meanings of the radio as a mass communication, information and leisure medium. This study intends to stress that the actions – and the political enrollment – of the northeastern peasant could not ever be separated from the modernizing process. The connection can be observed in different social movements of the period, such as the Basic Education Movement, rural unions, the Catholic Agrarian Youth and the MCP. In this sense, we consider that, if the Brazilian modernization was a guideline for the institutions, political organisms and parties for the social movement, such a modernization was a guideline of demands based on elements of material life. Those elements included, by that time, the agrarian reform, the educational issue and labor urgencies.
 
-% % Separe as Keywords por ponto
-% \keywords{Adult education. Community schools. Peasants. Popular culture.}
+This work investigates the prediction of sudden cardiac death in patients with
+chronic heart failure from 24-hour Holter electrocardiography (ECG). Data were
+obtained from the MUSIC database, available on the PhysioNet platform,
+comprising three orthogonal lead signals (X, Y and Z) sampled at 200~Hz, along
+with clinical and demographic variables from 992 patients followed at Spanish
+university hospitals between 2003 and 2008. A case-control design was adopted,
+in which cases correspond to documented sudden cardiac death and controls to
+survivors with complete four-year follow-up, restricted to patients in sinus
+rhythm, totalling 517 individuals and 55 events. Three modelling strategies
+were compared under the same evaluation protocol. The first applies deep
+learning directly to the raw signal, covering eleven configurations across
+convolutional, residual, recurrent and attention-based networks, with capacity
+ranging from 109 thousand to 16 million parameters, including Bayesian
+hyperparameter search. The second extracts signal-derived markers --- heart
+rate variability, spectral analysis and morphological measures --- sampled in
+five-minute windows at hourly intervals, which also allows characterising how
+these markers vary throughout the day. The third uses clinical variables only.
+All models were evaluated by five-fold stratified cross-validation with
+patient-level partitioning, decision thresholds defined on the validation
+split, and confidence intervals estimated by bootstrap resampling. Models
+applied to the raw signal achieved areas under the ROC curve between 0.48 and
+0.56, with confidence intervals compatible with chance in every configuration.
+Extracted markers reached 0.62 (95\% CI: 0.54--0.71) when reduced by principal
+component analysis, a procedure that does not use outcome information, and the
+best overall performance was obtained by combining six clinical variables with
+two heart rate variability markers (0.69; 95\% CI: 0.61--0.77). The incremental
+gain of ECG over clinical variables alone was not statistically demonstrable.
+The results indicate that, in cohorts with a small number of events,
+signal-processing feature extraction outperforms representation learning from
+raw signals, and that the available statistical power limits the detection of
+clinically realistic effect sizes.
 
-This work proposes a predictive model based on discrete-time survival analysis to estimate the risk of sudden cardiac death in patients with chronic heart failure. The data were obtained from the MUSIC database, available on the PhysioNet platform, and comprise 24-hour three-lead Holter electrocardiogram (ECG) signals along with clinical and demographic variables from 992 patients followed at Spanish university hospitals between 2003 and 2008. Unlike traditional approaches that frame the problem as binary classification or time-series anomaly detection, this work adopts a probabilistic survival analysis approach: rather than indicating whether a patient has or does not have an arrhythmia, the model estimates the probability of an adverse cardiac event occurring within each time interval over the follow-up period. To this end, three loss functions for discrete-time survival models are implemented and compared --- \textit{Logistic-Hazard}, PMF, and \textit{DeepHitSingle} ---, all grounded in the right-censored likelihood framework. The ECG signals are processed by a one-dimensional residual convolutional neural network (ResNet-18 1D), which extracts local temporal representations from the three signal leads. To address the scarcity of labeled positive examples, the encoder is pre-trained in a self-supervised manner using the \textit{Momentum Contrast} (MoCo) method over all available signals, prior to supervised fine-tuning for the survival task. The ECG representations are then combined with clinical variables --- such as age, gender, and echocardiographic parameters --- through a symmetric fusion architecture that ensures balanced contributions from both information sources. Model performance is evaluated using three complementary metrics: the time-dependent concordance index ($C^{\mathrm{td}}$), which measures the model's ability to correctly rank patients by risk level across the follow-up period; the \textit{Integrated Brier Score} (IBS), which assesses the mean squared error between estimated probabilities and observed outcomes, jointly capturing calibration and discrimination; and the \textit{Integrated Negative Binomial Log-Likelihood} (Int.\ NBLL), which penalizes the probabilistic quality of the estimated survival distribution. The expected outcome is a predictive model capable of supporting clinical decision-making by identifying patients at higher risk of adverse cardiac events from routine, low-cost, and widely available Holter ECG data.
 
-\textbf{Keywords:} Survival Analysis. \textit{Logistic-Hazard}. ResNet-18 1D. Sudden Cardiac Death. Self-Supervised Learning. \textit{Momentum Contrast}. Holter ECG.
+\textbf{Keywords:} Sudden Cardiac Death. Holter ECG. Deep Learning. Heart Rate
+Variability. Heart Failure. Risk Stratification.

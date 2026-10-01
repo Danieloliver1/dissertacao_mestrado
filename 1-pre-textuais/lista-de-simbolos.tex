@@ -3,127 +3,29 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{simbolos} \itemsep -1pt
-	% 	\item[$ Ae $] Área efetiva da antena
-	% 	\item[$ B $] Largura de faixa em que o ruído é medido em Hertz
-	% 	\item[$ d $] Distância em metros
-	% 	\item[$ E $] Campo elétrico
-	% 	\item[$ FA $] Fator da antena
-	% 	\item[$ Gr $] Ganho de recepção
-	% 	\item[$ h $] Altura efetiva ou comprimento efetivo de uma antena
-	% 	\item[$ I $] Corrente elétrica
-	% 	\item[$ k $] Constante de Boltzmann's
-	% 	\item[$ K $] Eficiência de irradiação
-	% 	\item[$ M $] Variação do patamar de ruído em função da RBW
-	% 	\item[$ N $] Condutor de neutro
-	% 	\item[$ NF $] Figura de ruído
-	% 	\item[$ Ni $] Potência do ruído na entrada
-	% 	\item[$ No $] Potência do ruído na saída
-	% 	\item[$ P $] Potência
-	% 	\item[$ R $] Resistência
-	% 	\item[$ Si $] Potência do sinal na entrada
-	% 	\item[$ So $] Potência do sinal na saída
-	% 	\item[$ t $] Tempo
-	% 	\item[$ V $] Tensão
-	% 	\item[$ ZL  $] Impedância da antena
-	% 	\item[$ Zo $] Impedância de referência (50$\Omega$)
-	% 	\item[$ \lambda $] Comprimento de onda 
-	% 	\item[$ \Gamma $] Coeficiente de reflexão	
-
-	% % usado por mim
-	% 	\item[$ \alpha $] Coeficiente de atenuação
-	% 	\item[$ \beta $] Coeficiente de fase
-	% 	\item[$ \delta $] Variável de tempo discreto
-	% 	\item[$ \epsilon $] Variável de erro
-	% 	\item[$ \theta $] Parâmetro do modelo de análise de sobrevivência em tempo discreto (Logistic-Hazard)
-	% 	\item[$ \lambda $] Taxa de risco
-	% 	\item[$ \mu $] Média
-	% 	\item[$ \sigma $] Desvio padrão
-	% 	\item[$ \rho $] Correlação
-	% 	\item[$ \phi $] Variável de tempo contínuo
-	% 	\item[$ \psi $] Variável de tempo discreto
-	% 	\item[$ \omega $] Frequência angular
-
-	% ===================== Sobrevivência em tempo discreto =====================
-	\item[$ t $] Tempo (contínuo)
-	\item[$ t_k, c_k $] Ponto de corte / limite do intervalo de tempo discreto $k$
-	\item[$ K $] Número de intervalos (bins) de tempo discreto
-	\item[$ k_i $] Índice do bin temporal em que o paciente $i$ é observado
-	\item[$ \varphi $] Vetor de logits da rede ($\varphi_0,...,\varphi_{K-1}$)
-	\item[$ \varphi_K $] Logit artificial nulo (sobrevivência além do horizonte; PMF/DeepHit)
-	\item[$ h_k $] Risco (hazard) discreto no intervalo $k$
-	\item[$ \sigma(\cdot) $] Função sigmoide
-	\item[$ \sigma_{DH} $] Hiperparâmetro de suavização da perda de ordenação (DeepHit)
-	\item[$ S(t\,|\,x) $] Função de sobrevivência
-	\item[$ d_i $] Indicador de evento/censura do paciente $i$ ($1$ = evento, $0$ = censura)
-	\item[$ t_i $] Tempo observado (evento ou censura) do paciente $i$
-	\item[$ N $] Número de amostras/pacientes no lote (batch)
-	\item[$ p_k $] Massa de probabilidade no intervalo $k$ (PMF)
-	\item[$ F(t_k\,|\,x) $] Função de distribuição acumulada (CDF)
-	\item[$ \eta(i,j) $] Penalidade de ordenação entre o par de pacientes $(i,j)$
-	\item[$ \alpha $] Peso do termo de ranking (DeepHit) / peso do evento na perda
-	\item[$ \varepsilon $] Constante de regularização (evita divisão por zero)
-
-	% ===================== Funções de perda (sobrevivência) =====================
-	\item[$ \mathcal{L}_1 $] Termo de log-verossimilhança do DeepHit/PMF
-	\item[$ \mathcal{L}_2 $] Termo de perda de ordenação (ranking loss) do DeepHit
-	\item[$ \mathcal{L}_{total} $] Perda total do DeepHit ($\mathcal{L}_1 + \alpha\mathcal{L}_2$)
-	\item[$ \mathcal{L}_{LH} $] Perda Logistic-Hazard
-	\item[$ \mathcal{L}_{DH} $] Perda DeepHit (equivalente a $\mathcal{L}_{total}$)
-	\item[$ \bar{\mathcal{L}} $] Perda média do mini-batch
-
-	% ===================== MoCo (pré-treinamento contrastivo) =====================
-	\item[$ q $] Representação de consulta (query) no MoCo
-	\item[$ k^+ $] Chave positiva no MoCo
-	\item[$ k_j^- $] Chave negativa $j$ no MoCo
-	\item[$ \tau $] Temperatura da perda InfoNCE
-	\item[$ K_{queue} $] Tamanho do dicionário/fila de negativos (MoCo)
-	\item[$ \theta_q, \theta_k $] Parâmetros dos encoders de consulta e de chave
-	\item[$ m $] Coeficiente de momento do encoder de chave (EMA)
-	\item[$ d_z $] Dimensão do espaço de projeção/embedding
-	\item[$ B $] Tamanho do mini-batch
-	\item[$ x^{(1)}, x^{(2)} $] Visões aumentadas do sinal de ECG
-	\item[$ \mathcal{A} $] Distribuição de aumentação de dados
-	\item[$ h $] Representação extraída pelo encoder (backbone)
-	\item[$ z $] Vetor de projeção (cabeça MLP contrastiva)
-	\item[$ \mathcal{L}_{InfoNCE} $] Perda contrastiva InfoNCE (assimétrica, MoCo v1/v2)
-	\item[$ \mathcal{L}_{sym} $] Perda contrastiva simétrica (MoCo v3)
-
-	% ===================== Otimização =====================
-	\item[$ s_t $] Fator de escala do GradScaler (precisão mista)
-	\item[$ g_t $] Gradiente na iteração $t$
-	\item[$ \beta $] Coeficiente de momento do otimizador SGD
-	\item[$ \lambda $] Decaimento de peso (weight decay)
-	\item[$ \eta $] Taxa de aprendizado
-	\item[$ \theta_t $] Parâmetros do modelo na iteração $t$
-	\item[$ v_t $] Velocidade (momento) do SGD
-
-	% ===================== Atenção temporal e arquitetura híbrida =====================
-	\item[$ C $] Número de canais/derivações do sinal de ECG
-	\item[$ L $] Comprimento da janela temporal do sinal
-	\item[$ h_l $] Estado oculto do encoder no instante temporal $l$ (entrada do módulo de atenção)
-	\item[$ a_l $] Escore de atenção (pré-softmax) no instante $l$
-	\item[$ w_l $] Peso de atenção normalizado (softmax de $a_l$) no instante $l$
-	\item[$ v, W_1, b_1 $] Parâmetros da rede de atenção temporal
-	\item[$ v_{ctx} $] Vetor de contexto (agregação temporal ponderada pela atenção)
-	\item[$ e_{16} $] Representação do ECG após o gargalo (bottleneck), 16 dimensões
-	\item[$ c_{16} $] Representação clínica após a rede densa, 16 dimensões
-	\item[$ f $] Vetor de fusão híbrida ($[e_{16}; c_{16}]$)
-
-	% ===================== Métricas de avaliação =====================
-	\item[$ C_{td} $] Índice de concordância dependente do tempo
-	\item[$ \hat{S}(t\,|\,x) $] Função de sobrevivência estimada
-	\item[$ BS(t) $] Brier Score no instante $t$
-	\item[$ IBS $] Integrated Brier Score
-	\item[$ \hat{w}_i(t) $] Peso de ponderação por censura inversa (IPCW)
-	\item[$ \hat{G}(t) $] Estimador de Kaplan-Meier da distribuição de censura
-	\item[$ t_{max} $] Horizonte máximo de tempo de avaliação
-	\item[$ NBLL(t) $] Log-verossimilhança binomial negativa no instante $t$
-	\item[$ Int.\ NBLL $] Integrated Negative Binomial Log-Likelihood
-
-	% ===================== Regressão de Cox =====================
-	\item[$ b_0(t) $] Risco basal (Cox)
-	\item[$ b_i $] Coeficiente de regressão (Cox)
-	\item[$ x_i $] Covariável $i$ (Cox)
-	\item[$ \bar{x}_i $] Média da covariável $i$ (Cox)
-
+	\item[$ Ae $] Área efetiva da antena
+	\item[$ B $] Largura de faixa em que o ruído é medido em Hertz
+	\item[$ d $] Distância em metros
+	\item[$ E $] Campo elétrico
+	\item[$ FA $] Fator da antena
+	\item[$ Gr $] Ganho de recepção
+	\item[$ h $] Altura efetiva ou comprimento efetivo de uma antena
+	\item[$ I $] Corrente elétrica
+	\item[$ k $] Constante de Boltzmann’s
+	\item[$ K $] Eficiência de irradiação
+	\item[$ M $] Variação do patamar de ruído em função da RBW
+	\item[$ N $] Condutor de neutro
+	\item[$ NF $] Figura de ruído
+	\item[$ Ni $] Potência do ruído na entrada
+	\item[$ No $] Potência do ruído na saída
+	\item[$ P $] Potência
+	\item[$ R $] Resistência
+	\item[$ Si $] Potência do sinal na entrada
+	\item[$ So $] Potência do sinal na saída
+	\item[$ t $] Tempo
+	\item[$ V $] Tensão
+	\item[$ ZL  $] Impedância da antena
+	\item[$ Zo $] Impedância de referência (50$\Omega$)
+	\item[$ \lambda $] Comprimento de onda 
+	\item[$ \Gamma $] Coeficiente de reflexão	
 \end{simbolos}

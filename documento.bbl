@@ -5,168 +5,109 @@
 \providecommand{\abntbstabout}[1]{}
 \abntbstabout{v-1.9.7 }
 
-\bibitem[]{he2020momentum}
-\abntrefinfo{nada}{NADA}{a}
-{}
-
-\bibitem[]{lifelines_docs_cox}
-\abntrefinfo{nada}{NADA}{b}
-{}
-
-\bibitem[Allison 1982]{allison1982discrete}
-\abntrefinfo{Allison}{ALLISON}{1982}
-{ALLISON, P.~D. Discrete-time methods for the analysis of event histories.
-\textbf{Sociological Methodology}, American Sociological Association, v.~13, p.
-  61--98, 1982.
-Dispon{\'\i}vel em: \url{https://www.jstor.org/stable/270718}. Acesso em: 17
-  mar. 2026.}
-
-\bibitem[Biganzoli \textit{et al.} 1998]{biganzoli1998feedforward}
-\abntrefinfo{Biganzoli \textit{et al.}}{BIGANZOLI \textit{et al.}}{1998}
-{BIGANZOLI, E.; BORACCHI, P.; MARIANI, L.; MARUBINI, E. Feed forward neural
-  networks for the analysis of censored survival data: A partial logistic
-  regression approach.
-\textbf{Statistics in Medicine}, Wiley, v.~17, n.~10, p. 1169--1186, 1998.
+\bibitem[{A}dministra{\c{c}}{\~a}o{ }{N}acional{ }do{ }{E}spa{\c{c}}o{ }e{
+  }{A}eron{\'a}utica 2016]{NASA2016}
+\abntrefinfo{{A}dministra{\c{c}}{\~a}o{ }{N}acional{ }do{ }{E}spa{\c{c}}o{ }e{
+  }{A}eron{\'a}utica}{{A}DMINISTRA{\c{C}}{\~A}O{ }{N}ACIONAL{ }DO{
+  }{E}SPA{\c{C}}O{ }E{ }{A}ERON{\'A}UTICA}{2016}
+{{A}DMINISTRA{\c{C}}{\~A}O{ }{N}ACIONAL{ }DO{ }{E}SPA{\c{C}}O{ }E{
+  }{A}ERON{\'A}UTICA. \textbf{{G}ráfico{ }da{ }{A}tmosfera{ }{S}uperior}.
+  2016.
 Dispon{\'\i}vel em:
-  \url{https://onlinelibrary.wiley.com/doi/abs/10.1002/(SICI)1097-0258(19980530)17:10\%3C1169::AID-SIM796\%3E3.0.CO;2-D}.
-  Acesso em: 09 mai. 2026.}
+  \url{http://www.nasa.gov/mission\_pages/sunearth/science/upper-atmosphere-graphic.html}.
+  Acesso em: 28 jul. 2016.}
 
-\bibitem[Chen \textit{et al.} 2020]{chen2020simclr}
-\abntrefinfo{Chen \textit{et al.}}{CHEN \textit{et al.}}{2020a}
-{CHEN, T.; KORNBLITH, S.; NOROUZI, M.; HINTON, G. A simple framework for
-  contrastive learning of visual representations. In:  \textbf{Proceedings of
-  the 37th International Conference on Machine Learning (ICML)}. [s.n.], 2020.
-  p. 1597--1607. Dispon{\'\i}vel em: \url{https://arxiv.org/abs/2002.05709}.
-  Acesso em: 05 mar. 2026.}
+\bibitem[ALMEIDA 2018]{Almeida2018}
+\abntrefinfo{ALMEIDA}{ALMEIDA}{2018}
+{ALMEIDA, M. M.~R.
+\textbf{Avaliação de métodos de estimativa da capacidade de carga de
+  fundações diretas em solos não saturados. \text{\normalfont\ 2018. 144
+  f}}.
+Disserta\c{c}\~{a}o (Mestrado em Engenharia Civil) --- Centro de Tecnologia,
+  Programa de Pós-Graduação em Engenharia Civil: Geotecnia, Universidade
+  Federal do Ceará, Fortaleza, 2018.}
 
-\bibitem[Chen \textit{et al.} 2020]{chen2020mocov2}
-\abntrefinfo{Chen \textit{et al.}}{CHEN \textit{et al.}}{2020b}
-{CHEN, X.; FAN, H.; GIRSHICK, R.; HE, K. Improved baselines with momentum
-  contrastive learning.
-\textbf{arXiv preprint arXiv:2003.04297}, 2020.
-Dispon{\'\i}vel em: \url{https://arxiv.org/abs/2003.04297}. Acesso em: 05 mar.
-  2026.}
+\bibitem[ASSOCIAÇÃO{ }BRASILEIRA{ }DE{ }NORMAS{ }TÉCNICAS
+  2002]{NBR10520:2002}
+\abntrefinfo{ASSOCIAÇÃO{ }BRASILEIRA{ }DE{ }NORMAS{ }TÉCNICAS}{ASSOCIAÇÃO{
+  }BRASILEIRA{ }DE{ }NORMAS{ }TÉCNICAS}{2002}
+{ASSOCIAÇÃO{ }BRASILEIRA{ }DE{ }NORMAS{ }TÉCNICAS. \textbf{{NBR} 10520}:
+  Informação e documentação: citações em documentos: apresentação.
+Rio de Janeiro, 2002.}
 
-\bibitem[Chen \textit{et al.} 2021]{chen2021mocov3}
-\abntrefinfo{Chen \textit{et al.}}{CHEN \textit{et al.}}{2021}
-{CHEN, X.; XIE, S.; HE, K. An empirical study of training self-supervised
-  vision transformers. In:  \textbf{Proceedings of the IEEE/CVF International
-  Conference on Computer Vision (ICCV)}. [s.n.], 2021. p. 9640--9649.
-  Dispon{\'\i}vel em: \url{https://arxiv.org/abs/2104.02057}. Acesso em: 05
-  mar. 2026.}
+\bibitem[Feitosa 2016]{feitosa2016}
+\abntrefinfo{Feitosa}{FEITOSA}{2016}
+{FEITOSA, L. Complexas mediações: transdisciplinaridade e incertezas nas
+  recepções informacionais.
+\textbf{Informação em Pauta}, Fortaleza, v.~1, n.~1, p. 98--117, 2016.}
 
-\bibitem[Efron 1988]{efron1988logistic}
-\abntrefinfo{Efron}{EFRON}{1988}
-{EFRON, B. Logistic regression, survival analysis, and the {Kaplan-Meier}
-  curve.
-\textbf{Journal of the American Statistical Association}, Taylor \& Francis,
-  v.~83, n.~402, p. 414--425, 1988.
-Dispon{\'\i}vel em: \url{https://www.jstor.org/stable/2529811}. Acesso em: 09
-  mai. 2026.}
+\bibitem[Freire 2025]{freire2025scd}
+\abntrefinfo{Freire}{FREIRE}{2025}
+{FREIRE, L. \textbf{Sudden cardiac death risk stratification with deep
+  survival}. [S.l.]: GitHub, 2025.
+  \url{https://github.com/luizfreire96/scd_risk_stratification_deep_survival}.
+Acesso em: 30 set. 2026.}
 
-\bibitem[Gensheimer e Narasimhan 2019]{gensheimer2019scalable}
-\abntrefinfo{Gensheimer e Narasimhan}{GENSHEIMER; NARASIMHAN}{2019}
-{GENSHEIMER, M.~F.; NARASIMHAN, B. A scalable discrete-time survival model for
-  neural networks.
-\textbf{PeerJ}, PeerJ Inc., v.~7, p. e6257, 2019.
-Dispon{\'\i}vel em: \url{https://peerj.com/articles/6257/}. Acesso em: 09 mai.
-  2026.}
+\bibitem[GONDIM 2018]{Gondim2017}
+\abntrefinfo{GONDIM}{GONDIM}{2018}
+{GONDIM, D.~R.
+\textbf{Seleção de materiais com potencial aplicação na purificação de
+  IgG humana. \text{\normalfont\ 2017. 164 f}}.
+Tese (Doutorado em Engenharia Química) --- Centro de Tecnologia, Programa de
+  Pós-Graduação em Engenharia Civil: Geotecnia, Universidade Federal do
+  Ceará, Fortaleza, 2018.}
 
-\bibitem[Hannun \textit{et al.} 2019]{hannun2019cardiologist}
-\abntrefinfo{Hannun \textit{et al.}}{HANNUN \textit{et al.}}{2019}
-{HANNUN, A.~Y.; RAJPURKAR, P.; HAGHPANAHI, M.; TISON, G.~H.; BOURN, C.;
-  TURAKHIA, M.~P.; NG, A.~Y. Cardiologist-level arrhythmia detection and
-  classification in ambulatory electrocardiograms using a deep neural network.
-\textbf{Nature Medicine}, Nature Publishing Group, v.~25, n.~1, p. 65--69,
-  2019.}
+\bibitem[Goossens \textit{et al.} 1994]{goossens1994latex}
+\abntrefinfo{Goossens \textit{et al.}}{GOOSSENS \textit{et al.}}{1994}
+{GOOSSENS, M.; MITTELBACH, F.; SAMARIN, A.; SOUIDI, E.~M. \textbf{The LATEX
+  companion}. [\textit{S. l.}]: Addison-Wesley Reading, Massachusetts, 1994.
+  v.~2.}
 
-\bibitem[He \textit{et al.} 2020]{he2019moco}
-\abntrefinfo{He \textit{et al.}}{HE \textit{et al.}}{2020}
-{HE, K.; FAN, H.; WU, Y.; XIE, S.; GIRSHICK, R. Momentum contrast for
-  unsupervised visual representation learning. In:  \textbf{Proceedings of the
-  IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}.
-  [S.l.: s.n.], 2020. p. 9729--9738.}
+\bibitem[GRUPO{ }DE{ }{E}LETRICIDADE{ }{A}TMOSFÉRICA 2015]{elat2015densidade}
+\abntrefinfo{GRUPO{ }DE{ }{E}LETRICIDADE{ }{A}TMOSFÉRICA}{GRUPO{ }DE{
+  }{E}LETRICIDADE{ }{A}TMOSFÉRICA}{2015}
+{GRUPO{ }DE{ }{E}LETRICIDADE{ }{A}TMOSFÉRICA. \textbf{Densidade de descargas
+  atmosféricas para a terra (Ng)}. 2015.
+Dados publicados na ABNT NBR 5419-2:2015 -- Proteção contra descargas
+  atmosféricas – Parte 2: Gerenciamento de risco.
+Dispon{\'\i}vel em: \url{http://www.inpe.br/webelat/ABNT\_NBR5419\_Ng/}. Acesso
+  em: 28 jun. 2016.}
 
-\bibitem[He \textit{et al.} 2016]{he2016deep}
-\abntrefinfo{He \textit{et al.}}{HE \textit{et al.}}{2016}
-{HE, K.; ZHANG, X.; REN, S.; SUN, J. Deep residual learning for image
-  recognition. In:  \textbf{Proceedings of the IEEE Conference on Computer
-  Vision and Pattern Recognition (CVPR)}. [S.l.: s.n.], 2016. p. 770--778.}
+\bibitem[Langtangen e Logg 2017]{LangtangenLogg2017}
+\abntrefinfo{Langtangen e Logg}{LANGTANGEN; LOGG}{2017}
+{LANGTANGEN, H.~P.; LOGG, A. \textbf{Solving PDEs in Python}. [\textit{S. l.}]:
+  Springer, 2017.
+ISBN 978-3-319-52461-0.}
 
-\bibitem[{Jornal da USP} 2024]{jornalusp2024doencas}
-\abntrefinfo{{Jornal da USP}}{{Jornal da USP}}{2024}
-{{Jornal da USP}. \textbf{Doenças cardiovasculares são a principal causa de
-  mortes no {B}rasil, segundo o {M}inistério da {S}aúde}. 2024.
-Dispon{\'\i}vel em:
-  \url{https://jornal.usp.br/radio-usp/doencas-cardiovasculares-sao-a-principal-causa-de-mortes-no-brasil-segundo-o-ministerio-da-saude/}.
-  Acesso em: 03 mar. 2026.}
+\bibitem[Rakov e Uman 2003]{rakov2003lightning}
+\abntrefinfo{Rakov e Uman}{RAKOV; UMAN}{2003}
+{RAKOV, V.~A.; UMAN, M.~A. \textbf{Lightning}: physics and effects. [\textit{S.
+  l.}]: Cambridge University Press, 2003.}
 
-\bibitem[Kvamme 2019]{pycox2019}
-\abntrefinfo{Kvamme}{KVAMME}{2019}
-{KVAMME, H. \textbf{pycox: Survival analysis with PyTorch}. [S.l.]: GitHub,
-  2019. \url{https://github.com/havakv/pycox}.
-Acesso em: 20 mar. 2026.}
+\bibitem[{S}{\~a}o{ }{P}aulo{ }{(Estado)} 1989]{manuais1989}
+\abntrefinfo{{S}{\~a}o{ }{P}aulo{ }{(Estado)}}{{S}{\~A}O{ }{P}AULO{
+  }{(Estado)}}{1989}
+{{S}{\~A}O{ }{P}AULO{ }{(Estado)}. \textbf{{\normalfont Secretaria do Meio
+  Ambiente. Coordenadoria de Planejamento Ambiental. } Estudo de impacto
+  ambiental – EIA, Relatório de impacto ambiental – RIMA}: manual de
+  orientação.
+São Paulo, 1989. 48~p.  (Séries Manuais).}
 
-\bibitem[Kvamme e Borgan 2019]{kvamme2019continuous}
-\abntrefinfo{Kvamme e Borgan}{KVAMME; BORGAN}{2019}
-{KVAMME, H.; BORGAN, {\O}. Continuous and discrete-time survival prediction
-  with neural networks.
-\textbf{arXiv preprint}, arXiv:1910.06724, 2019.
-Dispon{\'\i}vel em: \url{https://arxiv.org/abs/1910.06724}. Acesso em: 09 mai.
-  2026.}
+\bibitem[{S}{\~a}o{ }{P}aulo{ }{(Estado)} 1999]{secretaria1999}
+\abntrefinfo{{S}{\~a}o{ }{P}aulo{ }{(Estado)}}{{S}{\~A}O{ }{P}AULO{
+  }{(Estado)}}{1999}
+{{S}{\~A}O{ }{P}AULO{ }{(Estado)}. \textbf{{\normalfont Secretaria do Meio
+  Ambiente.} Tratados e organizações ambientais em matéria de meio
+  ambiente}. \textit{In}:\underline{\hspace{0.45in}}, 1999.
+Dispon{\'\i}vel em: \url{http://www.bdt.org.br/sma/entendendo/atual.htm}.
+  Acesso em: 8 mar. 1999.}
 
-\bibitem[Kvamme \textit{et al.} 2019]{kvamme2019time}
-\abntrefinfo{Kvamme \textit{et al.}}{KVAMME \textit{et al.}}{2019}
-{KVAMME, H.; BORGAN, {\O}.; SCHEEL, I. Time-to-event prediction with neural
-  networks and cox regression.
-\textbf{Journal of Machine Learning Research}, v.~20, n.~129, p. 1--30, 2019.}
-
-\bibitem[Lee \textit{et al.} 2018]{lee2018deephit}
-\abntrefinfo{Lee \textit{et al.}}{LEE \textit{et al.}}{2018}
-{LEE, C.; ZAME, W.~R.; YOON, J.; SCHAAR, M. van~der. {DeepHit}: A deep learning
-  approach to survival analysis with competing risks. In:  \textbf{Proceedings
-  of the Thirty-Second AAAI Conference on Artificial Intelligence}. AAAI Press,
-  2018.  (AAAI 2018), p. 2314--2321. Dispon{\'\i}vel em:
-  \url{http://medianetlab.ee.ucla.edu/papers/AAAI\_2018\_DeepHit}. Acesso em:
-  09 mai. 2026.}
-
-\bibitem[Oord \textit{et al.} 2018]{oord2018cpc}
-\abntrefinfo{Oord \textit{et al.}}{OORD \textit{et al.}}{2018}
-{OORD, A. van~den; LI, Y.; VINYALS, O. Representation learning with contrastive
-  predictive coding.
-\textbf{arXiv preprint arXiv:1807.03748}, 2018.
-Dispon{\'\i}vel em: \url{https://arxiv.org/abs/1807.03748}. Acesso em: 05 mar.
-  2026.}
-
-\bibitem[Prabhakararao e Manimegalai 2020]{physionet2020music}
-\abntrefinfo{Prabhakararao e Manimegalai}{PRABHAKARARAO; MANIMEGALAI}{2020a}
-{PRABHAKARARAO, E.; MANIMEGALAI, P. \textbf{A {M}ultimodal {U}ser-{I}nterface
-  {S}ystem for {C}omputational {A}nalysis of {S}udden {C}ardiac {D}eath
-  ({MUSIC})}. 2020.
-PhysioNet. Version 1.0.0.
-Dispon{\'\i}vel em: \url{https://physionet.org}. Acesso em: 02 mar. 2026.}
-
-\bibitem[Prabhakararao e Manimegalai 2020]{physionet2020music_dataset}
-\abntrefinfo{Prabhakararao e Manimegalai}{PRABHAKARARAO; MANIMEGALAI}{2020b}
-{PRABHAKARARAO, E.; MANIMEGALAI, P. \textbf{A {M}ultimodal {U}ser-{I}nterface
-  {S}ystem for {C}omputational {A}nalysis of {S}udden {C}ardiac {D}eath
-  ({MUSIC})}. 2020.
-PhysioNet. Disponível em arquivo csv.
-Dispon{\'\i}vel em: \url{https://physionet.org}. Acesso em: 02 mar. 2026.}
-
-\bibitem[Ribeiro \textit{et al.} 2020]{ribeiro2020automatic}
-\abntrefinfo{Ribeiro \textit{et al.}}{RIBEIRO \textit{et al.}}{2020}
-{RIBEIRO, A.~H.; RIBEIRO, M.~H.; PAIX{\~A}O, G. M.~M.; OLIVEIRA, D.~M.; GOMES,
-  P.~R.; CANAZART, J.~A.; FERREIRA, M. P.~S.; ANDERSSON, C.~R.; MACFARLANE,
-  P.~W.; WAGNER, M.~J.; SCH{\"O}N, T.~B.; RIBEIRO, A. L.~P. Automatic diagnosis
-  of the 12-lead {ECG} using a deep neural network.
-\textbf{Nature Communications}, Nature Publishing Group, v.~11, p.~1760, 2020.}
-
-\bibitem[{World Health Organization} 2025]{who2021cardiovascular}
-\abntrefinfo{{World Health Organization}}{{World Health Organization}}{2025}
-{{World Health Organization}. \textbf{Cardiovascular diseases ({CVDs})}. 2025.
-Dispon{\'\i}vel em:
-  \url{https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds)}.
-  Acesso em: 03 mar. 2026.}
+\bibitem[{U}niversidade{ }{F}ederal{ }do{ }{C}ear{\'a} 2012]{UFC2012}
+\abntrefinfo{{U}niversidade{ }{F}ederal{ }do{ }{C}ear{\'a}}{{U}NIVERSIDADE{
+  }{F}EDERAL{ }DO{ }{C}EAR{\'A}}{2012}
+{{U}NIVERSIDADE{ }{F}EDERAL{ }DO{ }{C}EAR{\'A}. \textbf{Reitoria da
+  {U}niversidade {F}ederal do {C}ear{\'a}}. 2012.
+Dispon{\'\i}vel em: \url{http://www.ufc.br/contatos/2-a-universidade}. Acesso
+  em: 28 jul. 2016.}
 
 \end{thebibliography}
