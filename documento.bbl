@@ -96,6 +96,14 @@ Acesso em: 30 set. 2026.}
   machine-learning-based science.
 \textbf{Patterns}, v.~4, n.~9, p. 100804, 2023.}
 
+\bibitem[Kim \textit{et al.} 2025]{kim2025deep}
+\abntrefinfo{Kim \textit{et al.}}{KIM \textit{et al.}}{2025}
+{KIM, J.~Y.; KIM, K.~G.; JOO, S.; CHANG, M.; KIM, J.; PARK, K.-M.; ON, Y.~K.;
+  KIM, J.~S.; LEE, Y.~S.; PARK, S.-J. Deep learning-based risk assessment and
+  prediction of cardiac outcomes using single-lead 24-hour {Holter}-{ECG} in
+  patients with heart failure or myocardial infarction.
+\textbf{Journal of Clinical Medicine}, v.~14, n.~20, p.~7209, 2025.}
+
 \bibitem[Kiranyaz \textit{et al.} 2021]{kiranyaz2021onedimensional}
 \abntrefinfo{Kiranyaz \textit{et al.}}{KIRANYAZ \textit{et al.}}{2021}
 {KIRANYAZ, S.; AVCI, O.; ABDELJABER, O.; INCE, T.; GABBOUJ, M.; INMAN, D.~J.
@@ -185,6 +193,14 @@ Dispon{\'\i}vel em:
   analysis.
 \textbf{Journal of Clinical Epidemiology}, v.~49, n.~12, p. 1373--1379, 1996.}
 
+\bibitem[Ram{\'\i}rez \textit{et al.} 2017]{ramirez2017sudden}
+\abntrefinfo{Ram{\'\i}rez \textit{et al.}}{RAM{\'I}REZ \textit{et al.}}{2017}
+{RAM{\'I}REZ, J.; ORINI, M.; MINCHOL{\'E}, A.; MONASTERIO, V.; CYGANKIEWICZ,
+  I.; LUNA, A. Bay{\'e}s~de; MART{\'I}NEZ, J.~P.; LAGUNA, P.; PUEYO, E. Sudden
+  cardiac death and pump failure death prediction in chronic heart failure by
+  combining {ECG} and clinical markers in an integrated risk model.
+\textbf{PLoS ONE}, v.~12, n.~10, p. e0186152, 2017.}
+
 \bibitem[Ribeiro \textit{et al.} 2020]{ribeiro2020automatic}
 \abntrefinfo{Ribeiro \textit{et al.}}{RIBEIRO \textit{et al.}}{2020}
 {RIBEIRO, A.~H.; RIBEIRO, M.~H.; PAIX{\~A}O, G. M.~M.; OLIVEIRA, D.~M.; GOMES,
@@ -213,6 +229,15 @@ Dispon{\'\i}vel em:
 \textbf{Journal of Machine Learning Research}, v.~15, n.~56, p. 1929--1958,
   2014.}
 
+\bibitem[Swee \textit{et al.} 2026]{swee2026multimodal}
+\abntrefinfo{Swee \textit{et al.}}{SWEE \textit{et al.}}{2026}
+{SWEE, S.; ADAM, I.; ZHENG, E.~Y.; JI, E.; WANG, D.; SPEIER, W.; HSU, J.;
+  CHANG, K.-W.; SHIVKUMAR, K.; PING, P. Multimodal integration of ambulatory
+  {ECG} and clinical features for sudden cardiac death and pump failure death
+  prediction.
+\textbf{medRxiv}, 2026.
+Dispon{\'\i}vel em: \url{https://doi.org/10.64898/2026.04.21.26351421}.}
+
 \bibitem[{Task Force of the European Society of Cardiology and the North
   American Society of Pacing and Electrophysiology} 1996]{taskforce1996heart}
 \abntrefinfo{{Task Force of the European Society of Cardiology and the North
@@ -235,12 +260,5 @@ Dispon{\'\i}vel em:
 \abntrefinfo{Youden}{YOUDEN}{1950}
 {YOUDEN, W.~J. Index for rating diagnostic tests.
 \textbf{Cancer}, v.~3, n.~1, p. 32--35, 1950.}
-
-\bibitem[Zvuloni 2025]{zvuloni2025deephhf}
-\abntrefinfo{Zvuloni}{ZVULONI}{2025}
-{ZVULONI, E. \textbf{{DeepHHF}: modeling day-long {ECG} signals to predict
-  heart failure risk with explainable {AI}}. [S.l.]: GitHub, 2025.
-  \url{https://github.com/EranZvuloni/DeepHHF}.
-Acesso em: 30 set. 2026.}
 
 \end{thebibliography}

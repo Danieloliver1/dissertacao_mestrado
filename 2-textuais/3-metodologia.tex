@@ -1,4 +1,4 @@
-\chapter{Metodologia}
+\chapter{siteMetodologia}
 \label{chap:metodologia}
 
 
@@ -169,13 +169,13 @@ sem ajuste adicional.
 \label{subsec:met-clinicas}
 
 Nos experimentos que combinam o sinal a variáveis clínicas, foram empregadas
-seis: idade, gênero, classe funcional NYHA, presença de ondas Q de necrose,
+seis: idade, gênero, classe funcional \gls{NYHA}, presença de ondas Q de necrose,
 taquicardia ventricular não sustentada e taquiarritmia supraventricular
 paroxística. As variáveis contínuas --- idade --- e as ordinais foram
 padronizadas pela média e pelo desvio-padrão do conjunto de treinamento de
 cada partição.
 
-Duas particularidades da coorte merecem registro. A classe funcional NYHA
+Duas particularidades da coorte merecem registro. A classe funcional \gls{NYHA}
 assume apenas os valores II e III, comportando-se, na prática, como variável
 binária. A variável de taquiarritmia supraventricular paroxística é
 originalmente categórica nominal, com códigos para taquicardia
@@ -445,11 +445,10 @@ garante que duas janelas do mesmo paciente nunca se sobreponham dentro de
 uma época e que épocas sucessivas percorram trechos diferentes do exame.
 
 Na avaliação, as janelas são posicionadas em uma grade fixa e uniforme ao
-longo do registro, o que torna a predição reprodutível. Para que as duas
-durações observem a mesma extensão do exame, a janela de 10~segundos é
-avaliada com doze vezes mais janelas: 100 janelas de 2~minutos e 1\,200 de
-10~segundos correspondem, ambas, a cerca de 3,3~horas de registro por
-paciente. % [conferir samples_patient_eval]
+longo do registro, o que torna a predição reprodutível. São avaliadas 200 janelas
+por paciente nas duas durações, o que corresponde a cerca de 6,7~horas de
+registro com a janela de 2~minutos e a cerca de 33~minutos com a de
+10~segundos.
 
 \subsubsection{Filtragem com margem}
 
@@ -470,12 +469,10 @@ partição reservado para validação interna (309 ou 310 pacientes de
 treinamento por partição), a função de perda ponderada da
 \autoref{eq:bce-ponderada}, o otimizador AdamW com taxa de aprendizado de
 $10^{-4}$ e decaimento de pesos de $10^{-2}$, lotes de 256 janelas e
-interrupção antecipada pela perda de validação. % [conferir épocas e paciência]
+no máximo 30 épocas, com interrupção antecipada após 15 épocas sem melhora. Em cada época, cada paciente contribui com 350 janelas de treinamento.
 A probabilidade de cada paciente é a média das probabilidades de suas
 janelas, e o limiar de decisão é escolhido pelo índice de Youden na
 validação interna, nunca no conjunto de teste.
-
-
 
 
 % ==============================================================================
@@ -549,13 +546,13 @@ delas.
 			              & simples (4 blocos)               & 109\,361                       & 2 min e 10 s        \\
 			              & média (4 blocos)                 & 418\,145                       & 2 min e 10 s        \\
 			\midrule
-			Residual      & ResNet-18 mínima                 & 78\,169                        & 2 min               \\
-			              & ResNet-18 reduzida               & [conferir]                     & 2 min               \\
-			              & ResNet-18                        & 3\,976\,385                    & 2 min               \\
-			              & ResNet-34                        & [conferir]                     & 2 min               \\
-			              & ResNet-50                        & [conferir]                     & 2 min               \\
+			Residual      & ResNet-18 mínima                 & 78\,169                        & 5,12 s              \\
+			              & ResNet-18 reduzida               & 1\,029\,985                    & 2 min               \\
+			              & ResNet-18                        & 3\,976\,385                    & 2 min e 5,12 s      \\
+			              & ResNet-34                        & 7\,350\,721                    & 2 min               \\
+			              & ResNet-50                        & 16\,479\,937                   & 2 min               \\
 			\midrule
-			Atenção       & ResNet-18 + \textit{Transformer} & [conferir]                     & 2 min               \\
+			Atenção       & ResNet-18 + \textit{Transformer} & 1\,491\,553                    & 2 min               \\
 			\midrule
 			Fusão         & ResNet-18 + ramo clínico         & 3\,987\,041                    & 2 min + 6 variáveis \\
 			\bottomrule
@@ -706,7 +703,6 @@ probabilidade do paciente é a máxima, e não a média, de suas janelas, o que
 privilegia a janela de maior risco ao longo do registro.
 
 
-
 % ==============================================================================
 % METODOLOGIA — Extração dos marcadores eletrocardiográficos
 %
@@ -730,211 +726,6 @@ que diferem na duração e na densidade dos segmentos analisados. O protocolo
 A privilegia segmentos longos, que permitem a análise espectral; o protocolo
 B adota segmentos curtos e densos, que permitem acompanhar o ritmo ao longo
 do dia, seguindo o desenho de \citeonline{swee2026multimodal}. A
-\autoref{tab:met-protocolos} resume as diferenças. Ambos empregam o mesmo
-filtro passa-faixa das redes neurais (\autoref{sec:met-preprocessamento}) e
-a biblioteca NeuroKit2 \cite{makowski2021neurokit2} para a detecção de picos
-e a delineação dos batimentos.
-
-\begin{table}[h!]
-	\captionsetup{width=15cm}
-	\Caption{\label{tab:met-protocolos} Protocolos de extração dos marcadores}
-	\IBGEtab{}{
-		\begin{tabular}{lll}
-			\toprule
-			                       & Protocolo A                 & Protocolo B                  \\
-			\midrule \midrule
-			Segmento               & 5 minutos                   & 30 segundos                  \\
-			Espaçamento            & um segmento por hora        & um segmento a cada 2 minutos \\
-			Margem descartada      & 1 hora em cada extremidade  & 1 hora em cada extremidade   \\
-			Segmentos por paciente & cerca de 21                 & cerca de 650                 \\
-			Derivação              & a de maior amplitude        & Y                            \\
-			Correção de artefatos  & sim                         & não                          \\
-			Base da \gls{VFC}      & intervalos RR filtrados     & intervalos NN                \\
-			Domínio da frequência  & sim                         & não                          \\
-			Indicadores de ectopia & proporção de RR irregulares & contagens completas          \\
-			\bottomrule
-		\end{tabular}
-	}{
-		\Fonte{elaborado pelo autor (2026).}
-	}
-\end{table}
-
-\subsection{Protocolo A: segmentos de 5 minutos}
-\label{subsec:met-protocolo-a}
-
-Do registro de cada paciente foi extraído um segmento de 5~minutos a cada
-hora, a partir de 1~hora após o início e até 1~hora antes do fim, o que
-resulta em cerca de 21 segmentos por paciente. A primeira e a última hora
-foram descartadas por concentrarem os artefatos de colocação e de retirada
-dos eletrodos.
-
-Em cada segmento, os picos R foram detectados na derivação de maior
-desvio-padrão, que tende a apresentar a melhor relação sinal-ruído, com a
-correção de artefatos do NeuroKit2 \cite{lipponen2019robust}. Intervalos RR
-fora da faixa de 300 a 2\,000\,ms, ou afastados mais de 40\,\% da mediana do
-segmento, foram descartados, e segmentos com menos de 30 picos ou 20
-intervalos válidos não produziram marcadores. Foram calculados a frequência
-cardíaca média, o SDNN, o RMSSD, o pNN50, o coeficiente de variação e o
-índice triangular dos intervalos; as potências VLF, LF e HF e a razão LF/HF;
-o SD1, o SD2, a razão SD1/SD2 e a entropia amostral; a duração do QRS, o QT
-e o QTc; a amplitude de cada derivação; e a proporção de intervalos
-afastados mais de 20\,\% da mediana, como indicador de irregularidade.
-
-Os segmentos de cada paciente foram resumidos por três estatísticas de cada
-marcador: a mediana, que descreve seu nível típico; o desvio-padrão, que
-descreve sua variação ao longo do registro; e a diferença entre as médias do
-primeiro e do último terço dos segmentos, que aproxima a variação entre o
-início e o fim do registro. Como o horário de início dos exames não foi
-utilizado, essa última diferença não corresponde necessariamente ao
-contraste entre noite e dia.
-
-\subsection{Protocolo B: segmentos de 30 segundos}
-\label{subsec:met-protocolo-b}
-
-O protocolo B segue \citeonline{swee2026}, que extraem marcadores de
-segmentos de 30~segundos não sobrepostos. Para reduzir o custo
-computacional, extraiu-se um segmento de 30~segundos a cada 2~minutos de
-registro, mantidas as margens de 1~hora, o que resultou em 328\,807
-segmentos, com mediana de 652 por paciente. Os picos R foram detectados na
-derivação Y, como no trabalho de referência, após a limpeza do sinal pelo
-método padrão do NeuroKit2 e \textit{sem} correção de artefatos: a correção
-substitui os batimentos ectópicos por batimentos interpolados e apagaria
-justamente os eventos que os indicadores de ectopia procuram contar.
-
-\subsubsection{Classificação dos intervalos}
-
-Cada intervalo RR foi classificado em três categorias. Intervalos fora da
-faixa de 250 a 3\,000\,ms foram considerados \textit{implausíveis}, por
-corresponderem a picos duplicados ou a perdas de sinal. Entre os plausíveis,
-foram considerados \textit{normais} (NN) os que não se afastam mais de
-20\,\% da mediana móvel dos cinco intervalos vizinhos. A mediana local, e
-não a do segmento inteiro, acompanha as variações lentas da frequência
-cardíaca, de modo que um trecho em que o paciente apenas acelerou não seja
-confundido com ectopia. Os intervalos plausíveis restantes foram
-considerados \textit{irregulares}.
-
-\subsubsection{Marcadores calculados}
-
-Os marcadores de \gls{VFC} --- frequência média, SDNN, RMSSD, pNN50, SD1,
-SD2 e SD1/SD2 --- foram calculados apenas sobre os intervalos NN, e somente
-em segmentos com pelo menos oito deles. As diferenças sucessivas
-consideraram apenas pares de intervalos NN adjacentes no registro.
-Marcadores espectrais e a entropia amostral não foram calculados, pelos
-motivos expostos na \autoref{subsec:fund-duracao-segmento}.
-
-Os indicadores de ectopia foram obtidos a partir da mediana local: foram
-considerados \textit{precoces} os intervalos inferiores a 80\,\% dela;
-\textit{extrassístoles}, os intervalos precoces seguidos de outro superior a
-115\,\% dela; e \textit{dupletes}, dois intervalos precoces consecutivos.
-Registraram-se ainda a maior pausa, o número de pausas superiores a
-2~segundos e as frações de intervalos irregulares e implausíveis.
-
-Para a morfologia, os batimentos foram delineados pelo método de
-proeminência do NeuroKit2 \cite{makowski2021neurokit2}. A largura do QRS foi tomada
-entre o início e o fim do complexo, e o QT, do início do QRS ao fim da onda
-T, com a mediana sobre os batimentos do segmento. O QTc foi calculado pela
-\autoref{eq:bazett} com a média dos intervalos NN. Registraram-se ainda as
-frações de batimentos com onda P e com onda T identificadas e a amplitude
-de cada derivação. Em um teste preliminar, o método de ondaletas
-inicialmente considerado produziu durações de QRS sistematicamente
-superiores a 125\,ms em todos os segmentos de um mesmo paciente, indício de
-superestimação, e foi substituído.
-
-\subsubsection{Controle de qualidade}
-
-Uma primeira versão da extração calculava a \gls{VFC} sobre todos os
-intervalos plausíveis, sem separar os intervalos NN. Nela, 19,65\,\% dos
-segmentos apresentaram RMSSD superior a 200\,ms, valor implausível em
-repouso, e 12,35\,\% apresentaram SDNN acima do mesmo limite. Esses valores
-não eram ruído aleatório: resultavam de batimentos ectópicos e de picos não
-detectados, que inflam as diferenças sucessivas. Tratá-los como ausentes
-teria removido seletivamente os segmentos com ectopia.
-
-Com o cálculo restrito aos intervalos NN, as proporções caíram para
-2,21\,\% e 2,94\,\%, e as medianas do RMSSD e do SDNN passaram de 41,7 para
-23,9\,ms e de 44,0 para 29,5\,ms, respectivamente
-(\autoref{tab:met-auditoria-nn}). A queda das medianas mostra que a
-inflação não se restringia aos extremos, mas afetava a distribuição como um
-todo. Na versão final, a mediana da fração de intervalos NN por segmento foi
-de 1,00, e 11,1\,\% dos segmentos tiveram menos de 80\,\% de intervalos
-normais. Todos os marcadores foram calculados em pelo menos 96\,\% dos
-segmentos, e a largura do QRS em 98,7\,\%.
-
-\begin{table}[h!]
-	\captionsetup{width=13cm}
-	\Caption{\label{tab:met-auditoria-nn} Efeito do cálculo sobre intervalos
-		NN nos marcadores de variabilidade (328\,807 segmentos)}
-	\IBGEtab{}{
-		\begin{tabular}{lrrrr}
-			\toprule
-			                                & \multicolumn{2}{c}{Acima de 200\,ms} & \multicolumn{2}{c}{Mediana (ms)}               \\
-			\cmidrule(lr){2-3} \cmidrule(lr){4-5}
-			Marcador                        & \multicolumn{1}{c}{Todos os RR}      & \multicolumn{1}{c}{NN}           &
-			\multicolumn{1}{c}{Todos os RR} & \multicolumn{1}{c}{NN}                                                                \\
-			\midrule \midrule
-			RMSSD                           & 19,65\,\%                            & 2,21\,\%                         & 41,7 & 23,9 \\
-			SDNN                            & 12,35\,\%                            & 2,94\,\%                         & 44,0 & 29,5 \\
-			\bottomrule
-		\end{tabular}
-	}{
-		\Fonte{elaborado pelo autor (2026).}
-	}
-\end{table}
-
-\subsubsection{Resumo por paciente}
-
-Os segmentos de cada paciente foram resumidos em uma única linha. Para os
-marcadores contínuos, calcularam-se a mediana, o intervalo interquartil e os
-percentis 10 e 90; para as contagens de ectopia, a média por segmento e a
-fração de segmentos com pelo menos um evento. Os limites fisiológicos não
-foram aplicados nesta etapa, pois os resumos por mediana e percentis são
-robustos aos valores extremos remanescentes.
-
-A partir desses resumos, foram definidos três conjuntos de variáveis, de
-dimensão crescente: o conjunto A, apenas com a mediana de cada marcador
-contínuo e a média de cada contagem (32 variáveis); o conjunto B, que
-acrescenta o intervalo interquartil e a fração de segmentos com evento
-(64 variáveis); e o conjunto C, com todos os resumos (122 variáveis).
-
-\subsection{Número de variáveis e risco de sobreajuste}
-\label{subsec:met-numero-variaveis}
-
-Os dois protocolos produzem de algumas dezenas a mais de uma centena de
-variáveis por paciente, um número elevado diante de 55 eventos. A regra
-usual de pelo menos dez eventos por variável em modelos de regressão
-logística \cite{peduzzi1996simulation} limitaria o modelo a cerca de cinco
-variáveis. Por isso, os modelos apresentados na
-\autoref{sec:met-modelos-marcadores} empregam penalização, redução de
-dimensionalidade ou seleção de variáveis, sempre ajustadas dentro de cada
-partição da validação cruzada, conforme a
-\autoref{subsec:fund-validacao-cruzada}.
-
-
-
-
-% ==============================================================================
-% METODOLOGIA — Extração dos marcadores eletrocardiográficos
-%
-% Fontes:
-%   Protocolo A: extrair_biomarcadores.py        (5 min a cada hora)
-%   Protocolo B: extrair_biomarcadores_30s_nn.py (30 s a cada 2 min, versão NN)
-%   Agregação B: janelas30s_agregado_paciente.py
-%   Auditoria B: saída da extração completa (517 pacientes, 328 807 segmentos)
-%
-% [conferir] = número a confirmar no log antes da versão final.
-% Citações sem entrada no .bib: swee2026 (use a chave que você já tem),
-% emrich2024 (método de proeminência do NeuroKit2; completar a referência).
-% ==============================================================================
-
-\section{Extração dos marcadores eletrocardiográficos}
-\label{sec:met-extracao}
-
-Os marcadores descritos na \autoref{sec:fund-marcadores} foram extraídos dos
-registros de Holter dos 517 pacientes da coorte segundo dois protocolos,
-que diferem na duração e na densidade dos segmentos analisados. O protocolo
-A privilegia segmentos longos, que permitem a análise espectral; o protocolo
-B adota segmentos curtos e densos, que permitem acompanhar o ritmo ao longo
-do dia, seguindo o desenho de \citeonline{swee2026}. A
 \autoref{tab:met-protocolos} resume as diferenças. Ambos empregam o mesmo
 filtro passa-faixa das redes neurais (\autoref{sec:met-preprocessamento}) e
 a biblioteca NeuroKit2 \cite{makowski2021neurokit2} para a detecção de picos
@@ -1007,7 +798,7 @@ revisão adotada no protocolo B.
 \subsection{Protocolo B: segmentos de 30 segundos}
 \label{subsec:met-protocolo-b}
 
-O protocolo B segue \citeonline{swee2026}, que extraem marcadores de
+O protocolo B segue \citeonline{swee2026multimodal}, que extraem marcadores de
 segmentos de 30~segundos não sobrepostos. Para reduzir o custo
 computacional, extraiu-se um segmento de 30~segundos a cada 2~minutos de
 registro, mantidas as margens de 1~hora, o que resultou em 328\,807
@@ -1124,200 +915,3 @@ variáveis. Por isso, os modelos apresentados na
 dimensionalidade ou seleção de variáveis, sempre ajustadas dentro de cada
 partição da validação cruzada, conforme a
 \autoref{subsec:fund-validacao-cruzada}.
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-% \section{Exemplo de alíneas}\label{sec:exemplo-de-algoritmos-e-figuras}
-
-%     Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-%     %\begin{algorithm}[h!]
-%     %	\SetSpacedAlgorithm
-%     %	\caption{\label{exemplo-de-algoritmo}Como escrever algoritmos no \LaTeX2e}
-%     %	\Entrada{o proprio texto}
-%     %	\Saida{como escrever algoritmos com  Latex:}% \LaTeX2e }
-%     %	\Inicio{
-%     %		inicialização;
-%     %		\Repita{fim do texto}{
-%     %			leia o atual;
-%     %			\Se{entendeu}{
-%     %				vá para o proximo\;
-%     %				próximo se torna o atual;}
-%     %			\Senao{volte ao início da seção;}
-%     %		}
-%     %	}	
-%     %\end{algorithm}
-
-%     Texto texto texto texto texto texto texto texto texto texto texto.
-
-%     %\begin{algorithm}[H]
-%     %	\Entrada{o proprio texto}
-%     %	\Saida{como escrever algoritmos com \LaTeX2e }
-%     %	\Inicio{
-%     %		inicialização\;
-%     %		\Repita{fim do texto}{
-%     %			leia o atual\;
-%     %			\Se{entendeu}{
-%     %				vá para o próximo\;
-%     %				próximo se torna o atual\;}
-%     %			\Senao{volte ao início da seção\;}
-%     %		}
-%     %	}
-%     %	\caption{Exemplo de Algoritmo Versao 02}
-%     %\end{algorithm}
-
-%     %\begin{algorithm}
-%     %	\begin{algorithmic}
-%     %	\Entrada{o proprio texto}
-%     %	\Saida{como escrever algoritmos com \LaTeX2e }	
-%     %	\end{algorithmic}
-%     %\end{algorithm}
-
-%     Exemplo de alíneas com números:
-
-%     \begin{alineascomnumero}
-% 	    \item Texto texto texto texto texto texto texto texto texto texto texto texto .
-% 	    \item Texto texto texto texto texto texto texto texto texto texto texto texto .
-% 	    \item Texto texto texto texto texto texto texto texto texto texto texto texto .
-% 	    \item Texto texto texto texto texto texto texto texto texto texto texto texto .
-% 	    \item Texto texto texto texto texto texto texto texto texto texto texto texto .
-% 	    \item Texto texto texto texto texto texto texto texto texto texto texto texto .
-%     \end{alineascomnumero}
-
-%     Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-%     Ou então figuras podem ser incorporadas de arquivos externos, como é o caso da \autoref{fig-grafico-1}. Se a figura que ser incluída se tratar de um diagrama, um gráfico ou uma ilustração que você mesmo produza, priorize o uso de imagens vetoriais no formato PDF. Com isso, o tamanho do arquivo final do trabalho será menor, e as imagens terão uma apresentação melhor, principalmente quando impressas, uma vez que imagens vetorias são perfeitamente escaláveis para qualquer dimensão. Nesse caso, se for utilizar o Microsoft Excel para produzir gráficos, ou o Microsoft Word para produzir ilustrações, exporte-os como PDF e os incorpore ao documento conforme o exemplo abaixo. No entanto, para manter a coerência no uso de software livre (já que você está usando LaTeX e abnTeX),  teste a ferramenta InkScape\index{InkScape}. ao CorelDraw\index{CorelDraw} ou ao Adobe Illustrator\index{Adobe! Illustrator}.  De todo modo, caso não seja possível  utilizar arquivos de imagens como PDF, utilize qualquer outro formato, como JPEG, GIF, BMP, etc.  Nesse caso, você pode tentar aprimorar as imagens incorporadas com o software livre \index{Gimp}Gimp. Ele é uma alternativa livre ao Adobe Photoshop\index{Adobe! Photoshop}.
-
-% \section{Usando Fórmulas Matemáticas}
-
-% Para escrever um símbolo matemático no texto, escreva símbolo entre cifrões, por exemplo, $\alpha$, $\beta$ e $\gamma$ são símbolo do alfabeto grego. Se você quiser inserir equações enumeradas, siga a estrutura de
-% \begin{equation}
-%     \label{eq:indices}
-% 	k_{n+1} = n^2 + k_n^2 - k_{n-1}.
-% \end{equation}
-% Observe a pontuação, pois a equação faz parte da frase e do parágrafo. Como a equação faz parte da frase, não se utiliza o \textit{label} numérico \ref{eq:indices}. 
-
-% Quando for citar a Equação \ref{eq:indices} novamente no texto, utiliza-se o \textit{label} numérico. Repare que a palavra ``Equação'' foi escrita com ``E'' maiúsculo. 
-
-% Um exemplo de equações com frações é dado por
-% \begin{equation}
-% 	\label{eq:fracao}
-% 		\begin{aligned}
-% 			x = a_0 + \cfrac{1}{a_1
-% 				+ \cfrac{1}{a_2
-% 					+ \cfrac{1}{a_3 + \cfrac{1}{a_4} } } }.
-% 		\end{aligned}
-% 	\end{equation}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-% 	\begin{equation}
-% 		\begin{aligned}
-% 			k_{n+1} = n^2 + k_n^2 - k_{n-1}.
-% 		\end{aligned}
-% 	\end{equation}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-% 	\begin{equation}
-% 	\label{eq:trigo}
-% 		\begin{aligned}
-% 			\cos (2\theta) = \cos^2 \theta - \sin^2 \theta
-% 		\end{aligned}.
-% 	\end{equation}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-% 	\begin{equation}
-% 	\label{eq:matriz}
-% 		\begin{aligned}
-% 			A_{m,n} =
-% 			\begin{pmatrix}
-% 			a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
-% 			a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
-% 			\vdots  & \vdots  & \ddots & \vdots  \\
-% 			a_{m,1} & a_{m,2} & \cdots & a_{m,n}
-% 			\end{pmatrix}
-% 		\end{aligned}.
-% 	\end{equation}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-% 	\begin{equation}
-% 	\label{eq:sistema}
-% 		\begin{aligned}
-% 			f(n) = \left\{ 
-% 			\begin{array}{l l}
-% 			n/2 & \quad \text{if $n$ is even}\\
-% 			-(n+1)/2 & \quad \text{if $n$ is odd}
-% 			\end{array} \right.
-% 		\end{aligned}.
-% 	\end{equation}
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto
-
-% %\section{Usando Algoritmos}
-
-% %\begin{algorithm}[h!]
-% %	\SetSpacedAlgorithm
-% %	\caption{\label{alg:algoritmo_de_colonica_de_formigas}Algoritmo de Otimização por Colônia de Formiga}
-% %	\Entrada{Entrada do Algoritmo}
-% %	\Saida{Saida do Algoritmo}
-% %	\Inicio{
-% %		Atribua os valores dos parâmetros\;
-% %		Inicialize as trilhas de feromônios\;
-% %		\Enqto{não atingir o critério de parada}{
-% %			\Para{cada formiga}{
-% %				Construa as Soluções\;
-% %			}
-% %			Aplique Busca Local (Opcional)\;
-% %			Atualize o Feromônio\;
-% %		}	
-% %	}		
-% %\end{algorithm}
-
-% \section{Usando Código-fonte}
-
-% Um exemplo de código-fonte, ou código de programação encontra-se no Apendice \ref{ap:A}
-
-
-% \section{Usando Teoremas, Proposições, etc}
-
-%  Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-% \begin{teo}[Pitágoras]
-% 	Em todo triângulo retângulo o quadrado do comprimento da
-% 	hipotenusa é igual a soma dos quadrados dos comprimentos dos catetos. Usando o Apêndice \ref{ap:C}
-% \end{teo}
-
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-% \begin{teo}[Fermat]
-% 	Não existem inteiros $n > 2$, e $x, y, z$ tais que $x^n + y^n = z$
-% \end{teo}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-% \begin{prop}
-% 	Para demonstrar o Teorema de Pitágoras...
-% \end{prop}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-% \begin{exem}
-% 	Este é um exemplo do uso do ambiente exem definido acima.
-% \end{exem}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-
-% \begin{xdefinicao}
-% 	Definimos o produto de ...
-% \end{xdefinicao}
-
-% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
-
-% \section{Usando Questões} 
-
-% Um exemplo de questionário encontra-se no Apêndice \ref{ap:B}.
-
-% %Movido para o Apêndice
-

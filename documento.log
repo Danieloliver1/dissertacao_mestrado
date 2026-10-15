@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.3.5)  15 OCT 2026 14:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.3.5)  15 OCT 2026 17:30
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1351,69 +1351,6 @@ Package babel Info: 'brazil' activates 'portuges' shorthands.
 (babel)             Reported on input line 26.
 
 
-LaTeX Warning: Label `sec:fund-metricas' multiply defined.
-
-
-LaTeX Warning: Label `subsec:fund-confusao' multiply defined.
-
-
-LaTeX Warning: Label `tab:fund-confusao' multiply defined.
-
-
-LaTeX Warning: Label `tab:fund-metricas-limiar' multiply defined.
-
-
-LaTeX Warning: Label `subsec:fund-roc' multiply defined.
-
-
-LaTeX Warning: Label `eq:auc' multiply defined.
-
-
-LaTeX Warning: Label `subsec:fund-ap' multiply defined.
-
-
-LaTeX Warning: Label `eq:ap' multiply defined.
-
-
-LaTeX Warning: Label `subsec:fund-youden' multiply defined.
-
-
-LaTeX Warning: Label `eq:youden' multiply defined.
-
-
-LaTeX Warning: Label `subsec:fund-agregacao' multiply defined.
-
-
-LaTeX Warning: Label `eq:agregacao-paciente' multiply defined.
-
-
-LaTeX Warning: Label `subsec:fund-validacao-cruzada' multiply defined.
-
-
-LaTeX Warning: Label `subsec:fund-bootstrap' multiply defined.
-
-
-LaTeX Warning: Label `eq:delta-auc' multiply defined.
-
-
-LaTeX Warning: Label `sec:met-extracao' multiply defined.
-
-
-LaTeX Warning: Label `tab:met-protocolos' multiply defined.
-
-
-LaTeX Warning: Label `subsec:met-protocolo-a' multiply defined.
-
-
-LaTeX Warning: Label `subsec:met-protocolo-b' multiply defined.
-
-
-LaTeX Warning: Label `tab:met-auditoria-nn' multiply defined.
-
-
-LaTeX Warning: Label `subsec:met-numero-variaveis' multiply defined.
-
-
 LaTeX Warning: Label `sec:configuracao-experimental' multiply defined.
 
 
@@ -1439,33 +1376,6 @@ LaTeX Warning: Label `subsec:config-avaliacao' multiply defined.
 
 
 LaTeX Warning: Label `subsec:config-metricas' multiply defined.
-
-
-LaTeX Warning: Label `sec:resultados-cnnlstm-repouso' multiply defined.
-
-
-LaTeX Warning: Label `subsec:cnnlstm-dados' multiply defined.
-
-
-LaTeX Warning: Label `subsec:cnnlstm-desempenho' multiply defined.
-
-
-LaTeX Warning: Label `tab:cnnlstm-folds' multiply defined.
-
-
-LaTeX Warning: Label `subsec:cnnlstm-comparacao' multiply defined.
-
-
-LaTeX Warning: Label `tab:comparacao-modalidades' multiply defined.
-
-
-LaTeX Warning: Label `tab:cnnlstm-confusao' multiply defined.
-
-
-LaTeX Warning: Label `subsec:cnnlstm-confusao' multiply defined.
-
-
-LaTeX Warning: Label `subsec:cnnlstm-sintese' multiply defined.
 
 )
 \openout1 = `documento.aux'.
@@ -1629,36 +1539,6 @@ l.237 \imprimirfolhaderosto{}
 
 
 ]
-<1-pre-textuais/ficha-catalografica.pdf, id=21, 597.55246pt x 845.07718pt>
-File: 1-pre-textuais/ficha-catalografica.pdf Graphic file (type pdf)
-<use 1-pre-textuais/ficha-catalografica.pdf>
-Package pdftex.def Info: 1-pre-textuais/ficha-catalografica.pdf  used on input line 238.
-(pdftex.def)             Requested size: 597.551pt x 845.07512pt.
-<1-pre-textuais/ficha-catalografica.pdf, id=23, page=1, 597.55246pt x 845.07718pt>
-File: 1-pre-textuais/ficha-catalografica.pdf Graphic file (type pdf)
-<use 1-pre-textuais/ficha-catalografica.pdf, page 1>
-Package pdftex.def Info: 1-pre-textuais/ficha-catalografica.pdf , page1 used on input line 238.
-(pdftex.def)             Requested size: 597.551pt x 845.07512pt.
-File: 1-pre-textuais/ficha-catalografica.pdf Graphic file (type pdf)
-<use 1-pre-textuais/ficha-catalografica.pdf, page 1>
-Package pdftex.def Info: 1-pre-textuais/ficha-catalografica.pdf , page1 used on input line 238.
-(pdftex.def)             Requested size: 597.57834pt x 845.1138pt.
-File: 1-pre-textuais/ficha-catalografica.pdf Graphic file (type pdf)
-<use 1-pre-textuais/ficha-catalografica.pdf, page 1>
-Package pdftex.def Info: 1-pre-textuais/ficha-catalografica.pdf , page1 used on input line 238.
-(pdftex.def)             Requested size: 597.57834pt x 845.1138pt.
-File: 1-pre-textuais/ficha-catalografica.pdf Graphic file (type pdf)
-<use 1-pre-textuais/ficha-catalografica.pdf, page 1>
-Package pdftex.def Info: 1-pre-textuais/ficha-catalografica.pdf , page1 used on input line 238.
-(pdftex.def)             Requested size: 597.57834pt x 845.1138pt.
-File: 1-pre-textuais/ficha-catalografica.pdf Graphic file (type pdf)
-<use 1-pre-textuais/ficha-catalografica.pdf, page 1>
-Package pdftex.def Info: 1-pre-textuais/ficha-catalografica.pdf , page1 used on input line 238.
-(pdftex.def)             Requested size: 597.57834pt x 845.1138pt.
- [2
-
-
- <./1-pre-textuais/ficha-catalografica.pdf>]
 Underfull \hbox (badness 10000) in paragraph at lines 240--240
 
  []
@@ -1673,54 +1553,56 @@ Overfull \hbox (4.56003pt too wide) in paragraph at lines 240--240
 []|  |  $[]$ 
  []
 
-[3] (1-pre-textuais/dedicatoria.tex)
+[2
+
+] (1-pre-textuais/dedicatoria.tex)
 Overfull \hbox (4.56003pt too wide) in paragraph at lines 241--242
 []|  |  $[]$
  []
 
-[4] (1-pre-textuais/agradecimentos.tex) [5
+[3] (1-pre-textuais/agradecimentos.tex) [4
 
 ] (1-pre-textuais/epigrafe.tex)
 Overfull \hbox (4.56003pt too wide) in paragraph at lines 243--244
 []|  |  $[]$
  []
 
-[6
+[5
 
-] (1-pre-textuais/resumo.tex) [7] (1-pre-textuais/abstract.tex) [8
+] (1-pre-textuais/resumo.tex) [6] (1-pre-textuais/abstract.tex) [7
 
-] (documento.lof) [9
+] (documento.lof) [8
 
-] (documento.lot [10]) [11] (documento.gls) [12
+] (documento.lot [9]) [10] (documento.gls) [11
 
 
-] (1-pre-textuais/lista-de-simbolos.tex [13
+] (1-pre-textuais/lista-de-simbolos.tex [12
 
-] [14] [15]) (documento.toc [16
+] [13] [14]) (documento.toc [15
 
-] [17] [18] [19] [20]) [21] (2-textuais/1-introducao.tex
+] [16] [17] [18]) [19] (2-textuais/1-introducao.tex
 Cap\'{\i }tulo 1.
-[22
+[20
 
 
-] [23]
+] [21]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 315.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 314.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 315.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 314.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 315.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 314.
 
-Overfull \hbox (14.17958pt too wide) in paragraph at lines 315--315
+Overfull \hbox (14.17958pt too wide) in paragraph at lines 314--314
 [] [] 
  []
 
-) (2-textuais/2-fundamentacao-teorica.tex [24] [25]
+) (2-textuais/2-fundamentacao-teorica.tex [22] [23]
 Cap\'{\i }tulo 2.
-[26
+[24
 
-] [27] [28] [29] [30] [31]
-<figuras/arquitetura_cnn.jpg, id=744, 331.4784pt x 185.0112pt>
+] [25] [26] [27] [28] [29]
+<figuras/arquitetura_cnn.jpg, id=689, 331.4784pt x 185.0112pt>
 File: figuras/arquitetura_cnn.jpg Graphic file (type jpg)
 <use figuras/arquitetura_cnn.jpg>
 Package pdftex.def Info: figuras/arquitetura_cnn.jpg  used on input line 358.
@@ -1742,13 +1624,13 @@ Overfull \hbox (31.79813pt too wide) in paragraph at lines 404--404
 [] [] 
  []
 
-[32] [33 <./figuras/arquitetura_cnn.jpg>] [34]
+[30] [31 <./figuras/arquitetura_cnn.jpg>] [32]
 Overfull \hbox (67.22862pt too wide) in paragraph at lines 498--498
 [] [] 
  []
 
-[35]
-<figuras/arquitetura_resnet.jpg, id=776, 339.1872pt x 185.0112pt>
+[33]
+<figuras/arquitetura_resnet.jpg, id=722, 339.1872pt x 185.0112pt>
 File: figuras/arquitetura_resnet.jpg Graphic file (type jpg)
 <use figuras/arquitetura_resnet.jpg>
 Package pdftex.def Info: figuras/arquitetura_resnet.jpg  used on input line 592.
@@ -1765,7 +1647,7 @@ Overfull \hbox (11.79996pt too wide) in paragraph at lines 592--593
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[36] [37 <./figuras/arquitetura_resnet.jpg>]
+[34] [35 <./figuras/arquitetura_resnet.jpg>]
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 640.
  (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
@@ -1774,38 +1656,28 @@ Overfull \hbox (50.44019pt too wide) in paragraph at lines 684--684
 [] [] 
  []
 
-[38]
+[36]
 Overfull \hbox (60.77151pt too wide) in paragraph at lines 731--731
 [] [] 
  []
 
-[39]
+[37]
 
-LaTeX Warning: Reference `cap:resultados' on page 40 undefined on input line 777.
+LaTeX Warning: Reference `cap:resultados' on page 38 undefined on input line 777.
 
-[40]
-Overfull \hbox (5.5755pt too wide) in paragraph at lines 838--838
+[38] [39] [40] [41] [42] [43]
+Overfull \hbox (5.5755pt too wide) in paragraph at lines 1102--1102
 [] [] 
  []
 
 
-Overfull \hbox (9.17493pt too wide) in paragraph at lines 875--875
+Overfull \hbox (9.17493pt too wide) in paragraph at lines 1139--1139
 [] [] 
  []
 
-[41] [42] [43] [44] [45] [46] [47] [48] [49] [50]
-Overfull \hbox (5.5755pt too wide) in paragraph at lines 1397--1397
-[] [] 
- []
-
-
-Overfull \hbox (9.17493pt too wide) in paragraph at lines 1434--1434
-[] [] 
- []
-
-[51] [52] [53] [54]) (2-textuais/3-metodologia.tex [55]
+[44] [45] [46] [47]) (2-textuais/3-metodologia.tex [48]
 Cap\'{\i }tulo 3.
-<figuras/fluxograma_coorte02.jpg, id=1033, 259.9311pt x 185.0112pt>
+<figuras/fluxograma_coorte02.jpg, id=914, 259.9311pt x 185.0112pt>
 File: figuras/fluxograma_coorte02.jpg Graphic file (type jpg)
 <use figuras/fluxograma_coorte02.jpg>
 Package pdftex.def Info: figuras/fluxograma_coorte02.jpg  used on input line 31.
@@ -1814,92 +1686,64 @@ File: figuras/fluxograma_coorte02.jpg Graphic file (type jpg)
 <use figuras/fluxograma_coorte02.jpg>
 Package pdftex.def Info: figuras/fluxograma_coorte02.jpg  used on input line 31.
 (pdftex.def)             Requested size: 398.33858pt x 283.55176pt.
-[56
+[49
 
- <./figuras/fluxograma_coorte02.jpg>] [57] [58] [59]
+ <./figuras/fluxograma_coorte02.jpg>] [50] [51] [52]
 Overfull \hbox (25.761pt too wide) in paragraph at lines 298--298
 [] [] 
  []
 
-[60] [61] [62]
+[53] [54] [55]
 Overfull \hbox (45.98262pt too wide) in paragraph at lines 432--432
 [] [] 
  []
 
-[63]
+[56]
 
-LaTeX Warning: Reference `cap:fundamentacao' on page 64 undefined on input line 503.
+LaTeX Warning: Reference `cap:fundamentacao' on page 57 undefined on input line 500.
+
+[57]
+
+LaTeX Warning: Reference `subsec:met-variaveis-clinicas' on page 58 undefined on input line 531.
+
+
+Overfull \hbox (52.1553pt too wide) in paragraph at lines 562--562
+[] [] 
+ []
+
+[58]
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 629.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 629.
+ [59] [60]
+Overfull \hbox (26.76213pt too wide) in paragraph at lines 755--755
+[] [] 
+ []
+
+[61] [62]
+
+LaTeX Warning: Citation `emrich2024' on page 63 undefined on input line 840.
+
+[63]
+Overfull \hbox (59.0799pt too wide) in paragraph at lines 888--888
+[] [] 
+ []
 
 [64]
 
-LaTeX Warning: Reference `subsec:met-variaveis-clinicas' on page 65 undefined on input line 534.
+LaTeX Warning: Reference `sec:met-modelos-marcadores' on page 65 undefined on input line 914.
 
-
-Overfull \hbox (52.1553pt too wide) in paragraph at lines 565--565
-[] [] 
- []
-
-[65]
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 632.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 632.
- [66] [67]
-
-LaTeX Warning: Citation `swee2026multimodal' on page 68 undefined on input line 732.
-
-
-Overfull \hbox (26.76213pt too wide) in paragraph at lines 759--759
-[] [] 
- []
-
-[68]
-
-LaTeX Warning: Citation `swee2026' on page 69 undefined on input line 794.
-
-[69] [70]
-Overfull \hbox (59.0799pt too wide) in paragraph at lines 881--881
-[] [] 
- []
-
-
-LaTeX Warning: Reference `sec:met-modelos-marcadores' on page 71 undefined on input line 907.
-
-[71]
-
-LaTeX Warning: Citation `swee2026' on page 72 undefined on input line 937.
-
-
-Overfull \hbox (26.76213pt too wide) in paragraph at lines 964--964
-[] [] 
- []
-
-[72]
-
-LaTeX Warning: Citation `swee2026' on page 73 undefined on input line 1010.
-
-[73]
-
-LaTeX Warning: Citation `emrich2024' on page 74 undefined on input line 1049.
-
-[74]
-Overfull \hbox (59.0799pt too wide) in paragraph at lines 1097--1097
-[] [] 
- []
-
-
-LaTeX Warning: Reference `sec:met-modelos-marcadores' on page 75 undefined on input line 1123.
-
-[75]) (2-textuais/4-resultados.tex [76]
+) (2-textuais/4-resultados.tex [65]
 Cap\'{\i }tulo 4.
-[77
+[66
 
 ]
 Overfull \hbox (25.761pt too wide) in paragraph at lines 113--113
 [] [] 
  []
 
-[78] [79] [80]
+[67] [68] [69]
 Overfull \hbox (27.15385pt too wide) in paragraph at lines 302--302
 [] [] 
  []
@@ -1907,37 +1751,37 @@ Overfull \hbox (27.15385pt too wide) in paragraph at lines 302--302
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[81]
+[70]
 Overfull \hbox (45.68538pt too wide) in paragraph at lines 352--352
 [] [] 
  []
 
-[82]
+[71]
 Overfull \hbox (16.41417pt too wide) in paragraph at lines 399--399
 [] [] 
  []
 
-[83]
+[72]
 Overfull \hbox (23.96397pt too wide) in paragraph at lines 478--478
 [] [] 
  []
 
-[84]
+[73]
 Overfull \hbox (22.97774pt too wide) in paragraph at lines 537--537
 [] [] 
  []
 
-[85]
+[74]
 Overfull \hbox (16.41417pt too wide) in paragraph at lines 590--590
 [] [] 
  []
 
-[86]
+[75]
 Overfull \hbox (27.15385pt too wide) in paragraph at lines 665--665
 [] [] 
  []
 
-[87]
+[76]
 Overfull \hbox (48.31352pt too wide) in paragraph at lines 710--710
 [] [] 
  []
@@ -1950,12 +1794,12 @@ Overfull \hbox (45.68538pt too wide) in paragraph at lines 750--750
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[88]
+[77]
 Overfull \hbox (16.41417pt too wide) in paragraph at lines 788--788
 [] [] 
  []
 
-[89]
+[78]
 Overfull \hbox (27.15385pt too wide) in paragraph at lines 862--862
 [] [] 
  []
@@ -1965,7 +1809,7 @@ Overfull \hbox (48.8722pt too wide) in paragraph at lines 906--906
 [] [] 
  []
 
-[90]
+[79]
 Overfull \hbox (16.41417pt too wide) in paragraph at lines 953--953
 [] [] 
  []
@@ -1973,7 +1817,7 @@ Overfull \hbox (16.41417pt too wide) in paragraph at lines 953--953
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[91]
+[80]
 Overfull \hbox (27.15385pt too wide) in paragraph at lines 1033--1033
 [] [] 
  []
@@ -1981,17 +1825,17 @@ Overfull \hbox (27.15385pt too wide) in paragraph at lines 1033--1033
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[92]
+[81]
 Overfull \hbox (36.51685pt too wide) in paragraph at lines 1069--1069
 [] [] 
  []
 
-[93]
+[82]
 Overfull \hbox (16.41417pt too wide) in paragraph at lines 1125--1125
 [] [] 
  []
 
-[94]
+[83]
 Overfull \hbox (27.15385pt too wide) in paragraph at lines 1223--1223
 [] [] 
  []
@@ -1999,7 +1843,7 @@ Overfull \hbox (27.15385pt too wide) in paragraph at lines 1223--1223
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[95]
+[84]
 Overfull \hbox (45.68538pt too wide) in paragraph at lines 1288--1288
 [] [] 
  []
@@ -2007,203 +1851,117 @@ Overfull \hbox (45.68538pt too wide) in paragraph at lines 1288--1288
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[96]
+[85]
 Overfull \hbox (16.41417pt too wide) in paragraph at lines 1337--1337
 [] [] 
  []
 
-[97] [98]
-Overfull \hbox (27.15385pt too wide) in paragraph at lines 1434--1434
+[86] [87]
+Overfull \hbox (27.15385pt too wide) in paragraph at lines 1442--1442
+[] [] 
+ []
+
+[88]
+Overfull \hbox (43.05302pt too wide) in paragraph at lines 1488--1488
 [] [] 
  []
 
 
-Overfull \hbox (43.05302pt too wide) in paragraph at lines 1480--1480
-[] [] 
- []
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[99]
-Overfull \hbox (16.41417pt too wide) in paragraph at lines 1520--1520
-[] [] 
- []
-
-[100] [101]
-Overfull \hbox (27.15385pt too wide) in paragraph at lines 1635--1635
-[] [] 
- []
-
-[102]
-Overfull \hbox (43.05302pt too wide) in paragraph at lines 1681--1681
-[] [] 
- []
-
-
-Overfull \hbox (16.41417pt too wide) in paragraph at lines 1721--1721
+Overfull \hbox (16.41417pt too wide) in paragraph at lines 1528--1528
 [] [] 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[103] [104]
-Overfull \hbox (27.15385pt too wide) in paragraph at lines 1830--1830
+[89]
+Overfull \hbox (45.61548pt too wide) in paragraph at lines 1821--1821
 [] [] 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[105]
-Underfull \hbox (badness 10000) in paragraph at lines 1902--1902
-[]
+[90]
+Overfull \hbox (16.23175pt too wide) in paragraph at lines 1870--1870
+[] [] 
  []
 
 
-Overfull \hbox (202.61078pt too wide) in paragraph at lines 1902--1902
-[] 
+LaTeX Warning: Reference `subsec:met-comparacoes-marcadores' on page 91 undefined on input line 1881.
+
+[91]
+Overfull \hbox (8.43709pt too wide) in paragraph at lines 1909--1909
+[] [] 
+ []
+
+
+Overfull \hbox (15.2944pt too wide) in paragraph at lines 1952--1952
+[] [] 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[106]
-Overfull \hbox (56.01808pt too wide) in paragraph at lines 1942--1942
+[92]
+Overfull \hbox (55.6585pt too wide) in paragraph at lines 1986--1986
 [] [] 
  []
 
-[107]) (2-textuais/5-conclusao.tex [108]
+
+Overfull \hbox (13.64107pt too wide) in paragraph at lines 2017--2018
+ []$[]$ 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[93]
+Overfull \hbox (41.29184pt too wide) in paragraph at lines 2062--2062
+[] [] 
+ []
+
+[94]
+Overfull \hbox (36.55365pt too wide) in paragraph at lines 2126--2126
+[] [] 
+ []
+
+[95]
+Overfull \hbox (11.70387pt too wide) in paragraph at lines 2165--2165
+[] [] 
+ []
+
+
+Overfull \hbox (18.9237pt too wide) in paragraph at lines 2203--2203
+[] [] 
+ []
+
+[96]
+
+LaTeX Warning: Reference `sec:fund-atencao' on page 97 undefined on input line 2218.
+
+
+Overfull \hbox (21.42357pt too wide) in paragraph at lines 2256--2256
+[] [] 
+ []
+
+[97]
+Overfull \hbox (30.05347pt too wide) in paragraph at lines 2330--2330
+[] [] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[98]) (2-textuais/5-conclusao.tex [99] [100]
 Cap\'{\i }tulo 5.
-) (documento.bbl [109
+[101
 
-]
+] [102]) (documento.bbl [103]
 bibitemlist
-[110
+[104
 
-] [111]) [112] (3-pos-textuais/apendices/apendice-a.tex
-\bfseries AP\^ENDICE A.
-) (3-pos-textuais/apendices/apendice-b.tex [113
-
-]
-\bfseries AP\^ENDICE B.
-) (3-pos-textuais/apendices/apendice-c.tex [114
-
-]
-\bfseries AP\^ENDICE C.
-(C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
-File: lstlang1.sty 2025/11/14 1.11b listings language file
-) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
-File: lstlang1.sty 2025/11/14 1.11b listings language file
-) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
-File: lstmisc.sty 2025/11/14 1.11b (Carsten Heinz)
-)
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `cmtt' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
- (figuras/main.cpp) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
-File: lstlang1.sty 2025/11/14 1.11b listings language file
-)) (3-pos-textuais/apendices/apendice-d.tex [115
-
-]
-\bfseries AP\^ENDICE D.
-
-
-pdfTeX warning: pdflatex (file ./3-pos-textuais/apendices/PID4416093.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-<3-pos-textuais/apendices/PID4416093.pdf, id=1510, 614.295pt x 794.97pt>
-File: 3-pos-textuais/apendices/PID4416093.pdf Graphic file (type pdf)
-<use 3-pos-textuais/apendices/PID4416093.pdf>
-Package pdftex.def Info: 3-pos-textuais/apendices/PID4416093.pdf  used on input line 7.
-(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
-
-
-pdfTeX warning: pdflatex (file ./3-pos-textuais/apendices/PID4416093.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-
-
-pdfTeX warning: pdflatex (file ./3-pos-textuais/apendices/PID4416093.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-<3-pos-textuais/apendices/PID4416093.pdf, id=1512, page=1, 614.295pt x 794.97pt>
-File: 3-pos-textuais/apendices/PID4416093.pdf Graphic file (type pdf)
-<use 3-pos-textuais/apendices/PID4416093.pdf, page 1>
-Package pdftex.def Info: 3-pos-textuais/apendices/PID4416093.pdf , page1 used on input line 7.
-(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
-File: 3-pos-textuais/apendices/PID4416093.pdf Graphic file (type pdf)
-<use 3-pos-textuais/apendices/PID4416093.pdf, page 1>
-Package pdftex.def Info: 3-pos-textuais/apendices/PID4416093.pdf , page1 used on input line 7.
-(pdftex.def)             Requested size: 597.78697pt x 773.60669pt.
-[116
-
-]
-File: 3-pos-textuais/apendices/PID4416093.pdf Graphic file (type pdf)
-<use 3-pos-textuais/apendices/PID4416093.pdf, page 1>
-Package pdftex.def Info: 3-pos-textuais/apendices/PID4416093.pdf , page1 used on input line 7.
-(pdftex.def)             Requested size: 597.78697pt x 773.60669pt.
-File: 3-pos-textuais/apendices/PID4416093.pdf Graphic file (type pdf)
-<use 3-pos-textuais/apendices/PID4416093.pdf, page 1>
-Package pdftex.def Info: 3-pos-textuais/apendices/PID4416093.pdf , page1 used on input line 7.
-(pdftex.def)             Requested size: 597.78697pt x 773.60669pt.
-File: 3-pos-textuais/apendices/PID4416093.pdf Graphic file (type pdf)
-<use 3-pos-textuais/apendices/PID4416093.pdf, page 1>
-Package pdftex.def Info: 3-pos-textuais/apendices/PID4416093.pdf , page1 used on input line 7.
-(pdftex.def)             Requested size: 597.78697pt x 773.60669pt.
- [117
-
- <./3-pos-textuais/apendices/PID4416093.pdf>]) (3-pos-textuais/anexos/anexo-a.tex
-\bfseries ANEXO A.
-) (3-pos-textuais/anexos/anexo-b.tex [118
-
-]
-\bfseries ANEXO B.
-<3-pos-textuais/anexos/Sikasil.pdf, id=1550, 597.23125pt x 845.1575pt>
-File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
-<use 3-pos-textuais/anexos/Sikasil.pdf>
-Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf  used on input line 9.
-(pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
-<3-pos-textuais/anexos/Sikasil.pdf, id=1552, page=1, 597.23125pt x 845.1575pt>
-File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
-<use 3-pos-textuais/anexos/Sikasil.pdf, page 1>
-Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page1 used on input line 9.
-(pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
-File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
-<use 3-pos-textuais/anexos/Sikasil.pdf, page 1>
-Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page1 used on input line 9.
-(pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
-[119
-
-]
-File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
-<use 3-pos-textuais/anexos/Sikasil.pdf, page 1>
-Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page1 used on input line 9.
-(pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
-File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
-<use 3-pos-textuais/anexos/Sikasil.pdf, page 1>
-Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page1 used on input line 9.
-(pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
-File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
-<use 3-pos-textuais/anexos/Sikasil.pdf, page 1>
-Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page1 used on input line 9.
-(pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
- [120
-
- <./3-pos-textuais/anexos/Sikasil.pdf>]
-<3-pos-textuais/anexos/Sikasil.pdf, id=1572, page=2, 597.23125pt x 845.1575pt>
-File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
-<use 3-pos-textuais/anexos/Sikasil.pdf, page 2>
-Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page2 used on input line 9.
-(pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
-File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
-<use 3-pos-textuais/anexos/Sikasil.pdf, page 2>
-Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page2 used on input line 9.
-(pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
-File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
-<use 3-pos-textuais/anexos/Sikasil.pdf, page 2>
-Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page2 used on input line 9.
-(pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
- [121
-
- <./3-pos-textuais/anexos/Sikasil.pdf>])
-No file documento.ind.
+] [105]) [106]
 \tf@lof=\write8
 \openout8 = `documento.lof'.
 
@@ -2213,7 +1971,7 @@ No file documento.ind.
 \tf@toc=\write10
 \openout10 = `documento.toc'.
 
-(documento.aux)
+ (documento.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2020/03/25>
@@ -2227,17 +1985,17 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 46672 strings out of 467867
- 886323 string characters out of 5418335
- 1685242 words of memory out of 5000000
- 73874 multiletter control sequences out of 15000+600000
- 722694 words of font info for 433 fonts, out of 8000000 for 9000
+ 45985 strings out of 467867
+ 875408 string characters out of 5418335
+ 1462870 words of memory out of 5000000
+ 73262 multiletter control sequences out of 15000+600000
+ 721592 words of font info for 434 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 99i,17n,120p,2588b,1495s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\danie\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/rsfs/rsfs10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on documento.pdf (122 pages, 2731813 bytes).
+ 99i,15n,120p,2588b,882s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/rsfs/rsfs10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on documento.pdf (107 pages, 2152127 bytes).
 PDF statistics:
- 2286 PDF objects out of 2487 (max. 8388607)
- 456 named destinations out of 1000 (max. 500000)
- 92051 words of extra memory for PDF output out of 106986 (max. 10000000)
+ 2039 PDF objects out of 2073 (max. 8388607)
+ 418 named destinations out of 1000 (max. 500000)
+ 87313 words of extra memory for PDF output out of 89155 (max. 10000000)
 
