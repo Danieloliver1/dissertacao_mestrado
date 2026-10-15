@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.3.5)  1 OCT 2026 20:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.3.5)  15 OCT 2026 14:55
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1152,7 +1152,192 @@ Package glossaries Info: Writing glossary file documento.glo on input line 98.
 
 
 Writing index file documento.idx 
+(C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.sty (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.sty (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil-common.tex
+\pgfutil@everybye=\toks54
+\pgfutil@tempdima=\dimen324
+\pgfutil@tempdimb=\dimen325
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil-latex.def
+\pgfutil@abb=\box87
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs.code.tex (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revision.tex)
+Package: pgfrcs 2025-08-29 v3.1.11a (3.1.11a)
+))
+Package: pgf 2025-08-29 v3.1.11a (3.1.11a)
+ (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore.sty (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys.sty (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsys.code.tex
+Package: pgfsys 2025-08-29 v3.1.11a (3.1.11a)
+ (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks55
+\pgfkeys@temptoks=\toks56
+ (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeyslibraryfiltered.code.tex
+\pgfkeys@tmptoks=\toks57
+))
+\pgf@x=\dimen326
+\pgf@y=\dimen327
+\pgf@xa=\dimen328
+\pgf@ya=\dimen329
+\pgf@xb=\dimen330
+\pgf@yb=\dimen331
+\pgf@xc=\dimen332
+\pgf@yc=\dimen333
+\pgf@xd=\dimen334
+\pgf@yd=\dimen335
+\w@pgf@writea=\write7
+\r@pgf@reada=\read4
+\c@pgf@counta=\count476
+\c@pgf@countb=\count477
+\c@pgf@countc=\count478
+\c@pgf@countd=\count479
+\t@pgf@toka=\toks58
+\t@pgf@tokb=\toks59
+\t@pgf@tokc=\toks60
+\pgf@sys@id@count=\count480
+ (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.cfg
+File: pgf.cfg 2025-08-29 v3.1.11a (3.1.11a)
 )
+Driver file for pgf: pgfsys-pdftex.def
+ (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsys-pdftex.def
+File: pgfsys-pdftex.def 2025-08-29 v3.1.11a (3.1.11a)
+ (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsys-common-pdf.def
+File: pgfsys-common-pdf.def 2025-08-29 v3.1.11a (3.1.11a)
+))) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsyssoftpath.code.tex
+File: pgfsyssoftpath.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfsyssoftpath@smallbuffer@items=\count481
+\pgfsyssoftpath@bigbuffer@items=\count482
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsysprotocol.code.tex
+File: pgfsysprotocol.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcore.code.tex
+Package: pgfcore 2025-08-29 v3.1.11a (3.1.11a)
+ (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code.tex (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathutil.code.tex) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathparser.code.tex
+\pgfmath@dimen=\dimen336
+\pgfmath@count=\count483
+\pgfmath@box=\box88
+\pgfmath@toks=\toks61
+\pgfmath@stack@operand=\toks62
+\pgfmath@stack@operation=\toks63
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.code.tex) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.basic.code.tex) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.trigonometric.code.tex) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.random.code.tex) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.comparison.code.tex) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.base.code.tex) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.round.code.tex) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.misc.code.tex) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.integerarithmetics.code.tex) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathcalc.code.tex) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloat.code.tex
+\c@pgfmathroundto@lastzeros=\count484
+)) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.tex) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepoints.code.tex
+File: pgfcorepoints.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@picminx=\dimen337
+\pgf@picmaxx=\dimen338
+\pgf@picminy=\dimen339
+\pgf@picmaxy=\dimen340
+\pgf@pathminx=\dimen341
+\pgf@pathmaxx=\dimen342
+\pgf@pathminy=\dimen343
+\pgf@pathmaxy=\dimen344
+\pgf@xx=\dimen345
+\pgf@xy=\dimen346
+\pgf@yx=\dimen347
+\pgf@yy=\dimen348
+\pgf@zx=\dimen349
+\pgf@zy=\dimen350
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathconstruct.code.tex
+File: pgfcorepathconstruct.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@path@lastx=\dimen351
+\pgf@path@lasty=\dimen352
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathusage.code.tex
+File: pgfcorepathusage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@shorten@end@additional=\dimen353
+\pgf@shorten@start@additional=\dimen354
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorescopes.code.tex
+File: pgfcorescopes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfpic=\box89
+\pgf@hbox=\box90
+\pgf@layerbox@main=\box91
+\pgf@picture@serial@count=\count485
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoregraphicstate.code.tex
+File: pgfcoregraphicstate.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgflinewidth=\dimen355
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoretransformations.code.tex
+File: pgfcoretransformations.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@pt@x=\dimen356
+\pgf@pt@y=\dimen357
+\pgf@pt@temp=\dimen358
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorequick.code.tex
+File: pgfcorequick.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreobjects.code.tex
+File: pgfcoreobjects.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathprocessing.code.tex
+File: pgfcorepathprocessing.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorearrows.code.tex
+File: pgfcorearrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfarrowsep=\dimen359
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreshade.code.tex
+File: pgfcoreshade.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@max=\dimen360
+\pgf@sys@shading@range@num=\count486
+\pgf@shadingcount=\count487
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreimage.code.tex
+File: pgfcoreimage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreexternal.code.tex
+File: pgfcoreexternal.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfexternal@startupbox=\box92
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorelayers.code.tex
+File: pgfcorelayers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoretransparency.code.tex
+File: pgfcoretransparency.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepatterns.code.tex
+File: pgfcorepatterns.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorerdf.code.tex
+File: pgfcorerdf.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+))) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmoduleshapes.code.tex
+File: pgfmoduleshapes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfnodeparttextbox=\box93
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmoduleplot.code.tex
+File: pgfmoduleplot.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfcomp-version-0-65.sty
+Package: pgfcomp-version-0-65 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@nodesepstart=\dimen361
+\pgf@nodesepend=\dimen362
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfcomp-version-1-18.sty
+Package: pgfcomp-version-1-18 2025-08-29 v3.1.11a (3.1.11a)
+)) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgffor.sty (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfkeys.sty (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys.code.tex)) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmath.sty (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code.tex)) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor.code.tex
+Package: pgffor 2025-08-29 v3.1.11a (3.1.11a)
+\pgffor@iter=\dimen363
+\pgffor@skip=\dimen364
+\pgffor@stack=\toks64
+\pgffor@toks=\toks65
+)) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz\tikz.code.tex
+Package: tikz 2025-08-29 v3.1.11a (3.1.11a)
+ (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibraryplothandlers.code.tex
+File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@plot@mark@count=\count488
+\pgfplotmarksize=\dimen365
+)
+\tikz@lastx=\dimen366
+\tikz@lasty=\dimen367
+\tikz@lastxsaved=\dimen368
+\tikz@lastysaved=\dimen369
+\tikz@lastmovetox=\dimen370
+\tikz@lastmovetoy=\dimen371
+\tikzleveldistance=\dimen372
+\tikzsiblingdistance=\dimen373
+\tikz@figbox=\box94
+\tikz@figbox@bg=\box95
+\tikz@tempbox=\box96
+\tikz@tempbox@bg=\box97
+\tikztreelevel=\count489
+\tikznumberofchildren=\count490
+\tikznumberofcurrentchild=\count491
+\tikz@fig@count=\count492
+ (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodulematrix.code.tex
+File: pgfmodulematrix.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfmatrixcurrentrow=\count493
+\pgfmatrixcurrentcolumn=\count494
+\pgf@matrix@numberofcolumns=\count495
+)
+\tikz@expandcount=\count496
+ (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+))) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibraryarrows.meta.code.tex
+File: pgflibraryarrows.meta.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfarrowinset=\dimen374
+\pgfarrowlength=\dimen375
+\pgfarrowwidth=\dimen376
+\pgfarrowlinewidth=\dimen377
+) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+))
 LaTeX Font Info:    Trying to load font information for T1+ptm on input line 233.
  (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
@@ -1164,6 +1349,96 @@ LaTeX Warning: Unused global option(s):
 (documento.aux
 Package babel Info: 'brazil' activates 'portuges' shorthands.
 (babel)             Reported on input line 26.
+
+
+LaTeX Warning: Label `sec:fund-metricas' multiply defined.
+
+
+LaTeX Warning: Label `subsec:fund-confusao' multiply defined.
+
+
+LaTeX Warning: Label `tab:fund-confusao' multiply defined.
+
+
+LaTeX Warning: Label `tab:fund-metricas-limiar' multiply defined.
+
+
+LaTeX Warning: Label `subsec:fund-roc' multiply defined.
+
+
+LaTeX Warning: Label `eq:auc' multiply defined.
+
+
+LaTeX Warning: Label `subsec:fund-ap' multiply defined.
+
+
+LaTeX Warning: Label `eq:ap' multiply defined.
+
+
+LaTeX Warning: Label `subsec:fund-youden' multiply defined.
+
+
+LaTeX Warning: Label `eq:youden' multiply defined.
+
+
+LaTeX Warning: Label `subsec:fund-agregacao' multiply defined.
+
+
+LaTeX Warning: Label `eq:agregacao-paciente' multiply defined.
+
+
+LaTeX Warning: Label `subsec:fund-validacao-cruzada' multiply defined.
+
+
+LaTeX Warning: Label `subsec:fund-bootstrap' multiply defined.
+
+
+LaTeX Warning: Label `eq:delta-auc' multiply defined.
+
+
+LaTeX Warning: Label `sec:met-extracao' multiply defined.
+
+
+LaTeX Warning: Label `tab:met-protocolos' multiply defined.
+
+
+LaTeX Warning: Label `subsec:met-protocolo-a' multiply defined.
+
+
+LaTeX Warning: Label `subsec:met-protocolo-b' multiply defined.
+
+
+LaTeX Warning: Label `tab:met-auditoria-nn' multiply defined.
+
+
+LaTeX Warning: Label `subsec:met-numero-variaveis' multiply defined.
+
+
+LaTeX Warning: Label `sec:configuracao-experimental' multiply defined.
+
+
+LaTeX Warning: Label `subsec:config-sinal' multiply defined.
+
+
+LaTeX Warning: Label `tab:config-sinal' multiply defined.
+
+
+LaTeX Warning: Label `subsec:config-treino' multiply defined.
+
+
+LaTeX Warning: Label `tab:config-treino' multiply defined.
+
+
+LaTeX Warning: Label `subsec:config-desbalanceamento' multiply defined.
+
+
+LaTeX Warning: Label `eq:pos-weight' multiply defined.
+
+
+LaTeX Warning: Label `subsec:config-avaliacao' multiply defined.
+
+
+LaTeX Warning: Label `subsec:config-metricas' multiply defined.
 
 
 LaTeX Warning: Label `sec:resultados-cnnlstm-repouso' multiply defined.
@@ -1184,10 +1459,10 @@ LaTeX Warning: Label `subsec:cnnlstm-comparacao' multiply defined.
 LaTeX Warning: Label `tab:comparacao-modalidades' multiply defined.
 
 
-LaTeX Warning: Label `subsec:cnnlstm-confusao' multiply defined.
-
-
 LaTeX Warning: Label `tab:cnnlstm-confusao' multiply defined.
+
+
+LaTeX Warning: Label `subsec:cnnlstm-confusao' multiply defined.
 
 
 LaTeX Warning: Label `subsec:cnnlstm-sintese' multiply defined.
@@ -1214,28 +1489,28 @@ LaTeX Font Info:    ... okay on input line 233.
 LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 233.
 LaTeX Font Info:    ... okay on input line 233.
 Package hyperref Info: Link coloring OFF on input line 233.
-\myptabbox=\box87
+\myptabbox=\box98
 \myptabboxwidth=\skip315
  (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count476
-\scratchdimen=\dimen324
-\scratchbox=\box88
-\nofMPsegments=\count477
-\nofMParguments=\count478
-\everyMPshowfont=\toks54
-\MPscratchCnt=\count479
-\MPscratchDim=\dimen325
-\MPnumerator=\count480
-\makeMPintoPDFobject=\count481
-\everyMPtoPDFconversion=\toks55
+\scratchcounter=\count497
+\scratchdimen=\dimen378
+\scratchbox=\box99
+\nofMPsegments=\count498
+\nofMParguments=\count499
+\everyMPshowfont=\toks66
+\MPscratchCnt=\count500
+\MPscratchDim=\dimen379
+\MPnumerator=\count501
+\makeMPintoPDFobject=\count502
+\everyMPtoPDFconversion=\toks67
 ) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
  (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-\c@lstlisting=\count482
+\c@lstlisting=\count503
 LaTeX Info: Redefining \microtypecontext on input line 233.
 Package microtype Info: Applying patch `item' on input line 233.
 Package microtype Info: Applying patch `toc' on input line 233.
@@ -1276,7 +1551,7 @@ Package: lscape 2020/05/28 v3.02 Landscape Pages (DPC)
 )
 Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 ))
-<lib/logo-ufc.png, id=3, 489.83pt x 732.7375pt>
+<lib/logo-ufc.png, id=6, 489.83pt x 732.7375pt>
 File: lib/logo-ufc.png Graphic file (type png)
 <use lib/logo-ufc.png>
 Package pdftex.def Info: lib/logo-ufc.png  used on input line 236.
@@ -1286,16 +1561,6 @@ Package pdftex.def Info: lib/logo-ufc.png  used on input line 236.
 \openout4 = `documento.ist'.
 
 {C:/Users/danie/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./lib/logo-ufc.png>]
-Underfull \hbox (badness 2245) in paragraph at lines 237--237
-\T1/ptm/m/n/12 (+20) Aca-dê-mico em Xxxxxxx do Pro-grama de
- []
-
-
-Underfull \hbox (badness 1132) in paragraph at lines 237--237
-\T1/ptm/m/n/12 (+20) Pós-Graduação em Xxxxxxx do Cen-tro de
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 237--237
 
  []
@@ -1308,6 +1573,11 @@ Underfull \hbox (badness 2435) in paragraph at lines 237--237
 
 Underfull \hbox (badness 10000) in paragraph at lines 237--237
 
+ []
+
+
+Underfull \hbox (badness 2591) in paragraph at lines 237--237
+\T1/ptm/m/n/12 (+20) Co-o-ri-en-ta-dor: José Ma-ria da Silva Mon-
  []
 
 LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line 237.
@@ -1359,12 +1629,12 @@ l.237 \imprimirfolhaderosto{}
 
 
 ]
-<1-pre-textuais/ficha-catalografica.pdf, id=18, 597.55246pt x 845.07718pt>
+<1-pre-textuais/ficha-catalografica.pdf, id=21, 597.55246pt x 845.07718pt>
 File: 1-pre-textuais/ficha-catalografica.pdf Graphic file (type pdf)
 <use 1-pre-textuais/ficha-catalografica.pdf>
 Package pdftex.def Info: 1-pre-textuais/ficha-catalografica.pdf  used on input line 238.
 (pdftex.def)             Requested size: 597.551pt x 845.07512pt.
-<1-pre-textuais/ficha-catalografica.pdf, id=20, page=1, 597.55246pt x 845.07718pt>
+<1-pre-textuais/ficha-catalografica.pdf, id=23, page=1, 597.55246pt x 845.07718pt>
 File: 1-pre-textuais/ficha-catalografica.pdf Graphic file (type pdf)
 <use 1-pre-textuais/ficha-catalografica.pdf, page 1>
 Package pdftex.def Info: 1-pre-textuais/ficha-catalografica.pdf , page1 used on input line 238.
@@ -1389,16 +1659,6 @@ Package pdftex.def Info: 1-pre-textuais/ficha-catalografica.pdf , page1 used on 
 
 
  <./1-pre-textuais/ficha-catalografica.pdf>]
-Underfull \hbox (badness 2245) in paragraph at lines 240--240
-\T1/ptm/m/n/12 (+20) Aca-dê-mico em Xxxxxxx do Pro-grama de
- []
-
-
-Underfull \hbox (badness 1132) in paragraph at lines 240--240
-\T1/ptm/m/n/12 (+20) Pós-Graduação em Xxxxxxx do Cen-tro de
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 240--240
 
  []
@@ -1436,68 +1696,210 @@ Overfull \hbox (4.56003pt too wide) in paragraph at lines 243--244
 
 ] (1-pre-textuais/lista-de-simbolos.tex [13
 
-]) (documento.toc [14
+] [14] [15]) (documento.toc [16
 
-] [15]) [16] (2-textuais/1-introducao.tex
+] [17] [18] [19] [20]) [21] (2-textuais/1-introducao.tex
 Cap\'{\i }tulo 1.
-) (2-textuais/2-fundamentacao-teorica.tex [17
+[22
 
 
-]
+] [23]
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 315.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 315.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 315.
+
+Overfull \hbox (14.17958pt too wide) in paragraph at lines 315--315
+[] [] 
+ []
+
+) (2-textuais/2-fundamentacao-teorica.tex [24] [25]
 Cap\'{\i }tulo 2.
-[18
+[26
 
-] [19]
-<figuras/exemplo-1.jpg, id=422, 72.5117pt x 48.34114pt>
-File: figuras/exemplo-1.jpg Graphic file (type jpg)
-<use figuras/exemplo-1.jpg>
-Package pdftex.def Info: figuras/exemplo-1.jpg  used on input line 48.
-(pdftex.def)             Requested size: 455.24408pt x 303.54382pt.
-File: figuras/exemplo-1.jpg Graphic file (type jpg)
-<use figuras/exemplo-1.jpg>
-Package pdftex.def Info: figuras/exemplo-1.jpg  used on input line 48.
-(pdftex.def)             Requested size: 455.24408pt x 303.54382pt.
+] [27] [28] [29] [30] [31]
+<figuras/arquitetura_cnn.jpg, id=744, 331.4784pt x 185.0112pt>
+File: figuras/arquitetura_cnn.jpg Graphic file (type jpg)
+<use figuras/arquitetura_cnn.jpg>
+Package pdftex.def Info: figuras/arquitetura_cnn.jpg  used on input line 358.
+(pdftex.def)             Requested size: 455.24408pt x 254.09616pt.
+File: figuras/arquitetura_cnn.jpg Graphic file (type jpg)
+<use figuras/arquitetura_cnn.jpg>
+Package pdftex.def Info: figuras/arquitetura_cnn.jpg  used on input line 358.
+(pdftex.def)             Requested size: 455.24408pt x 254.09616pt.
 
-Overfull \hbox (4.99997pt too wide) in paragraph at lines 48--49
+Overfull \hbox (11.79996pt too wide) in paragraph at lines 358--359
  []$[]$ 
  []
 
-[20 <./figuras/exemplo-1.jpg>]
-<figuras/sondas.png, id=431, 658.71094pt x 590.95781pt>
-File: figuras/sondas.png Graphic file (type png)
-<use figuras/sondas.png>
-Package pdftex.def Info: figuras/sondas.png  used on input line 68.
-(pdftex.def)             Requested size: 398.33858pt x 357.37277pt.
-File: figuras/sondas.png Graphic file (type png)
-<use figuras/sondas.png>
-Package pdftex.def Info: figuras/sondas.png  used on input line 68.
-(pdftex.def)             Requested size: 398.33858pt x 357.37277pt.
- [21 <./figuras/sondas.png>]
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 101.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 101.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 101.
- [22]
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `cmtt' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-) (2-textuais/3-metodologia.tex [23]
-Cap\'{\i }tulo 3.
-[24
 
-] [25] [26]) (2-textuais/4-resultados.tex [27]
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (31.79813pt too wide) in paragraph at lines 404--404
+[] [] 
+ []
+
+[32] [33 <./figuras/arquitetura_cnn.jpg>] [34]
+Overfull \hbox (67.22862pt too wide) in paragraph at lines 498--498
+[] [] 
+ []
+
+[35]
+<figuras/arquitetura_resnet.jpg, id=776, 339.1872pt x 185.0112pt>
+File: figuras/arquitetura_resnet.jpg Graphic file (type jpg)
+<use figuras/arquitetura_resnet.jpg>
+Package pdftex.def Info: figuras/arquitetura_resnet.jpg  used on input line 592.
+(pdftex.def)             Requested size: 455.24408pt x 248.33434pt.
+File: figuras/arquitetura_resnet.jpg Graphic file (type jpg)
+<use figuras/arquitetura_resnet.jpg>
+Package pdftex.def Info: figuras/arquitetura_resnet.jpg  used on input line 592.
+(pdftex.def)             Requested size: 455.24408pt x 248.33434pt.
+
+Overfull \hbox (11.79996pt too wide) in paragraph at lines 592--593
+ []$[]$ 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[36] [37 <./figuras/arquitetura_resnet.jpg>]
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 640.
+ (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
+Overfull \hbox (50.44019pt too wide) in paragraph at lines 684--684
+[] [] 
+ []
+
+[38]
+Overfull \hbox (60.77151pt too wide) in paragraph at lines 731--731
+[] [] 
+ []
+
+[39]
+
+LaTeX Warning: Reference `cap:resultados' on page 40 undefined on input line 777.
+
+[40]
+Overfull \hbox (5.5755pt too wide) in paragraph at lines 838--838
+[] [] 
+ []
+
+
+Overfull \hbox (9.17493pt too wide) in paragraph at lines 875--875
+[] [] 
+ []
+
+[41] [42] [43] [44] [45] [46] [47] [48] [49] [50]
+Overfull \hbox (5.5755pt too wide) in paragraph at lines 1397--1397
+[] [] 
+ []
+
+
+Overfull \hbox (9.17493pt too wide) in paragraph at lines 1434--1434
+[] [] 
+ []
+
+[51] [52] [53] [54]) (2-textuais/3-metodologia.tex [55]
+Cap\'{\i }tulo 3.
+<figuras/fluxograma_coorte02.jpg, id=1033, 259.9311pt x 185.0112pt>
+File: figuras/fluxograma_coorte02.jpg Graphic file (type jpg)
+<use figuras/fluxograma_coorte02.jpg>
+Package pdftex.def Info: figuras/fluxograma_coorte02.jpg  used on input line 31.
+(pdftex.def)             Requested size: 398.33858pt x 283.55176pt.
+File: figuras/fluxograma_coorte02.jpg Graphic file (type jpg)
+<use figuras/fluxograma_coorte02.jpg>
+Package pdftex.def Info: figuras/fluxograma_coorte02.jpg  used on input line 31.
+(pdftex.def)             Requested size: 398.33858pt x 283.55176pt.
+[56
+
+ <./figuras/fluxograma_coorte02.jpg>] [57] [58] [59]
+Overfull \hbox (25.761pt too wide) in paragraph at lines 298--298
+[] [] 
+ []
+
+[60] [61] [62]
+Overfull \hbox (45.98262pt too wide) in paragraph at lines 432--432
+[] [] 
+ []
+
+[63]
+
+LaTeX Warning: Reference `cap:fundamentacao' on page 64 undefined on input line 503.
+
+[64]
+
+LaTeX Warning: Reference `subsec:met-variaveis-clinicas' on page 65 undefined on input line 534.
+
+
+Overfull \hbox (52.1553pt too wide) in paragraph at lines 565--565
+[] [] 
+ []
+
+[65]
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 632.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 632.
+ [66] [67]
+
+LaTeX Warning: Citation `swee2026multimodal' on page 68 undefined on input line 732.
+
+
+Overfull \hbox (26.76213pt too wide) in paragraph at lines 759--759
+[] [] 
+ []
+
+[68]
+
+LaTeX Warning: Citation `swee2026' on page 69 undefined on input line 794.
+
+[69] [70]
+Overfull \hbox (59.0799pt too wide) in paragraph at lines 881--881
+[] [] 
+ []
+
+
+LaTeX Warning: Reference `sec:met-modelos-marcadores' on page 71 undefined on input line 907.
+
+[71]
+
+LaTeX Warning: Citation `swee2026' on page 72 undefined on input line 937.
+
+
+Overfull \hbox (26.76213pt too wide) in paragraph at lines 964--964
+[] [] 
+ []
+
+[72]
+
+LaTeX Warning: Citation `swee2026' on page 73 undefined on input line 1010.
+
+[73]
+
+LaTeX Warning: Citation `emrich2024' on page 74 undefined on input line 1049.
+
+[74]
+Overfull \hbox (59.0799pt too wide) in paragraph at lines 1097--1097
+[] [] 
+ []
+
+
+LaTeX Warning: Reference `sec:met-modelos-marcadores' on page 75 undefined on input line 1123.
+
+[75]) (2-textuais/4-resultados.tex [76]
 Cap\'{\i }tulo 4.
-[28
+[77
 
 ]
 Overfull \hbox (25.761pt too wide) in paragraph at lines 113--113
 [] [] 
  []
 
-[29] [30] [31]
+[78] [79] [80]
 Overfull \hbox (27.15385pt too wide) in paragraph at lines 302--302
 [] [] 
  []
@@ -1505,32 +1907,37 @@ Overfull \hbox (27.15385pt too wide) in paragraph at lines 302--302
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[32]
+[81]
 Overfull \hbox (45.68538pt too wide) in paragraph at lines 352--352
 [] [] 
  []
 
-[33] [34]
+[82]
+Overfull \hbox (16.41417pt too wide) in paragraph at lines 399--399
+[] [] 
+ []
+
+[83]
 Overfull \hbox (23.96397pt too wide) in paragraph at lines 478--478
 [] [] 
  []
 
-[35]
+[84]
 Overfull \hbox (22.97774pt too wide) in paragraph at lines 537--537
 [] [] 
  []
 
-[36]
+[85]
 Overfull \hbox (16.41417pt too wide) in paragraph at lines 590--590
 [] [] 
  []
 
-[37]
+[86]
 Overfull \hbox (27.15385pt too wide) in paragraph at lines 665--665
 [] [] 
  []
 
-[38]
+[87]
 Overfull \hbox (48.31352pt too wide) in paragraph at lines 710--710
 [] [] 
  []
@@ -1543,12 +1950,12 @@ Overfull \hbox (45.68538pt too wide) in paragraph at lines 750--750
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[39]
+[88]
 Overfull \hbox (16.41417pt too wide) in paragraph at lines 788--788
 [] [] 
  []
 
-[40]
+[89]
 Overfull \hbox (27.15385pt too wide) in paragraph at lines 862--862
 [] [] 
  []
@@ -1558,7 +1965,7 @@ Overfull \hbox (48.8722pt too wide) in paragraph at lines 906--906
 [] [] 
  []
 
-[41]
+[90]
 Overfull \hbox (16.41417pt too wide) in paragraph at lines 953--953
 [] [] 
  []
@@ -1566,7 +1973,7 @@ Overfull \hbox (16.41417pt too wide) in paragraph at lines 953--953
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[42]
+[91]
 Overfull \hbox (27.15385pt too wide) in paragraph at lines 1033--1033
 [] [] 
  []
@@ -1574,127 +1981,114 @@ Overfull \hbox (27.15385pt too wide) in paragraph at lines 1033--1033
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[43]
+[92]
 Overfull \hbox (36.51685pt too wide) in paragraph at lines 1069--1069
 [] [] 
  []
 
-[44]
+[93]
 Overfull \hbox (16.41417pt too wide) in paragraph at lines 1125--1125
 [] [] 
  []
 
-[45]
-
-LaTeX Warning: Citation `zvuloni2025deephhf' on page 46 undefined on input line 1172.
-
-
-Overfull \hbox (27.15385pt too wide) in paragraph at lines 1220--1220
+[94]
+Overfull \hbox (27.15385pt too wide) in paragraph at lines 1223--1223
 [] [] 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[46]
-Overfull \hbox (43.05302pt too wide) in paragraph at lines 1266--1266
-[] [] 
- []
-
-[47]
-Overfull \hbox (16.41417pt too wide) in paragraph at lines 1306--1306
-[] [] 
- []
-
-[48] [49]
-Overfull \hbox (27.15385pt too wide) in paragraph at lines 1421--1421
-[] [] 
- []
-
-
-Overfull \hbox (43.05302pt too wide) in paragraph at lines 1467--1467
+[95]
+Overfull \hbox (45.68538pt too wide) in paragraph at lines 1288--1288
 [] [] 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[50]
-Overfull \hbox (16.41417pt too wide) in paragraph at lines 1507--1507
+[96]
+Overfull \hbox (16.41417pt too wide) in paragraph at lines 1337--1337
 [] [] 
  []
 
-[51]
-
-LaTeX Warning: Citation `zvuloni2025deephhf' on page 52 undefined on input line 1545.
-
-[52]
-Overfull \hbox (27.15385pt too wide) in paragraph at lines 1616--1616
+[97] [98]
+Overfull \hbox (27.15385pt too wide) in paragraph at lines 1434--1434
 [] [] 
  []
 
-[53]
-Underfull \hbox (badness 10000) in paragraph at lines 1688--1688
+
+Overfull \hbox (43.05302pt too wide) in paragraph at lines 1480--1480
+[] [] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[99]
+Overfull \hbox (16.41417pt too wide) in paragraph at lines 1520--1520
+[] [] 
+ []
+
+[100] [101]
+Overfull \hbox (27.15385pt too wide) in paragraph at lines 1635--1635
+[] [] 
+ []
+
+[102]
+Overfull \hbox (43.05302pt too wide) in paragraph at lines 1681--1681
+[] [] 
+ []
+
+
+Overfull \hbox (16.41417pt too wide) in paragraph at lines 1721--1721
+[] [] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[103] [104]
+Overfull \hbox (27.15385pt too wide) in paragraph at lines 1830--1830
+[] [] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[105]
+Underfull \hbox (badness 10000) in paragraph at lines 1902--1902
 []
  []
 
 
-Overfull \hbox (202.61078pt too wide) in paragraph at lines 1688--1688
+Overfull \hbox (202.61078pt too wide) in paragraph at lines 1902--1902
 [] 
- []
-
-[54]
-Overfull \hbox (56.01808pt too wide) in paragraph at lines 1728--1728
-[] [] 
- []
-
-<figuras/tensaoimpedanciahumana.png, id=707, 752.8125pt x 436.63126pt>
-File: figuras/tensaoimpedanciahumana.png Graphic file (type png)
-<use figuras/tensaoimpedanciahumana.png>
-Package pdftex.def Info: figuras/tensaoimpedanciahumana.png  used on input line 1772.
-(pdftex.def)             Requested size: 455.24408pt x 264.04613pt.
-File: figuras/tensaoimpedanciahumana.png Graphic file (type png)
-<use figuras/tensaoimpedanciahumana.png>
-Package pdftex.def Info: figuras/tensaoimpedanciahumana.png  used on input line 1772.
-(pdftex.def)             Requested size: 455.24408pt x 264.04613pt.
-
-Overfull \hbox (11.79996pt too wide) in paragraph at lines 1772--1773
- []$[]$ 
- []
-
-[55]
-<figuras/figura-3.png, id=712, 429.10312pt x 240.9pt>
-File: figuras/figura-3.png Graphic file (type png)
-<use figuras/figura-3.png>
-Package pdftex.def Info: figuras/figura-3.png  used on input line 1784.
-(pdftex.def)             Requested size: 455.24408pt x 255.577pt.
-File: figuras/figura-3.png Graphic file (type png)
-<use figuras/figura-3.png>
-Package pdftex.def Info: figuras/figura-3.png  used on input line 1784.
-(pdftex.def)             Requested size: 455.24408pt x 255.577pt.
-
-Overfull \hbox (11.79996pt too wide) in paragraph at lines 1784--1785
- []$[]$ 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[56 <./figuras/tensaoimpedanciahumana.png>] [57 <./figuras/figura-3.png>]) (2-textuais/5-conclusao.tex [58]
+[106]
+Overfull \hbox (56.01808pt too wide) in paragraph at lines 1942--1942
+[] [] 
+ []
+
+[107]) (2-textuais/5-conclusao.tex [108]
 Cap\'{\i }tulo 5.
-) (documento.bbl [59
+) (documento.bbl [109
 
 ]
 bibitemlist
-) [60
+[110
 
-] (3-pos-textuais/apendices/apendice-a.tex
+] [111]) [112] (3-pos-textuais/apendices/apendice-a.tex
 \bfseries AP\^ENDICE A.
-) (3-pos-textuais/apendices/apendice-b.tex [61
+) (3-pos-textuais/apendices/apendice-b.tex [113
 
 ]
 \bfseries AP\^ENDICE B.
-) (3-pos-textuais/apendices/apendice-c.tex [62
+) (3-pos-textuais/apendices/apendice-c.tex [114
 
 ]
 \bfseries AP\^ENDICE C.
@@ -1704,16 +2098,21 @@ File: lstlang1.sty 2025/11/14 1.11b listings language file
 File: lstlang1.sty 2025/11/14 1.11b listings language file
 ) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
 File: lstmisc.sty 2025/11/14 1.11b (Carsten Heinz)
-) (figuras/main.cpp) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
+)
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `cmtt' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+ (figuras/main.cpp) (C:\Users\danie\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
-)) (3-pos-textuais/apendices/apendice-d.tex [63
+)) (3-pos-textuais/apendices/apendice-d.tex [115
 
 ]
 \bfseries AP\^ENDICE D.
 
 
 pdfTeX warning: pdflatex (file ./3-pos-textuais/apendices/PID4416093.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-<3-pos-textuais/apendices/PID4416093.pdf, id=783, 614.295pt x 794.97pt>
+<3-pos-textuais/apendices/PID4416093.pdf, id=1510, 614.295pt x 794.97pt>
 File: 3-pos-textuais/apendices/PID4416093.pdf Graphic file (type pdf)
 <use 3-pos-textuais/apendices/PID4416093.pdf>
 Package pdftex.def Info: 3-pos-textuais/apendices/PID4416093.pdf  used on input line 7.
@@ -1724,7 +2123,7 @@ pdfTeX warning: pdflatex (file ./3-pos-textuais/apendices/PID4416093.pdf): PDF i
 
 
 pdfTeX warning: pdflatex (file ./3-pos-textuais/apendices/PID4416093.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-<3-pos-textuais/apendices/PID4416093.pdf, id=785, page=1, 614.295pt x 794.97pt>
+<3-pos-textuais/apendices/PID4416093.pdf, id=1512, page=1, 614.295pt x 794.97pt>
 File: 3-pos-textuais/apendices/PID4416093.pdf Graphic file (type pdf)
 <use 3-pos-textuais/apendices/PID4416093.pdf, page 1>
 Package pdftex.def Info: 3-pos-textuais/apendices/PID4416093.pdf , page1 used on input line 7.
@@ -1733,7 +2132,7 @@ File: 3-pos-textuais/apendices/PID4416093.pdf Graphic file (type pdf)
 <use 3-pos-textuais/apendices/PID4416093.pdf, page 1>
 Package pdftex.def Info: 3-pos-textuais/apendices/PID4416093.pdf , page1 used on input line 7.
 (pdftex.def)             Requested size: 597.78697pt x 773.60669pt.
-[64
+[116
 
 ]
 File: 3-pos-textuais/apendices/PID4416093.pdf Graphic file (type pdf)
@@ -1748,20 +2147,20 @@ File: 3-pos-textuais/apendices/PID4416093.pdf Graphic file (type pdf)
 <use 3-pos-textuais/apendices/PID4416093.pdf, page 1>
 Package pdftex.def Info: 3-pos-textuais/apendices/PID4416093.pdf , page1 used on input line 7.
 (pdftex.def)             Requested size: 597.78697pt x 773.60669pt.
- [65
+ [117
 
  <./3-pos-textuais/apendices/PID4416093.pdf>]) (3-pos-textuais/anexos/anexo-a.tex
 \bfseries ANEXO A.
-) (3-pos-textuais/anexos/anexo-b.tex [66
+) (3-pos-textuais/anexos/anexo-b.tex [118
 
 ]
 \bfseries ANEXO B.
-<3-pos-textuais/anexos/Sikasil.pdf, id=824, 597.23125pt x 845.1575pt>
+<3-pos-textuais/anexos/Sikasil.pdf, id=1550, 597.23125pt x 845.1575pt>
 File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
 <use 3-pos-textuais/anexos/Sikasil.pdf>
 Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf  used on input line 9.
 (pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
-<3-pos-textuais/anexos/Sikasil.pdf, id=826, page=1, 597.23125pt x 845.1575pt>
+<3-pos-textuais/anexos/Sikasil.pdf, id=1552, page=1, 597.23125pt x 845.1575pt>
 File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
 <use 3-pos-textuais/anexos/Sikasil.pdf, page 1>
 Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page1 used on input line 9.
@@ -1770,7 +2169,7 @@ File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
 <use 3-pos-textuais/anexos/Sikasil.pdf, page 1>
 Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page1 used on input line 9.
 (pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
-[67
+[119
 
 ]
 File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
@@ -1785,10 +2184,10 @@ File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
 <use 3-pos-textuais/anexos/Sikasil.pdf, page 1>
 Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page1 used on input line 9.
 (pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
- [68
+ [120
 
  <./3-pos-textuais/anexos/Sikasil.pdf>]
-<3-pos-textuais/anexos/Sikasil.pdf, id=845, page=2, 597.23125pt x 845.1575pt>
+<3-pos-textuais/anexos/Sikasil.pdf, id=1572, page=2, 597.23125pt x 845.1575pt>
 File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
 <use 3-pos-textuais/anexos/Sikasil.pdf, page 2>
 Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page2 used on input line 9.
@@ -1801,18 +2200,18 @@ File: 3-pos-textuais/anexos/Sikasil.pdf Graphic file (type pdf)
 <use 3-pos-textuais/anexos/Sikasil.pdf, page 2>
 Package pdftex.def Info: 3-pos-textuais/anexos/Sikasil.pdf , page2 used on input line 9.
 (pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
- [69
+ [121
 
  <./3-pos-textuais/anexos/Sikasil.pdf>])
 No file documento.ind.
-\tf@lof=\write7
-\openout7 = `documento.lof'.
+\tf@lof=\write8
+\openout8 = `documento.lof'.
 
-\tf@lot=\write8
-\openout8 = `documento.lot'.
+\tf@lot=\write9
+\openout9 = `documento.lot'.
 
-\tf@toc=\write9
-\openout9 = `documento.toc'.
+\tf@toc=\write10
+\openout10 = `documento.toc'.
 
 (documento.aux)
  ***********
@@ -1828,17 +2227,17 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 35670 strings out of 467867
- 644911 string characters out of 5418335
- 1473081 words of memory out of 5000000
- 63421 multiletter control sequences out of 15000+600000
- 698836 words of font info for 326 fonts, out of 8000000 for 9000
+ 46672 strings out of 467867
+ 886323 string characters out of 5418335
+ 1685242 words of memory out of 5000000
+ 73874 multiletter control sequences out of 15000+600000
+ 722694 words of font info for 433 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 99i,20n,120p,2588b,1494s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\danie\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on documento.pdf (70 pages, 1900288 bytes).
+ 99i,17n,120p,2588b,1495s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\danie\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/public/rsfs/rsfs10.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/danie/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on documento.pdf (122 pages, 2731813 bytes).
 PDF statistics:
- 1247 PDF objects out of 1440 (max. 8388607)
- 263 named destinations out of 1000 (max. 500000)
- 72372 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 2286 PDF objects out of 2487 (max. 8388607)
+ 456 named destinations out of 1000 (max. 500000)
+ 92051 words of extra memory for PDF output out of 106986 (max. 10000000)
 

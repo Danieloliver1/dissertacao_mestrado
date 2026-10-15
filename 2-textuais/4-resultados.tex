@@ -1133,6 +1133,220 @@ estimada de óbito em menos de um ponto percentual em relação à probabilidade
 basal da coorte.
 
 
+
+% ==============================================================================
+% RESULTADOS — ResNet-50 unidimensional (sinal bruto)
+% Fonte: classificacao_resnet50_v2.log, execução de 01/10/2026 (5 partições)
+%
+% ⚠️ Pendências antes da redação final:
+%
+% 1. Os detalhes da arquitetura (núcleo, filtros, estágios) não constam do log.
+%    O trecho está marcado com [PREENCHER].
+% 2. A divisão dos dados neste log (309 treino / 104 validação / 104 teste,
+%    33 casos no treino e 11 na validação) difere da usada na seção da CNN
+%    (351 / 62 / 104, 37 casos no treino e 7 na validação). Isso afeta a
+%    afirmação de protocolo idêntico na Configuração experimental.
+% 3. O limiar da matriz de confusão (0,0318) aparece no log sem indicar se é a
+%    mediana entre as partições, como na seção da CNN. Confirmar.
+% ==============================================================================
+
+\section{Rede residual de 50 camadas aplicada ao sinal bruto}
+\label{sec:resultados-resnet50}
+
+A segunda arquitetura avaliada foi uma versão unidimensional da ResNet-50,
+cujas conexões residuais permitem o treinamento de redes substancialmente mais
+profundas que a da seção anterior. \textbf{[PREENCHER: tamanho do núcleo
+			convolucional, número de filtros por estágio e distribuição dos blocos.]} Como
+na rede convolucional simples, o agrupamento global combina média e máximo ao
+longo do tempo, e o descarte foi fixado em 0,6.
+
+A configuração resultante possui $16\,479\,937$ parâmetros treináveis, cerca de
+151 vezes o da rede convolucional simples ($109\,361$), correspondendo a
+$53\,333$ parâmetros por paciente do conjunto de treinamento. Como o conjunto
+de treinamento de cada partição contém 33 casos positivos, o número de
+parâmetros supera em ordens de grandeza o de eventos a ser aprendido.
+
+\subsection{Protocolo}
+\label{subsec:protocolo-resnet50}
+
+O pré-processamento e a representação do sinal seguem o da seção anterior:
+janelas de 24\,000 amostras, das quais 250 foram amostradas por paciente no
+treinamento e 100 na avaliação, filtro passa-banda de 0,5 a 40\,Hz aplicado a
+cada janela e divisão por escala global estimada por derivação no conjunto de
+treinamento de cada partição. O desbalanceamento foi tratado por ponderação da
+função de perda, com peso de 8,4 atribuído à classe positiva (8,36 nas
+partições 0 e 1 e 8,39 nas demais). O tamanho do lote foi de 128, reduzido de
+256 por limitação de memória (\autoref{tab:config-treino}).
+
+A validação cruzada empregou cinco partições estratificadas, com divisão no
+nível do paciente: 309 ou 310 indivíduos no treinamento (33 casos), 104 na
+validação interna (11 casos) e 103 ou 104 no conjunto de teste (11 casos). As
+probabilidades preditas para as janelas de um mesmo paciente foram agregadas
+por média antes do cálculo de qualquer métrica. O critério de parada
+antecipada foi acionado nas partições 2, 3 e 4, nas épocas 16, 11 e 11; nas
+partições 0 e 1, o ajuste atingiu o limite de 20 épocas.
+
+\subsection{Desempenho}
+\label{subsec:desempenho-resnet50}
+
+A \gls{AUC} sobre as predições fora da amostra foi de 0,536, com intervalo de
+confiança de 95\,\% entre 0,448 e 0,618. O intervalo contém o valor 0,5, de
+modo que não é possível afirmar que o modelo discrimine os desfechos acima do
+acaso. Os resultados por partição constam da \autoref{tab:resnet50-folds}.
+
+% ---- TABELA 1: desempenho por partição ----
+\begin{table}[h!]
+	\captionsetup{width=13cm}
+	\Caption{\label{tab:resnet50-folds} Desempenho da ResNet-50 por partição da
+		validação cruzada}
+	\IBGEtab{}{
+		\begin{tabular}{crrrrr}
+			\toprule
+			Partição                          & \multicolumn{1}{c}{AUC}            & \multicolumn{1}{c}{AP} &
+			\multicolumn{1}{c}{Sensibilidade} & \multicolumn{1}{c}{Especificidade} &
+			\multicolumn{1}{c}{VPP}                                                                                                 \\
+			\midrule \midrule
+			0                                 & 0,487                              & 0,188                  & 0,818 & 0,258 & 0,115 \\
+			1                                 & 0,728                              & 0,290                  & 0,636 & 0,796 & 0,269 \\
+			2                                 & 0,492                              & 0,108                  & 0,000 & 0,848 & 0,000 \\
+			3                                 & 0,575                              & 0,171                  & 0,636 & 0,576 & 0,152 \\
+			4                                 & 0,562                              & 0,179                  & 0,727 & 0,391 & 0,125 \\
+			\midrule
+			Média                             & 0,569                              & 0,187                  & 0,564 & 0,574 & 0,132 \\
+			Desvio-padrão                     & 0,098                              & 0,065                  & 0,324 & 0,254 & 0,096 \\
+			\midrule
+			\textit{Out-of-fold}              & 0,536                              & 0,137                  & 0,455 & 0,511 & 0,100 \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+A média entre partições, de 0,569, supera a estimativa agrupada em 0,033. A
+diferença decorre sobretudo da partição~1, a única em que a \gls{AUC} se
+afasta de forma apreciável de 0,5 (0,728): nas outras quatro, os valores
+variam de 0,487 a 0,575, com média de 0,529. O desvio-padrão de 0,098 é
+aproximadamente o dobro do observado na rede convolucional simples (0,048), o
+que indica que o resultado depende da composição das partições. Com onze
+eventos por partição, um valor elevado isolado, sem replicação nas demais, não
+constitui evidência de capacidade discriminativa.
+
+As métricas dependentes de limiar apresentaram dispersão ainda maior ---
+desvio-padrão de 0,324 na sensibilidade e de 0,254 na especificidade. As
+partições 0 e 2 representam extremos opostos. Na partição~0, a sensibilidade
+foi de 0,818 com especificidade de 0,258: o modelo atribuiu alto risco a cerca
+de três quartos dos controles. Na partição~2, a sensibilidade foi nula e a
+especificidade de 0,848, de modo que nenhum dos onze eventos foi identificado.
+Essa instabilidade já é visível durante o ajuste: na partição~0, entre as
+épocas 4 e 5, a sensibilidade na validação passou de 0,273 para 1,000 e a
+especificidade de 0,828 para 0,129, sem alteração apreciável da \gls{AUC}
+(0,426 para 0,401). Como o limiar é definido sobre onze eventos de validação,
+sua escolha herda essa variabilidade.
+
+A \gls{AP} agrupada, de 0,137, situa-se acima da prevalência de 0,106, que
+constitui a linha de base dessa métrica sob classificação aleatória; a média
+entre partições foi de 0,187, com desvio-padrão de 0,065. A agregação das
+probabilidades por máximo, em lugar da média, produziu \gls{AUC} de 0,537 e
+\gls{AP} de 0,136, praticamente idênticas às obtidas pela média.
+
+Em relação à rede convolucional simples, cuja \gls{AUC} agrupada foi de 0,498
+(intervalo de 0,411 a 0,586), o aumento de aproximadamente 151 vezes no número
+de parâmetros não foi acompanhado de ganho discernível. Os intervalos de
+confiança das duas arquiteturas se sobrepõem amplamente e ambos contêm 0,5.
+
+\subsection{Comportamento durante o treinamento}
+\label{subsec:treinamento-resnet50}
+
+A \autoref{tab:resnet50-perdas} apresenta a evolução das perdas nas cinco
+partições.
+
+% ---- TABELA 2: perdas ----
+\begin{table}[h!]
+	\captionsetup{width=14cm}
+	\Caption{\label{tab:resnet50-perdas} Perdas de treinamento e validação
+		no início e ao término do ajuste, por partição}
+	\IBGEtab{}{
+		\begin{tabular}{crrrrrr}
+			\toprule
+			Partição                         & \multicolumn{2}{c}{Época 1}   &
+			\multicolumn{2}{c}{Última época} &
+			\multicolumn{1}{c}{Razão}        & \multicolumn{1}{c}{Épocas}                                                                \\
+			\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+			                                 & \multicolumn{1}{c}{Treino}    & \multicolumn{1}{c}{Validação} &
+			\multicolumn{1}{c}{Treino}       & \multicolumn{1}{c}{Validação} &                               &                           \\
+			\midrule \midrule
+			0                                & 0,881                         & 1,744                         & 0,008 & 6,370 & 777  & 20 \\
+			1                                & 1,019                         & 1,648                         & 0,005 & 6,416 & 1309 & 20 \\
+			2                                & 0,929                         & 1,847                         & 0,009 & 5,927 & 674  & 16 \\
+			3                                & 0,860                         & 1,721                         & 0,013 & 5,415 & 430  & 11 \\
+			4                                & 1,061                         & 1,515                         & 0,012 & 5,778 & 481  & 11 \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+A perda de treinamento reduziu-se de valores entre 0,860 e 1,061 na primeira
+época para valores entre 0,005 e 0,013 ao término do ajuste. Já na terceira
+época situava-se entre 0,082 e 0,096, apesar de a regularização e o descarte
+terem sido fixados nos valores máximos. As razões finais entre as perdas de
+validação e treinamento situaram-se entre 430 e 1\,309, de uma a duas ordens
+de grandeza acima das observadas na rede convolucional simples (15 a 28).
+
+A perda de validação foi mínima na primeira época em todas as partições e
+cresceu desde então, com oscilações pontuais, até valores entre 5,4 e 6,4.
+Esse comportamento é consistente com o número de parâmetros: com mais de 16
+milhões de pesos e 33 casos positivos, a rede dispõe de capacidade para
+ajustar individualmente os exemplos de treinamento, e o que foi aprendido não
+se transfere a pacientes não observados.
+
+O melhor valor pontual de \gls{AUC} sobre o conjunto de validação ocorreu nas
+épocas 11, 5, 4, 5 e 1 das partições 0 a 4, alcançando 0,753 na partição~2 e
+0,675 na partição~3. Na partição~2, a \gls{AUC} de validação manteve-se entre
+0,56 e 0,69 da segunda à décima quinta época, e o conjunto de teste produziu
+0,492 com sensibilidade nula. Em sentido oposto, a partição~1 teve pico de
+validação de 0,614 e \gls{AUC} de teste de 0,728. Essas discrepâncias, em
+ambas as direções, ilustram a instabilidade das estimativas obtidas sobre
+onze eventos.
+
+\subsection{Matriz de confusão}
+\label{subsec:confusao-resnet50}
+
+A \autoref{tab:resnet50-confusao} apresenta a matriz de confusão agregada,
+construída a partir das predições fora da amostra e do limiar de 0,0318.
+
+% ---- TABELA 3: matriz de confusão ----
+\begin{table}[h!]
+	\captionsetup{width=11cm}
+	\Caption{\label{tab:resnet50-confusao} Matriz de confusão agregada da
+		ResNet-50}
+	\IBGEtab{}{
+		\begin{tabular}{lrr}
+			\toprule
+			                               & \multicolumn{1}{c}{Predito: sobrevivente} &
+			\multicolumn{1}{c}{Predito: óbito}                                               \\
+			\midrule \midrule
+			Sobrevivente ($n = 462$)       & 236                                       & 226 \\
+			Óbito por \gls{MSC} ($n = 55$) & 30                                        & 25  \\
+			\bottomrule
+		\end{tabular}
+	}{
+		\Fonte{elaborado pelo autor (2026).}
+	}
+\end{table}
+
+Dos 55 pacientes que vieram a óbito por morte súbita cardíaca, 25 foram
+identificados --- sensibilidade de 0,455 --- com 226 falsos positivos entre os
+462 sobreviventes, isto é, 48,9\,\% destes foram classificados como de alto
+risco. O \gls{VPP} resultante, de 0,100, é ligeiramente inferior à prevalência
+de 0,106, e o valor preditivo negativo, de 0,887, também não supera a
+probabilidade basal de sobrevivência, de 0,894. A classificação, em qualquer
+dos dois sentidos, não altera de forma apreciável a probabilidade estimada de
+óbito em relação à da coorte, e a acurácia de 50,5\,\% situa-se bem abaixo da
+do classificador trivial (89,4\,\%).
+
 % ==============================================================================
 % RESULTADOS — ECG de repouso de alta resolução com arquitetura CNN-LSTM
 % Fonte: cnnlstm_res.log (5 partições)
@@ -1754,71 +1968,80 @@ na coorte.
 
 
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-\section{Resultados do Experimento A}
-\label{sec:resultados-do-experimento-a}
+% \section{Resultados do Experimento A}
+% \label{sec:resultados-do-experimento-a}
 
-Procure deixar as figuras dos resultados o maior possível preenchendo a largura do texto do documento que possui $16~cm$.
+% Procure deixar as figuras dos resultados o maior possível preenchendo a largura do texto do documento que possui $16~cm$.
 
-\begin{figure}[h!]
-	\captionsetup{width=16cm}
-	\Caption{\label{fig:tensaoimpedanciahumana} Gráfico de tensão considerando a impedância humana}
-	%\centering
-	\UFCfig{}{
-		\fbox{\includegraphics[width=16cm]{figuras/tensaoimpedanciahumana}}
-	}{
-		\Fonte{elaborado pelo autor (2016).}
-	}
-\end{figure}
+% \begin{figure}[h!]
+% 	\captionsetup{width=16cm}
+% 	\Caption{\label{fig:tensaoimpedanciahumana} Gráfico de tensão considerando a impedância humana}
+% 	%\centering
+% 	\UFCfig{}{
+% 		\fbox{\includegraphics[width=16cm]{figuras/tensaoimpedanciahumana}}
+% 	}{
+% 		\Fonte{elaborado pelo autor (2016).}
+% 	}
+% \end{figure}
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-\begin{figure}[h!]
-	\captionsetup{width=16cm}
-	\Caption{\label{fig-grafico-1}Produção anual das dissertações de mestrado e teses de doutorado entre os anos de 1990 e 2008}
-	\IBGEtab{}{
-		\fbox{\includegraphics[width=16cm]{figuras/figura-3}}
-	}{
-		\Fonte{elaborado pelo autor (2016).}
-	}
-\end{figure}
+% \begin{figure}[h!]
+% 	\captionsetup{width=16cm}
+% 	\Caption{\label{fig-grafico-1}Produção anual das dissertações de mestrado e teses de doutorado entre os anos de 1990 e 2008}
+% 	\IBGEtab{}{
+% 		\fbox{\includegraphics[width=16cm]{figuras/figura-3}}
+% 	}{
+% 		\Fonte{elaborado pelo autor (2016).}
+% 	}
+% \end{figure}
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-\section{Resultados do Experimento B}
-\label{sec:resultados-do-experimento-b}
+% \section{Resultados do Experimento B}
+% \label{sec:resultados-do-experimento-b}
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto ..
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto ..
 
-\begin{table}[h!]
-	%\centering
-	\captionsetup{width=11.3cm}%ATENÇÃO: Ajuste a largura do título
-	\Caption{\label{tab:notas} Notas dos participantes nas avaliações A, B e C}
-	\IBGEtab{}{
-		\begin{tabular}{crrr}
-			\toprule
-			Identificação dos participantes & Avaliação A & Avaliação B & Avaliação C \\
-			\midrule \midrule
-			Participante 1                  & 7           & 9           & 10          \\
-			Participante 2                  & 8           & 2           & 1           \\
-			Participante 3                  & 5           & 10          & 6           \\
-			Participante 4                  & 3           & 1           & 4           \\
-			Participante 5                  & 2           & 4           & 1           \\
-			Participante 6                  & 0           & 7           & 2           \\
-			\bottomrule
-		\end{tabular}
-	}{
-		\Fonte{elaborado pelo autor (2016).}
-	}
-\end{table}
+% \begin{table}[h!]
+% 	%\centering
+% 	\captionsetup{width=11.3cm}%ATENÇÃO: Ajuste a largura do título
+% 	\Caption{\label{tab:notas} Notas dos participantes nas avaliações A, B e C}
+% 	\IBGEtab{}{
+% 		\begin{tabular}{crrr}
+% 			\toprule
+% 			Identificação dos participantes & Avaliação A & Avaliação B & Avaliação C \\
+% 			\midrule \midrule
+% 			Participante 1                  & 7           & 9           & 10          \\
+% 			Participante 2                  & 8           & 2           & 1           \\
+% 			Participante 3                  & 5           & 10          & 6           \\
+% 			Participante 4                  & 3           & 1           & 4           \\
+% 			Participante 5                  & 2           & 4           & 1           \\
+% 			Participante 6                  & 0           & 7           & 2           \\
+% 			\bottomrule
+% 		\end{tabular}
+% 	}{
+% 		\Fonte{elaborado pelo autor (2016).}
+% 	}
+% \end{table}
 
-Texto texto Referenciando a \autoref{tab:notas}  texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
 
-Texto texto  Referenciando a \autoref{tab:notas}  texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+
+
+
+
+
+
+% Texto texto Referenciando a \autoref{tab:notas}  texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+
+% Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.Texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
+
+% Texto texto  Referenciando a \autoref{tab:notas}  texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto texto.
